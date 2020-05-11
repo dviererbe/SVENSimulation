@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Abstractions;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class DependencyManager
+    public class DependencyManager : MonoBehaviour
     {
         /// <summary>
         /// Gets the ThermalManager dependency.

@@ -12,9 +12,7 @@ public class WallCreator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        wallObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        wallObject.transform.localScale = new Vector3(WallDetails.wallSize, WallDetails.wallSize, WallDetails.wallSize);
-        wallObject.AddComponent<Temperature>();
+        
 
         float tileSizeX = transform.lossyScale.x;
         float tileSizeY = transform.localScale.y;
@@ -33,6 +31,7 @@ public class WallCreator : MonoBehaviour
                             // thus, that's the easiest option to fix that problem
                             //wallArr[i, j][m, n] = Instantiate(wallObject, new Vector3((wallSize * wallsPerGrid) * i + m * wallSize, (wallSize * wallsPerGrid) * j + n * wallSize, 0), wallObject.transform.rotation);
                             wallArr[i, j][m, n] = Instantiate(wallObject, new Vector3(WallDetails.wallThickness * i + m * WallDetails.wallSize, WallDetails.wallThickness * j + n * WallDetails.wallSize, 0), wallObject.transform.rotation);
+                            
                         }
                     }
                 }

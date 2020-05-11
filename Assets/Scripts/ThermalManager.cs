@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Abstractions;
@@ -86,6 +85,7 @@ namespace Assets.Scripts
             _position = position;
 
             _thermalPixels = new float[Mathf.FloorToInt(size.x / ThermalPixelSize), Mathf.FloorToInt(size.y / ThermalPixelSize)];
+            //Debug.Log("size: " + _thermalPixels.GetLength(0) + "   1: "+_thermalPixels.GetLength(1));
 
             for (int x = 0; x < _thermalPixels.GetLength(0); ++x)
             {
@@ -104,9 +104,9 @@ namespace Assets.Scripts
         public float GetTemperature(Vector3 position)
         {
             if (position.x < _position.x ||
-                position.x > (_position.x + _size.x) ||
+                position.x > (_position.x + _size.x - 1) ||
                 position.y < _position.y ||
-                position.y > (_position.y + _size.y))
+                position.y > (_position.y + _size.y - 1))
             {
                 return AbsoluteZero;
             }
@@ -115,7 +115,7 @@ namespace Assets.Scripts
                 Vector2Int relativePosition = new Vector2Int(
                     x: Mathf.FloorToInt((position.x - _position.x) / ThermalPixelSize),
                     y: Mathf.FloorToInt((position.y - _position.y) / ThermalPixelSize));
-
+                //Debug.Log("Pos x: " + relativePosition.x + " y: " + relativePosition.y);
                 return _thermalPixels[relativePosition.x, relativePosition.y];
             }
         }

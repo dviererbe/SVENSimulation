@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Assets.Scripts;
+using Assets.Scripts.Abstractions;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO.IsolatedStorage;
 using UnityEngine;
@@ -9,7 +11,7 @@ public class AirCreator : MonoBehaviour
     public GameObject airObj;
     Queue<WrappingThingy> temperatureQueue;
     private float passedTime = 0;
-    private float waitTimer = 1.0f;
+    private float waitTimer = 0.5f;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,16 +35,13 @@ public class AirCreator : MonoBehaviour
                              i * WallDetails.wallThickness + m * WallDetails.wallSize,
                              j * WallDetails.wallThickness + n * WallDetails.wallSize, 0),
                              airObj.transform.rotation);
+                        airArr[(i - 1) * WallDetails.wallsPerGrid + m, (j - 1) * WallDetails.wallsPerGrid + n].GetComponent<Temperature>().pos = new Vector2((i - 1) * WallDetails.wallsPerGrid + m, (j - 1) * WallDetails.wallsPerGrid + n);
                     }
                 }
             }
         }
 
         
-        airArr[0, 0].GetComponent<Temperature>()._Temperature += 60;
-        for (int i = 1; i < 20; i++) {
-            airArr[i, i].GetComponent<SpriteRenderer>().color = new Color(i*10,0,0);
-        }
         /*
         Debug.Log(airArr[0, 0].GetComponent<Temperature>()._Temperature);
         Debug.Log(airArr[1, 1].GetComponent<Temperature>()._Temperature);
@@ -51,18 +50,23 @@ public class AirCreator : MonoBehaviour
         */
 
         temperatureQueue = new Queue<WrappingThingy>();
+
+        IThermalManager thermalManager = GameObject.Find("DependencyManager").GetComponent<DependencyManager>().ThermalManager;
+        thermalManager.ThermalPixelSize = 1;
+        thermalManager.AddSimulatedThermalArea(new Vector3(1, 1, 0), new Vector3(WallDetails.width-1, WallDetails.height-1));
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        passedTime += Time.deltaTime;
-        if (passedTime > waitTimer){
-            passedTime -= waitTimer;
-            CalcTemp();
-        }
+        //passedTime += Time.deltaTime;
+        //if (passedTime > waitTimer){
+        //    passedTime -= waitTimer;
+        //    CalcTemp();
+        //}
     }
-
+    /*
     void CalcTemp() 
     {
         float mult = 0.1f;
@@ -78,8 +82,8 @@ public class AirCreator : MonoBehaviour
                 //Bottom thingy
                 Temperature bottomTile = airArr[mainWrappingTile.i + 1, mainWrappingTile.j].GetComponent<Temperature>();
                 float diff = mainWrappingTile.temp._Temperature - bottomTile._Temperature;
-                mainWrappingTile.temp._Temperature += -(diff * mult);
-                bottomTile._Temperature += (diff * mult);
+                mainWrappingTile.temp._Temperature += -(diff * mult)/3;
+                bottomTile._Temperature += (diff * mult)/3;
                 temperatureQueue.Enqueue(new WrappingThingy(bottomTile, mainWrappingTile.i + 1, mainWrappingTile.j));
             }
             else if (mainWrappingTile.i < mainWrappingTile.j)
@@ -87,8 +91,8 @@ public class AirCreator : MonoBehaviour
                 //Right thingy
                 Temperature rightTile = airArr[mainWrappingTile.i, mainWrappingTile.j + 1].GetComponent<Temperature>();
                 float diff = mainWrappingTile.temp._Temperature - rightTile._Temperature;
-                mainWrappingTile.temp._Temperature += -(diff * mult);
-                rightTile._Temperature += (diff * mult);
+                mainWrappingTile.temp._Temperature += -(diff * mult)/3;
+                rightTile._Temperature += (diff * mult)/3;
                 temperatureQueue.Enqueue(new WrappingThingy(rightTile, mainWrappingTile.i, mainWrappingTile.j + 1));
             }
             else
@@ -113,4 +117,5 @@ public class AirCreator : MonoBehaviour
             }
         }
     }
+    */
 }
