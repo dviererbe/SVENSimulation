@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{6052A9D9-1CA7-60C9-7D9B-4C2BFA24F93C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -63,8 +64,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\DependencyManager.cs" />
+    <Compile Include="Assets\Scripts\Abstractions\IThermalManager.cs" />
+    <Compile Include="Assets\Scripts\Abstractions\IThermalObject.cs" />
     <Compile Include="Assets\Scripts\AirCreator.cs" />
     <Compile Include="Assets\Scripts\Temperature.cs" />
+    <Compile Include="Assets\Scripts\ThermalManager.cs" />
     <Compile Include="Assets\Scripts\WallCreator.cs" />
     <Compile Include="Assets\Scripts\WallDetails.cs" />
     <Compile Include="Assets\Scripts\WrappingThingy.cs" />
@@ -678,7 +683,7 @@
       <HintPath>C:/Users/Tobi/Documents/UnityProjects/ThermalSimulationTest/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup></ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
