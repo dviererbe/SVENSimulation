@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Abstractions
+namespace Assets.Scripts.Simulation.Abstractions
 {
     public interface IThermalManager
     {

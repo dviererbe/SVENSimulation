@@ -1,7 +1,8 @@
 ﻿using Assets.Scripts;
-using Assets.Scripts.Abstractions;
+using Assets.Scripts.Simulation.Abstractions;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts.Simulation;
 using UnityEngine;
 
 public class Temperature : MonoBehaviour
