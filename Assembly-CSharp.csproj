@@ -63,14 +63,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Abstractions\IThermalManager.cs" />
-    <Compile Include="Assets\Scripts\Abstractions\IThermalObject.cs" />
     <Compile Include="Assets\Scripts\AirCreator.cs" />
-    <Compile Include="Assets\Scripts\DependencyManager.cs" />
     <Compile Include="Assets\Scripts\ServerConnection.cs" />
+    <Compile Include="Assets\Scripts\Simulation\Abstractions\IThermalManager.cs" />
+    <Compile Include="Assets\Scripts\Simulation\Abstractions\IThermalObject.cs" />
+    <Compile Include="Assets\Scripts\Simulation\DependencyManager.cs" />
+    <Compile Include="Assets\Scripts\Simulation\ThermalManager.cs" />
     <Compile Include="Assets\Scripts\Temperature.cs" />
-    <Compile Include="Assets\Scripts\Test_Server.cs" />
-    <Compile Include="Assets\Scripts\ThermalManager.cs" />
     <Compile Include="Assets\Scripts\WallCreator.cs" />
     <Compile Include="Assets\Scripts\WallDetails.cs" />
     <Compile Include="Assets\Scripts\WrappingThingy.cs" />
