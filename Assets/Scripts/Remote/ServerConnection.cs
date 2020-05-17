@@ -5,194 +5,236 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Scripts.Remote.Abstractions;
 using UnityEngine;
 
 namespace Assets.Scripts.Remote
 {
-    public class ServerConnection
+    public static partial class ServerConnectionFactory
     {
-        //needed for test at home
-        private String user = "tsuksdl";   //Usrename für die Anmeldung
-        private String password = "A00Schottisch!"; //Password for the usere on the FHEM server
-        private bool authentifiction = true;    //server requiers an authemntifikation
-
-        private String csrfToken = null;    //token für die Authentifikation
-        private String serverip = "192.168.1.102:8083";   //IP des FHEMservers
-
-        public ServerConnection()
+        private class ServerConnection : IServerConnection
         {
-            getcsrfToken();
-        }
+            private static readonly char[] ResponseStringSeparators = new char[] { '<', '>', ' ', '"' };
 
-        public Boolean setData(String device, String value)
-        {
-            if (csrfToken.Equals(null))
+            /*
+             * Credentials are used for Test-Environment at Fitz's Home
+             *
+             * TODO: move credentials to dynamically loaded Source like environment variables.
+             */
+
+            /// <summary>
+            /// Username used for login at the FHEM-server.
+            /// </summary>
+            private string _username;
+
+            /// <summary>
+            /// Password used for login at the FHEM-server.
+            /// </summary>
+            private string _password;
+
+            /// <summary>
+            /// <see langword="true"/> if the Server requires authentication; otherwise <see langword="false"/>.
+            /// </summary>
+            private bool _requiersAuthentifiction;
+
+            /// <summary>
+            /// Cross-site request forgery token.
+            /// </summary>
+            /// <remarks>
+            /// Used to prevent server-side cross-site scripting (XSS) attacks.
+            /// </remarks>
+            private string _csrfToken = null;
+
+            /// <summary>
+            /// IP address of the FHEM server.
+            /// </summary>
+            private string _serverAddress;
+
+            public ServerConnection(
+                string username,
+                string password,
+                string serverAddress,
+                bool requiresAuthentication)
             {
-                if (!getcsrfToken())
+                _username = username;
+                _password = password;
+                _serverAddress = serverAddress;
+                _requiersAuthentifiction = requiresAuthentication;
+
+                _csrfToken = GetCsrfToken();
+            }
+
+            private string GetCsrfToken()
+            {
+                string csrfToken = null;
+
+                //BUG: Possible Injection-Attack
+                Uri uri = new Uri($"http://{_serverAddress}/fhem");
+
+                Debug.Log(uri.OriginalString);
+
+                WebRequest request = WebRequest.CreateHttp(uri);
+
+                if (_requiersAuthentifiction)
                 {
-                    return false;
+                    //Anmeldung bei dem Server
+                    NetworkCredential myNetworkCredential = new NetworkCredential(_username, _password);
+
+                    CredentialCache myCredentialCache = new CredentialCache();
+                    myCredentialCache.Add(uri, "Basic", myNetworkCredential);
+
+                    request.PreAuthenticate = true;
+                    request.Credentials = myCredentialCache;
                 }
-            }
-
-            String url = "http://" + serverip + "/fhem?cmd=set%20" + device + "%20" + value +
-                 "&fwcsrf=" + csrfToken +
-                 "&XHR=1";
-            Debug.Log(url);
-            Uri uri = new Uri(url);
-
-            WebRequest request = WebRequest.CreateHttp(uri);
-
-            if (authentifiction)
-            {
-                //Anmeldung bei dem Server
-                NetworkCredential myNetworkCredential = new NetworkCredential(user, password);
-
-                CredentialCache myCredentialCache = new CredentialCache();
-                myCredentialCache.Add(uri, "Basic", myNetworkCredential);
-
-                request.PreAuthenticate = true;
-                request.Credentials = myCredentialCache;
-            }
-            else
-            {
-                request.Credentials = CredentialCache.DefaultCredentials;
-            }
-
-            try
-            {
-                WebResponse response = request.GetResponse();
-                if (!((HttpWebResponse)response).StatusDescription.Equals("OK"))
+                else
                 {
-                    return false;
+                    request.Credentials = CredentialCache.DefaultCredentials;
                 }
-                response.Close();
-            }
-            catch (WebException e)
-            {
-                Debug.Log(e.ToString());
-                csrfToken = null;
-                return false;
-            }
 
-            return true;
-        }
-
-        public String getData(String device, String attribut)
-        {
-            if (csrfToken.Equals(null))
-            {
-                if (!getcsrfToken())
+                try
                 {
-                    return null;
-                }
-            }
-            String value = null;
-            String url = "http://" + serverip + "/fhem?cmd=get%20" + device + "%20" + attribut +
-                 "&fwcsrf=" + csrfToken +
-                 "&XHR=1";
-            Debug.Log(url);
-            Uri uri = new Uri(url);
+                    WebResponse response = request.GetResponse();
 
-            WebRequest request = WebRequest.CreateHttp(uri);
-
-            if (authentifiction)
-            {
-                //Anmeldung bei dem Server
-                NetworkCredential myNetworkCredential = new NetworkCredential(user, password);
-
-                CredentialCache myCredentialCache = new CredentialCache();
-                myCredentialCache.Add(uri, "Basic", myNetworkCredential);
-
-                request.PreAuthenticate = true;
-                request.Credentials = myCredentialCache;
-            }
-            else
-            {
-                request.Credentials = CredentialCache.DefaultCredentials;
-            }
-
-            try
-            {
-                WebResponse response = request.GetResponse();
-                using (Stream datastream = response.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(datastream);
-                    value = reader.ReadToEnd();
-                    reader.Close();
-                    datastream.Close();
-                }
-                response.Close();
-            }
-            catch (WebException e)
-            {
-                Debug.Log(e.ToString());
-                csrfToken = null;
-                return null;
-            }
-
-            return value;
-        }
-
-        private bool getcsrfToken()
-        {
-            String url = "http://" + serverip + "/fhem";
-            Debug.Log(url);
-            Uri uri = new Uri(url);
-
-            WebRequest request = WebRequest.CreateHttp(uri);
-
-            if (authentifiction)
-            {
-                //Anmeldung bei dem Server
-                NetworkCredential myNetworkCredential = new NetworkCredential(user, password);
-
-                CredentialCache myCredentialCache = new CredentialCache();
-                myCredentialCache.Add(uri, "Basic", myNetworkCredential);
-
-                request.PreAuthenticate = true;
-                request.Credentials = myCredentialCache;
-            }
-            else
-            {
-                request.Credentials = CredentialCache.DefaultCredentials;
-            }
-
-            try
-            {
-                WebResponse response = request.GetResponse();
-
-                using (Stream datastream = response.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(datastream);
-                    while (!reader.EndOfStream)
+                    using (Stream responseStream = response.GetResponseStream())
                     {
-                        String responsFromServer = reader.ReadLine();
-                        String[] tags = responsFromServer.Split(new char[] { '<', '>', ' ', '"' });
-                        for (int i = 0; i < tags.Length; i++)
+                        StreamReader reader = new StreamReader(responseStream);
+
+                        while (!reader.EndOfStream)
                         {
-                            if (tags[i].Equals("fwcsrf"))
+                            string responseString = reader.ReadLine();
+                            string[] tags = responseString.Split(ResponseStringSeparators);
+
+                            for (int i = 0; i < tags.Length; i++)
                             {
-                                csrfToken = tags[i + 3];
-                                goto Found;
+                                if (tags[i].Equals("fwcsrf"))
+                                {
+                                    csrfToken = tags[i + 3];
+                                    goto Found;
+                                }
+                            }
+                        }
+
+                    Found:
+                        reader.Close();
+                        responseStream.Close();
+                    }
+
+                    response.Close();
+                }
+                catch (WebException webException)
+                {
+                    Debug.LogWarning(webException);
+
+                    throw new Exception("Failed to retrieve the CSRF-Token.", webException);
+                }
+
+                Debug.Log(csrfToken);
+
+                return csrfToken ?? throw new Exception("CSRF-Token not found in server response.");
+            }
+
+            public void SetData(string device, string value)
+            {
+                if (_csrfToken == null)
+                {
+                    _csrfToken = GetCsrfToken();
+                }
+
+                //BUG: Possible Injection-Attack
+                Uri uri = new Uri($"http://{_serverAddress}/fhem?cmd=set%20{device}%20{value}&fwcsrf={_csrfToken}&XHR=1");
+
+                Debug.Log(uri.OriginalString);
+
+                WebRequest request = WebRequest.CreateHttp(uri);
+
+                if (_requiersAuthentifiction)
+                {
+                    //Anmeldung bei dem Server
+                    NetworkCredential myNetworkCredential = new NetworkCredential(_username, _password);
+
+                    CredentialCache myCredentialCache = new CredentialCache();
+                    myCredentialCache.Add(uri, "Basic", myNetworkCredential);
+
+                    request.PreAuthenticate = true;
+                    request.Credentials = myCredentialCache;
+                }
+                else
+                {
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                }
+
+                try
+                {
+                    using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                    {
+                        if (response.StatusCode.IsSuccess())
+                        {
+                            throw new Exception("Request was not successful.");
+                        }
+                    }
+                }
+                catch (WebException webException)
+                {
+                    Debug.Log(webException);
+
+                    _csrfToken = null;
+
+                    throw new Exception("Error occured while requesting to set data.", webException);
+                }
+            }
+
+            public string GetData(string device, string attribute)
+            {
+                if (_csrfToken == null)
+                {
+                    _csrfToken = GetCsrfToken();
+                }
+
+                //BUG: Possible Injection-Attack
+                Uri uri = new Uri($"http://{_serverAddress}/fhem?cmd=get%20{device}%20{attribute}&fwcsrf={_csrfToken}&XHR=1");
+
+                Debug.Log(uri.OriginalString);
+
+                WebRequest request = WebRequest.CreateHttp(uri);
+
+                if (_requiersAuthentifiction)
+                {
+                    //Anmeldung bei dem Server
+                    NetworkCredential myNetworkCredential = new NetworkCredential(_username, _password);
+
+                    CredentialCache myCredentialCache = new CredentialCache();
+                    myCredentialCache.Add(uri, "Basic", myNetworkCredential);
+
+                    request.PreAuthenticate = true;
+                    request.Credentials = myCredentialCache;
+                }
+                else
+                {
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                }
+
+                try
+                {
+                    using (WebResponse response = request.GetResponse())
+                    {
+                        using (Stream responseStream = response.GetResponseStream())
+                        {
+                            using (StreamReader reader = new StreamReader(responseStream))
+                            {
+                                return reader.ReadToEnd();
                             }
                         }
                     }
-                Found:
-                    reader.Close();
-                    datastream.Close();
                 }
+                catch (WebException webException)
+                {
+                    Debug.Log(webException);
 
-                response.Close();
-            }
-            catch (WebException e)
-            {
-                Debug.LogWarning(e);
+                    _csrfToken = null;
 
-                csrfToken = null;
-                return false;
+                    throw new Exception("Error occured while requesting data.", webException);
+                }
             }
-            Debug.Log(csrfToken);
-            return true;
         }
     }
 }

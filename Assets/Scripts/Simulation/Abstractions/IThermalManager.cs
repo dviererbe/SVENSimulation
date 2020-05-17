@@ -9,11 +9,23 @@ namespace Assets.Scripts.Simulation.Abstractions
 {
     public interface IThermalManager
     {
+        Vector3 Size { get; }
+
+        Vector3 Position { get; }
+
         float ThermalPixelSize { get; set; }
 
-        void AddSimulatedThermalArea(Vector3 position, Vector3 size, float initialTemperature = 22f);
+        /// <summary>
+        /// called on the frame when a script is enabled just before any of the Update methods are called the first time
+        /// <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Start.html">MonoBehaviour.Start</see>
+        /// </summary>
+        void Start();
 
-        void RegisterThermalObject(IThermalObject thermalObject);
+        /// <summary>
+        /// called every frame, if the MonoBehaviour is enabled
+        /// <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html">MonoBehaviour.Update</see>
+        /// </summary>
+        void Update();
 
         /// <summary>
         /// Gets the temperature at a certain point in space.
@@ -27,18 +39,6 @@ namespace Assets.Scripts.Simulation.Abstractions
         /// <returns>
         ///
         /// </returns>
-        float GetTemperature(Vector3 position, TemperatureUnit temperatureUnit);
-
-        /// <summary>
-        /// called on the frame when a script is enabled just before any of the Update methods are called the first time
-        /// <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Start.html">MonoBehaviour.Start</see>
-        /// </summary>
-        void Start();
-
-        /// <summary>
-        /// called every frame, if the MonoBehaviour is enabled
-        /// <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html">MonoBehaviour.Update</see>
-        /// </summary>
-        void Update();
+        Temperature GetTemperature(Vector3 position, TemperatureUnit temperatureUnit = TemperatureUnit.Kelvin);
     }
 }

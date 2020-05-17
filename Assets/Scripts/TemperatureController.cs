@@ -5,21 +5,13 @@ using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
 
-public class Temperature : MonoBehaviour
+public class TemperatureController : MonoBehaviour
 {
-    private IThermalManager _thermalManager;
-
-    public Vector2 pos;
+    public Vector2 position;
     public float temperature = 0f;
 
     // Start is called before the first frame update
     void Start()
-    {
-        _thermalManager = GameObject.Find("DependencyManager").GetComponent<DependencyManager>().ThermalManager;
-    }
-
-    // Update is called once per frame
-    void Update()
     {
     }
 }

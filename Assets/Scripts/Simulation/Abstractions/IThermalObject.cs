@@ -39,6 +39,6 @@ namespace Assets.Scripts.Simulation.Abstractions
         /// <summary>
         /// Gets the temperature of the thermal object.
         /// </summary>
-        float Temperature { get; set; }
+        TemperatureUnit Temperature { get; set; }
     }
 }
