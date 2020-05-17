@@ -10,6 +10,7 @@ public class Temperature : MonoBehaviour
     private IThermalManager _thermalManager;
 
     public Vector2 pos;
+    public float temperature = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +21,5 @@ public class Temperature : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetComponent<SpriteRenderer>().color = new Color(_thermalManager.GetTemperature(pos, TemperatureUnit.Kelvin) / 1024, 0, 0);
     }
 }

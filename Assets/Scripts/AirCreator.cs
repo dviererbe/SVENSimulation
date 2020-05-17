@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Assets.Scripts;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class AirCreator : MonoBehaviour
 {
     public GameObject[,] airArr;
     public GameObject airObj;
-    Queue<WrappingThingy> temperatureQueue;
+    private IThermalManager thermalManager;
     private float passedTime = 0;
     private float waitTimer = 0.5f;
     // Start is called before the first frame update
@@ -40,17 +41,7 @@ public class AirCreator : MonoBehaviour
             }
         }
 
-
-        /*
-        Debug.Log(airArr[0, 0].GetComponent<Temperature>()._Temperature);
-        Debug.Log(airArr[1, 1].GetComponent<Temperature>()._Temperature);
-        airArr[1, 1].GetComponent<Temperature>()._Temperature += 40;
-        Debug.Log(airArr[1, 1].GetComponent<Temperature>()._Temperature);
-        */
-
-        temperatureQueue = new Queue<WrappingThingy>();
-
-        IThermalManager thermalManager = GameObject.Find("DependencyManager").GetComponent<DependencyManager>().ThermalManager;
+        thermalManager = GameObject.Find("DependencyManager").GetComponent<DependencyManager>().ThermalManager;
         thermalManager.ThermalPixelSize = 1;
         thermalManager.AddSimulatedThermalArea(new Vector3(1, 1, 0), new Vector3(WallDetails.width - 1, WallDetails.height - 1));
 
@@ -59,62 +50,33 @@ public class AirCreator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //passedTime += Time.deltaTime;
-        //if (passedTime > waitTimer){
-        //    passedTime -= waitTimer;
-        //    CalcTemp();
-        //}
-    }
-    /*
-    void CalcTemp() 
-    {
-        float mult = 0.1f;
-        temperatureQueue.Enqueue(new WrappingThingy(airArr[0, 0].GetComponent<Temperature>(), 0, 0));
-        while (temperatureQueue.Count > 0)
+        float highestTemp = SetTemperaturesAndGetHigehst();
+        Color color;
+        for(int i = 0; i < airArr.GetLength(0); i++)
         {
-            WrappingThingy mainWrappingTile = temperatureQueue.Dequeue();
-            if (mainWrappingTile.i + 1 == WallDetails.height || mainWrappingTile.j + 1 == WallDetails.width)
-                continue;
-            
-            if (mainWrappingTile.i > mainWrappingTile.j)
+            for(int j = 0; j < airArr.GetLength(0); j++)
             {
-                //Bottom thingy
-                Temperature bottomTile = airArr[mainWrappingTile.i + 1, mainWrappingTile.j].GetComponent<Temperature>();
-                float diff = mainWrappingTile.temp._Temperature - bottomTile._Temperature;
-                mainWrappingTile.temp._Temperature += -(diff * mult)/3;
-                bottomTile._Temperature += (diff * mult)/3;
-                temperatureQueue.Enqueue(new WrappingThingy(bottomTile, mainWrappingTile.i + 1, mainWrappingTile.j));
-            }
-            else if (mainWrappingTile.i < mainWrappingTile.j)
-            {
-                //Right thingy
-                Temperature rightTile = airArr[mainWrappingTile.i, mainWrappingTile.j + 1].GetComponent<Temperature>();
-                float diff = mainWrappingTile.temp._Temperature - rightTile._Temperature;
-                mainWrappingTile.temp._Temperature += -(diff * mult)/3;
-                rightTile._Temperature += (diff * mult)/3;
-                temperatureQueue.Enqueue(new WrappingThingy(rightTile, mainWrappingTile.i, mainWrappingTile.j + 1));
-            }
-            else
-            {
-                // We have a corner piece! :)
-                Temperature bottomTile = airArr[mainWrappingTile.i + 1, mainWrappingTile.j].GetComponent<Temperature>();
-                Temperature rightTile = airArr[mainWrappingTile.i, mainWrappingTile.j + 1].GetComponent<Temperature>();
-                Temperature cornerTile = airArr[mainWrappingTile.i + 1, mainWrappingTile.j + 1].GetComponent<Temperature>();
-
-                float avgTemp = bottomTile._Temperature + rightTile._Temperature + cornerTile._Temperature;
-                avgTemp /= 3;
-                float diff = mainWrappingTile.temp._Temperature - avgTemp;
-                bottomTile._Temperature += (diff * mult) / 3;
-                rightTile._Temperature += (diff * mult) / 3;
-                cornerTile._Temperature += (diff * mult) / 3;
-                Debug.Log(diff+ "    " + (diff*mult));
-                // Ich weiß, dass die Rechnung Garbo ist :D
-                mainWrappingTile.temp._Temperature += -(diff * mult);
-                temperatureQueue.Enqueue(new WrappingThingy(bottomTile, mainWrappingTile.i + 1, mainWrappingTile.j));
-                temperatureQueue.Enqueue(new WrappingThingy(rightTile, mainWrappingTile.i, mainWrappingTile.j + 1));
-                temperatureQueue.Enqueue(new WrappingThingy(cornerTile, mainWrappingTile.i + 1, mainWrappingTile.j + 1));
+                color = new Color(airArr[i, j].GetComponent<Temperature>().temperature / highestTemp, 0, 0);
+                airArr[i, j].GetComponent<SpriteRenderer>().color = color;
             }
         }
     }
-    */
-}
+ 
+    float SetTemperaturesAndGetHigehst()
+    {
+        float highestTemp = float.MinValue;
+        for(int i = 0; i < airArr.GetLength(0); i++)
+        {
+            for(int j = 0; j < airArr.GetLength(0); j++)
+            {
+                float temp = thermalManager.GetTemperature(new Vector3(i, j), TemperatureUnit.Celsius);
+                airArr[i, j].GetComponent<Temperature>().temperature = temp;
+                if (highestTemp < temp)
+                    highestTemp = temp;
+
+            }
+        }
+        return highestTemp;
+    }
+
+ }
