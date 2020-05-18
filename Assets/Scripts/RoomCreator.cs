@@ -219,24 +219,41 @@ public class RoomCreator : MonoBehaviour
 
         #region Air Creator
 
-        float highestTemp = SetTemperaturesAndGetHigehst();
+        SetTemperatureColors();
+
+        #endregion
+    }
+
+
+    /// <summary>
+    /// Diff = HighestTemp-LowestTemp
+    /// Formula creates a transformation from [0, Diff] -> [0, 1.0f]. Thus, we have rough transitions between each air-pixel.
+    /// </summary>
+    void SetTemperatureColors()
+    {
+        float[] highestAndLowestTemp = SetTemperaturesAndGetHigehstAndLowest();
+        float highestTemp = highestAndLowestTemp[0];
+        float lowestTemp = highestAndLowestTemp[1];
         Color color;
 
         for (int i = 0; i < _airObjects.GetLength(0); i++)
         {
             for (int j = 0; j < _airObjects.GetLength(0); j++)
             {
-                color = new Color(_airObjects[i, j].GetComponent<AirTemperatureController>().temperature / highestTemp, 0, 0);
+                color = new Color((_airObjects[i, j].GetComponent<AirTemperatureController>().temperature - lowestTemp) / (highestTemp - lowestTemp), 0, 0);
                 _airObjects[i, j].GetComponent<SpriteRenderer>().color = color;
             }
         }
-
-        #endregion
     }
 
-    float SetTemperaturesAndGetHigehst()
+    /// <summary>
+    /// Setting the Temperature and Getting the highest value was combined to avoid another n^2-iteration
+    /// </summary>
+    /// <returns>{highestTemp, lowestTemp}</returns>
+    float[] SetTemperaturesAndGetHigehstAndLowest()
     {
         float highestTemp = float.MinValue;
+        float lowestTemp = float.MaxValue;
 
         for (int i = 0; i < _airObjects.GetLength(0); i++)
         {
@@ -250,9 +267,11 @@ public class RoomCreator : MonoBehaviour
                 {
                     highestTemp = temperature;
                 }
+                else if (temperature < lowestTemp)
+                    lowestTemp = temperature;
             }
         }
 
-        return highestTemp;
+        return new float[] { highestTemp, lowestTemp };
     }
 }
