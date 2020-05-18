@@ -196,7 +196,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
@@ -239,8 +239,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50511d0b285a503469a9b381ab6dff08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MovementSpeed: 10
-  Drag: 0.2
+  MovementSpeed: 0.1
+  CameraZoomSpeed: 10
 --- !u!1 &801540346
 GameObject:
   m_ObjectHideFlags: 0
