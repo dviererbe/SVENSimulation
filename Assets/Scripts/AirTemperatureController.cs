@@ -5,7 +5,7 @@ using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
 
-public class TemperatureController : MonoBehaviour
+public class AirTemperatureController : MonoBehaviour
 {
     public Vector2 position;
     public float temperature = 0f;

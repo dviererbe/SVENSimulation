@@ -164,7 +164,7 @@ public class RoomCreator : MonoBehaviour
                                 i * WallThickness + m * WallSize,
                                 j * WallThickness + n * WallSize, 0),
                             AirPrefab.transform.rotation);
-                        _airObjects[(i - 1) * WallsPerGrid + m, (j - 1) * WallsPerGrid + n].GetComponent<TemperatureController>().position = new Vector2((i - 1) * WallsPerGrid + m, (j - 1) * WallsPerGrid + n);
+                        _airObjects[(i - 1) * WallsPerGrid + m, (j - 1) * WallsPerGrid + n].GetComponent<AirTemperatureController>().position = new Vector2((i - 1) * WallsPerGrid + m, (j - 1) * WallsPerGrid + n);
                     }
                 }
             }
@@ -226,7 +226,7 @@ public class RoomCreator : MonoBehaviour
         {
             for (int j = 0; j < _airObjects.GetLength(0); j++)
             {
-                color = new Color(_airObjects[i, j].GetComponent<TemperatureController>().temperature / highestTemp, 0, 0);
+                color = new Color(_airObjects[i, j].GetComponent<AirTemperatureController>().temperature / highestTemp, 0, 0);
                 _airObjects[i, j].GetComponent<SpriteRenderer>().color = color;
             }
         }
@@ -244,7 +244,7 @@ public class RoomCreator : MonoBehaviour
             {
                 float temperature = _thermalManager.GetTemperature(new Vector3(i, j), TemperatureUnit.Celsius);
 
-                _airObjects[i, j].GetComponent<TemperatureController>().temperature = temperature;
+                _airObjects[i, j].GetComponent<AirTemperatureController>().temperature = temperature;
 
                 if (highestTemp < temperature)
                 {
