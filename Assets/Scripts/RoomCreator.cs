@@ -264,7 +264,7 @@ public class RoomCreator : MonoBehaviour
         {
             for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
-                float temperature = _thermalManager.GetTemperature(new Vector3(i, j)).ToCelsius().Value;
+                float temperature = _thermalManager.GetTemperature(new Vector3(x, y)).ToCelsius().Value;
 
                 _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature = temperature;
 
