@@ -9,9 +9,9 @@ namespace Assets.Scripts.Simulation.Abstractions
 {
     public interface IThermalManager
     {
-        Vector3 Size { get; }
+        Vector3 RoomSize { get; }
 
-        Vector3 Position { get; }
+        Vector3 RoomPosition { get; }
 
         float ThermalPixelSize { get; set; }
 
@@ -39,6 +39,6 @@ namespace Assets.Scripts.Simulation.Abstractions
         /// <returns>
         ///
         /// </returns>
-        Temperature GetTemperature(Vector3 position, TemperatureUnit temperatureUnit = TemperatureUnit.Kelvin);
+        Temperature GetTemperature(Vector3 position);
     }
 }

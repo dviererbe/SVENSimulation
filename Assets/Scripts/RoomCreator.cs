@@ -164,7 +164,7 @@ public class RoomCreator : MonoBehaviour
                                 i * WallThickness + m * WallSize,
                                 j * WallThickness + n * WallSize, 0),
                             AirPrefab.transform.rotation);
-                        _airObjects[(i - 1) * WallsPerGrid + m, (j - 1) * WallsPerGrid + n].GetComponent<AirTemperatureController>().position = new Vector2((i - 1) * WallsPerGrid + m, (j - 1) * WallsPerGrid + n);
+                        _airObjects[(i - 1) * WallsPerGrid + m, (j - 1) * WallsPerGrid + n].GetComponent<AirTemperatureController>().Position = new Vector2((i - 1) * WallsPerGrid + m, (j - 1) * WallsPerGrid + n);
                     }
                 }
             }
@@ -224,54 +224,59 @@ public class RoomCreator : MonoBehaviour
         #endregion
     }
 
-
     /// <summary>
-    /// Diff = HighestTemp-LowestTemp
-    /// Formula creates a transformation from [0, Diff] -> [0, 1.0f]. Thus, we have rough transitions between each air-pixel.
+    /// Sets the color of all air game-objects relative to the temperature of a air game-object
+    /// to the lowest and highest temperature of all air game-objects.
     /// </summary>
-    void SetTemperatureColors()
+    private void SetTemperatureColors()
     {
-        float[] highestAndLowestTemp = SetTemperaturesAndGetHigehstAndLowest();
-        float highestTemp = highestAndLowestTemp[0];
-        float lowestTemp = highestAndLowestTemp[1];
-        Color color;
+        SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature);
 
-        for (int i = 0; i < _airObjects.GetLength(0); i++)
+        for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
-            for (int j = 0; j < _airObjects.GetLength(0); j++)
+            for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
-                color = new Color((_airObjects[i, j].GetComponent<AirTemperatureController>().temperature - lowestTemp) / (highestTemp - lowestTemp), 0, 0);
-                _airObjects[i, j].GetComponent<SpriteRenderer>().color = color;
+                _airObjects[x, y].GetComponent<AirTemperatureController>().SetColor(highestTemperature, lowestTemperature);
             }
         }
     }
 
     /// <summary>
-    /// Setting the Temperature and Getting the highest value was combined to avoid another n^2-iteration
+    /// Sets the temperature of the air game-objects and returns the highest and lowest temperature assigned to an air game-object.
     /// </summary>
-    /// <returns>{highestTemp, lowestTemp}</returns>
-    float[] SetTemperaturesAndGetHigehstAndLowest()
+    /// <remarks>
+    /// Getting and setting was was combined to avoid another n^2-iterations.
+    /// </remarks>
+    /// <param name="highestTemperature">
+    /// When this method returns, contains single-precision floating-point number equivalent to
+    /// the numeric value of the highest temperature displayed in the currently rendered frame.
+    /// </param>
+    /// <param name="lowestTemperature">
+    ///When this method returns, contains single-precision floating-point number equivalent to
+    /// the numeric value of the lowest temperature displayed in the currently rendered frame.
+    /// </param>
+    private void SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature)
     {
-        float highestTemp = float.MinValue;
-        float lowestTemp = float.MaxValue;
+        highestTemperature = float.MinValue;
+        lowestTemperature = float.MaxValue;
 
-        for (int i = 0; i < _airObjects.GetLength(0); i++)
+        for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
-            for (int j = 0; j < _airObjects.GetLength(0); j++)
+            for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
-                float temperature = _thermalManager.GetTemperature(new Vector3(i, j), TemperatureUnit.Celsius);
+                float temperature = _thermalManager.GetTemperature(new Vector3(i, j)).ToCelsius().Value;
 
-                _airObjects[i, j].GetComponent<AirTemperatureController>().temperature = temperature;
+                _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature = temperature;
 
-                if (highestTemp < temperature)
+                if (highestTemperature < temperature)
                 {
-                    highestTemp = temperature;
+                    highestTemperature = temperature;
                 }
-                else if (temperature < lowestTemp)
-                    lowestTemp = temperature;
+                else if (temperature < lowestTemperature)
+                {
+                    lowestTemperature = temperature;
+                }
             }
         }
-
-        return new float[] { highestTemp, lowestTemp };
     }
 }

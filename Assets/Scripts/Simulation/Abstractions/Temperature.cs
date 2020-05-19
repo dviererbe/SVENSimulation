@@ -257,6 +257,16 @@ namespace Assets.Scripts.Simulation.Abstractions
             return new Temperature(resultingValue, a.Unit);
         }
 
+        public static Temperature FromKelvin(float temperatureValue)
+        {
+            return new Temperature(temperatureValue, TemperatureUnit.Kelvin);
+        }
+
+        public static Temperature FromCelsius(float temperatureValue)
+        {
+            return new Temperature(temperatureValue, TemperatureUnit.Celsius);
+        }
+
         public static implicit operator float(Temperature temperature)
         {
             return temperature.Value;
