@@ -180,7 +180,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.66723037, g: 0.7341661, b: 0.9622642, a: 0.1764706}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -277,6 +277,8 @@ MonoBehaviour:
   _airPrefab: {fileID: 8201179130157193194, guid: 2b20a50232746684f81b7c14b39e62f2,
     type: 3}
   _wallPrefab: {fileID: 3992362746702860332, guid: b485b5ea6391e4043bc7961dab05c475,
+    type: 3}
+  _userPrefab: {fileID: 1261460215162830383, guid: 738dfff0a5f19f84f958807fdac85eaf,
     type: 3}
   _initialTemperature: 22
   _initialThermalPixelSize: 1

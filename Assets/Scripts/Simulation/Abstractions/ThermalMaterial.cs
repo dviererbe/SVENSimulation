@@ -64,6 +64,9 @@ namespace Assets.Scripts.Simulation.Abstractions
 
             public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial)
             {
+                if (otherThermalMaterial == Air)
+                    return 8.1f;
+
                 throw new NotImplementedException();
             }
         }

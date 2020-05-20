@@ -52,7 +52,7 @@ namespace Assets.Scripts.Simulation
             throw new NotImplementedException();
         }
 
-        public IThermalManager Build()
+        public IRoomThermalManager Build()
         {
             if (!_size.HasValue)
                 throw new InvalidOperationException($"No value for the property {nameof(Size)} was set previously.");
@@ -60,7 +60,7 @@ namespace Assets.Scripts.Simulation
             if (!_position.HasValue)
                 throw new InvalidOperationException($"No value for the property {nameof(Position)} was set previously.");
 
-            return new RoomThermalManager(_size.Value, _position.Value, ThermalPixelSize, InitialTemperature);
+            return new RoomRoomThermalManager(_size.Value, _position.Value, ThermalPixelSize, InitialTemperature);
         }
     }
 }

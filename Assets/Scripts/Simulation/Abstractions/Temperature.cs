@@ -276,5 +276,18 @@ namespace Assets.Scripts.Simulation.Abstractions
         {
             return temperature.Unit;
         }
+
+        public override string ToString()
+        {
+            switch (Unit)
+            {
+                case TemperatureUnit.Kelvin:
+                    return $"{Value} K";
+                case TemperatureUnit.Celsius:
+                    return $"{Value} °C";
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
 }

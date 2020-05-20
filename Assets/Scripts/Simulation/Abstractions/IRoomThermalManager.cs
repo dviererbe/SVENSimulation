@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Simulation.Abstractions
 {
-    public interface IThermalManager
+    public interface IRoomThermalManager
     {
         Vector3 RoomSize { get; }
 
