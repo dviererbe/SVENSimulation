@@ -167,6 +167,7 @@ public class RoomCreator : MonoBehaviour
                 {
                     for (int n = 0; n < WallsPerGrid; n++)
                     {
+                        //Position im Grid für die Temperatur berechnung
                         Vector2Int position = new Vector2Int(
                             x: (i - 1) * WallsPerGrid + m,
                             y: (j - 1) * WallsPerGrid + n);
@@ -174,8 +175,8 @@ public class RoomCreator : MonoBehaviour
                         GameObject airObject = Instantiate(
                                 AirPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: i * WallThickness + m * WallSize,
-                                    y: j * WallThickness + n * WallSize),
+                                    x: (i - 0.5f) * WallThickness + (m + 0.5f) * WallSize,
+                                    y: (j - 0.5f) * WallThickness + (n + 0.5f) * WallSize),
                                 rotation: AirPrefab.transform.rotation);
 
                         airObject.transform.parent = gameObject.transform;
@@ -204,7 +205,7 @@ public class RoomCreator : MonoBehaviour
                     (j == 0 || j == RoomWidth - 1))
                 {
                     _wallObjects[i, j] = new GameObject[WallsPerGrid, WallsPerGrid];
-
+                    /*
                     for (int m = 0; m < WallsPerGrid; m++)
                     {
                         for (int n = 0; n < WallsPerGrid; n++)
@@ -221,6 +222,26 @@ public class RoomCreator : MonoBehaviour
                             _wallObjects[i, j][m, n] = wallObject;
                         }
                     }
+                    */
+
+                    GameObject wallObject = Instantiate(
+                                WallPrefab, //the GameObject that will be instantiated
+                                position: new Vector3(
+                                    x: WallThickness * i,
+                                    y: WallThickness * j),
+                                rotation: WallPrefab.transform.rotation);
+
+                    wallObject.transform.parent = gameObject.transform;
+
+                    Vector3 tempscale = wallObject.transform.localScale;
+
+                    tempscale.x *= WallThickness;
+                    tempscale.y *= WallThickness;
+
+                    wallObject.transform.localScale = tempscale;
+
+                    _wallObjects[i, j][0, 0] = wallObject;
+
                 }
             }
         }

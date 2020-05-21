@@ -273,7 +273,7 @@ MonoBehaviour:
   _roomWidth: 30
   _roomHeight: 30
   _wallsPerGrid: 3
-  _wallThickness: 1
+  _wallThickness: 5
   _airPrefab: {fileID: 8201179130157193194, guid: 2b20a50232746684f81b7c14b39e62f2,
     type: 3}
   _wallPrefab: {fileID: 3992362746702860332, guid: b485b5ea6391e4043bc7961dab05c475,
