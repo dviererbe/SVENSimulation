@@ -133,7 +133,7 @@ namespace Assets.Scripts.Remote
                 return csrfToken ?? throw new Exception("CSRF-Token not found in server response.");
             }
 
-            public void SetData(string device, string value)
+            public void SetData(string device, string attribut, string value)
             {
                 if (_csrfToken == null)
                 {
@@ -141,7 +141,7 @@ namespace Assets.Scripts.Remote
                 }
 
                 //BUG: Possible Injection-Attack
-                Uri uri = new Uri($"http://{_serverAddress}/fhem?cmd=set%20{device}%20{value}&fwcsrf={_csrfToken}&XHR=1");
+                Uri uri = new Uri($"http://{_serverAddress}/fhem?cmd=set%20{device}%20{attribut}%20{value}&fwcsrf={_csrfToken}&XHR=1");
 
                 Debug.Log(uri.OriginalString);
 
@@ -169,6 +169,7 @@ namespace Assets.Scripts.Remote
                     {
                         if (response.StatusCode.IsSuccess())
                         {
+                            Debug.LogWarning(response.StatusCode.ToString());
                             throw new Exception("Request was not successful.");
                         }
                     }

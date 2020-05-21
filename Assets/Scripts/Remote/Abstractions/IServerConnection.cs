@@ -10,6 +10,6 @@ namespace Assets.Scripts.Remote.Abstractions
     {
         string GetData(string device, string attribute);
 
-        void SetData(string device, string value);
+        void SetData(string device, string attribut, string value);
     }
 }

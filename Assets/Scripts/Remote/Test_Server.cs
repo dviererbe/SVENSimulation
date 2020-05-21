@@ -17,12 +17,25 @@ namespace Assets.Scripts.Remote
         // Start is called before the first frame update
         void Start()
         {
+
+            Debug.Log("Tests erfolgen");
+
             IServerConnection connection = ServerConnectionFactory.CreateServerConnection(Username, Password, ServerAddress,
                     RequiresAuthentication);
 
+            Heizung heizung = new Heizung(connection, "Heizung");
+
             try
             {
-                connection.SetData("dummy_Unity", "23");
+                float start = heizung.get();
+                Debug.Log("Heizung: " + start);
+                heizung.set(30);
+                float value = heizung.get();
+                Debug.Log("Heizung: " + value);
+                heizung.set("temperatur",start);
+                value = heizung.get("temperatur");
+                Debug.Log("Heizung: " + value);
+
                 Debug.Log ("Setting Data succeeded.");
             }
             catch (Exception exception)
