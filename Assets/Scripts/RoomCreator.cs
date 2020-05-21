@@ -252,9 +252,9 @@ public class RoomCreator : MonoBehaviour
     {
         SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature);
 
-        for (int x = 0; x < _airObjects.GetLength(0); x++)
+        for (int x = 0; x < _airObjects.GetLength(x); x++)
         {
-            for (int y = 0; y < _airObjects.GetLength(1); y++)
+            for (int y = 0; y < _airObjects.GetLength(y); y++)
             {
                 _airObjects[x, y].GetComponent<AirTemperatureController>().SetColor(highestTemperature, lowestTemperature);
             }
@@ -280,9 +280,9 @@ public class RoomCreator : MonoBehaviour
         highestTemperature = float.MinValue;
         lowestTemperature = float.MaxValue;
 
-        for (int x = 0; x < _airObjects.GetLength(0); x++)
+        for (int x = 0; x < _airObjects.GetLength(x); x++)
         {
-            for (int y = 0; y < _airObjects.GetLength(1); y++)
+            for (int y = 0; y < _airObjects.GetLength(y); y++)
             {
                 float temperature = _roomThermalManager.GetTemperature(new Vector3(x, y)).ToCelsius().Value;
 
