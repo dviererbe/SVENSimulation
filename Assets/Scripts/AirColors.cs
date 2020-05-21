@@ -3,7 +3,7 @@ using UnityEditor;
 
 public class AirColors 
 {
-    public static Color32[] colorArray = {
+    public readonly static Color32[] ColorArray = {
             new Color32(65, 1, 115, 255),
             new Color32(32, 0, 159, 255),
             new Color32(2, 67, 195, 255),
