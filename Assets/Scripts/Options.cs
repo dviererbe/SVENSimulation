@@ -8,17 +8,17 @@ namespace Assets.Scripts
 {
     class Options
     {
-        private static float _roomWidth;
+        private static float _roomWidth = 30;
 
-        private static float _roomHeight;
+        private static float _roomHeight = 30;
 
-        private static float _wallThickness;
+        private static float _wallThickness = 1;
 
-        private static float _outsideTemperature;
+        private static float _outsideTemperature = 10;
 
-        private static float _initialRoomTemperature;
+        private static float _initialRoomTemperature = 20;
 
-        private static float _thermalPixelSize;
+        private static float _thermalPixelSize = 3;
 
         private static string _username;
 
@@ -28,7 +28,9 @@ namespace Assets.Scripts
 
         private static bool _requiresAuthentication;
 
-        private static int _userCount;
+        private static int _userCount = 1;
+
+        private static float _movementspeed = 5;
 
         public void setGeometry(float roomWidth, float roomHeight, float wallThickness)
         {
@@ -79,6 +81,11 @@ namespace Assets.Scripts
             _userCount = userCount;
         }
 
+        public void setMovement(float speed)
+        {
+            _movementspeed = speed;
+        }
+
         public float[] getGeometry()
         {
             return new float[]
@@ -113,6 +120,11 @@ namespace Assets.Scripts
         public float getOther ()
         {
             return _userCount;
+        }
+
+        public float getMovement()
+        {
+            return _movementspeed;
         }
     }
 }

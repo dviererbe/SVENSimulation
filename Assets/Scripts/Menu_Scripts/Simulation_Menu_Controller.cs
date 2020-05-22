@@ -11,7 +11,7 @@ using UnityEngine.UI;
 namespace Assets.Scripts
 {
     //WET says hello
-    public class StartMenuController : MonoBehaviour
+    public class Simulation_Menu_Controller: MonoBehaviour
     {
         [SerializeField]
         private Color _normalColor = Color.white;
@@ -89,7 +89,10 @@ namespace Assets.Scripts
         private Button _startSimulationButton;
 
         [SerializeField]
-        private Button _editVideoSettingsButton;
+        private GameObject _Simulation_Menu;
+
+        [SerializeField]
+        private GameObject _Main_Menu;
 
         private static float ParseFloat(string input)
         {
@@ -179,7 +182,7 @@ namespace Assets.Scripts
             _requiresAuthenticationToggle.isOn = _requiresAuthentication;
         }
 
-        public void OnClick_StartSimulation()
+        private void saveOptions()
         {
             //speichern der Optionen
             Options options = new Options();
@@ -214,13 +217,21 @@ namespace Assets.Scripts
 
                 options.setOther(user);
             }
+        }
+
+        public void OnClick_StartSimulation()
+        {
+            saveOptions();
 
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
         }
 
-        private void OnClick_EditVideoSettings()
+        public void OnBack_Click()
         {
-            throw new NotSupportedException();
+            saveOptions();
+
+            _Simulation_Menu.SetActive(false);
+            _Main_Menu.SetActive(true);
         }
     }
 }

@@ -15,13 +15,7 @@ public class RoomCreator : MonoBehaviour
     private int _roomHeight = 30;
 
     [SerializeField]
-    private int _wallsPerGrid = 3;
-
-    [SerializeField]
     private float _wallThickness = 1f;
-
-    //This is no [SerializeField] because the value is calculated automatically and depends on WallThickness and WallsPerGrid.
-    private float _wallSize = 0f;
 
     [SerializeField]
     private GameObject _airPrefab;
@@ -35,16 +29,16 @@ public class RoomCreator : MonoBehaviour
     [SerializeField]
     private float _initialTemperature = 22f;
 
+    [SerializeField]
+    private float _initialThermalPixelSize = 1f;
+
     private float _passedTime = 0;
 
     private float _waitTimer = 0.5f;
 
     private GameObject[,] _airObjects;
 
-    private GameObject[,][,] _wallObjects;
-
-    [SerializeField]
-    private float _initialThermalPixelSize = 1f;
+    private GameObject[,] _wallObjects;
 
     private IRoomThermalManager _roomThermalManager;
 
@@ -89,27 +83,10 @@ public class RoomCreator : MonoBehaviour
     /// <summary>
     /// TODO: Write me!
     /// </summary>
-    public int WallsPerGrid
-    {
-        get => _wallsPerGrid;
-        set => throw new NotImplementedException(); //TODO: Implemet me!
-    }
-
-    /// <summary>
-    /// TODO: Write me!
-    /// </summary>
     public float WallThickness
     {
         get => _wallThickness;
         set => throw new NotImplementedException(); //TODO: Implemet me!
-    }
-
-    /// <summary>
-    /// TODO: Write me!
-    /// </summary>
-    public float WallSize
-    {
-        get => _wallSize;
     }
 
     /// <summary>
@@ -123,14 +100,25 @@ public class RoomCreator : MonoBehaviour
 
     #endregion
 
-    public RoomCreator()
-    {
-        _wallSize = WallThickness / WallsPerGrid;
-    }
-
     // Start is called before the first frame update
     void Start()
     {
+        #region LoadOption
+        Options option = new Options();
+
+        float[] values = option.getGeometry();
+
+        _roomHeight = Convert.ToInt32(values[0]);
+        _roomWidth = Convert.ToInt32(values[1]);
+        _wallThickness = Convert.ToInt32(values[2]);
+
+        values = option.getThermodynamics();
+
+        _initialTemperature = values[1];
+        _initialThermalPixelSize = values[2];
+
+        #endregion
+
         #region ThermalManager
 
         RoomThermalManagerBuilder thermalManagerBuilder = new RoomThermalManagerBuilder();
@@ -156,35 +144,29 @@ public class RoomCreator : MonoBehaviour
             z: WallThickness);
 
         _airObjects = new GameObject[
-            (RoomHeight - 2) * WallsPerGrid,
-            (RoomWidth - 2) * WallsPerGrid];
+            (RoomHeight - 2) * Convert.ToInt32(_initialThermalPixelSize),
+            (RoomWidth - 2) * Convert.ToInt32(_initialThermalPixelSize)];
 
-        for (int i = 1; i < RoomHeight - 1; i++)
+        for (int i = 0; i < _airObjects.GetLength(0); i++)
         {
-            for (int j = 1; j < RoomWidth - 1; j++)
+            for (int j = 0; j < _airObjects.GetLength(1); j++)
             {
-                for (int m = 0; m < WallsPerGrid; m++)
-                {
-                    for (int n = 0; n < WallsPerGrid; n++)
-                    {
-                        //Position im Grid für die Temperatur berechnung
-                        Vector2Int position = new Vector2Int(
-                            x: (i - 1) * WallsPerGrid + m,
-                            y: (j - 1) * WallsPerGrid + n);
+                //Position im Grid für die Temperatur berechnung
+                Vector2Int position = new Vector2Int(
+                    x: i,
+                    y: j);
 
-                        GameObject airObject = Instantiate(
-                                AirPrefab, //the GameObject that will be instantiated
-                                position: new Vector3(
-                                    x: (i - 0.5f) * WallThickness + (m + 0.5f) * WallSize,
-                                    y: (j - 0.5f) * WallThickness + (n + 0.5f) * WallSize),
-                                rotation: AirPrefab.transform.rotation);
+                GameObject airObject = Instantiate(
+                        AirPrefab, //the GameObject that will be instantiated
+                        position: new Vector3(
+                            x: (i + 2f) * WallThickness * (1/_initialThermalPixelSize),
+                            y: (j + 2f) * WallThickness * (1/_initialThermalPixelSize)),
+                        rotation: AirPrefab.transform.rotation);
 
-                        airObject.transform.parent = gameObject.transform;
-                        airObject.GetComponent<AirTemperatureController>().Position = position;
-                        
-                        _airObjects[position.x, position.y] = airObject;
-                    }
-                }
+                airObject.transform.parent = gameObject.transform;
+                airObject.GetComponent<AirTemperatureController>().Position = position;
+
+                _airObjects[position.x, position.y] = airObject;
             }
         }
 
@@ -195,7 +177,7 @@ public class RoomCreator : MonoBehaviour
         float tileSizeX = transform.lossyScale.x;
         float tileSizeY = transform.localScale.y;
 
-        _wallObjects = new GameObject[RoomHeight, RoomWidth][,];
+        _wallObjects = new GameObject[RoomHeight, RoomWidth];
 
         for (int i = 0; i < RoomHeight; i++)
         {
@@ -204,26 +186,6 @@ public class RoomCreator : MonoBehaviour
                 if ((i == 0 || i == RoomHeight - 1) ||
                     (j == 0 || j == RoomWidth - 1))
                 {
-                    _wallObjects[i, j] = new GameObject[WallsPerGrid, WallsPerGrid];
-                    /*
-                    for (int m = 0; m < WallsPerGrid; m++)
-                    {
-                        for (int n = 0; n < WallsPerGrid; n++)
-                        {
-                            GameObject wallObject = Instantiate(
-                                WallPrefab, //the GameObject that will be instantiated
-                                position: new Vector3(
-                                    x: WallThickness * i + m * WallSize,
-                                    y: WallThickness * j + n * WallSize),
-                                rotation: WallPrefab.transform.rotation);
-
-                            wallObject.transform.parent = gameObject.transform;
-
-                            _wallObjects[i, j][m, n] = wallObject;
-                        }
-                    }
-                    */
-
                     GameObject wallObject = Instantiate(
                                 WallPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
@@ -240,7 +202,7 @@ public class RoomCreator : MonoBehaviour
 
                     wallObject.transform.localScale = tempscale;
 
-                    _wallObjects[i, j][0, 0] = wallObject;
+                    _wallObjects[i, j] = wallObject;
 
                 }
             }
@@ -273,9 +235,9 @@ public class RoomCreator : MonoBehaviour
     {
         SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature);
 
-        for (int x = 0; x < _airObjects.GetLength(x); x++)
+        for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
-            for (int y = 0; y < _airObjects.GetLength(y); y++)
+            for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
                 _airObjects[x, y].GetComponent<AirTemperatureController>().SetColor(highestTemperature, lowestTemperature);
             }
@@ -301,9 +263,9 @@ public class RoomCreator : MonoBehaviour
         highestTemperature = float.MinValue;
         lowestTemperature = float.MaxValue;
 
-        for (int x = 0; x < _airObjects.GetLength(x); x++)
+        for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
-            for (int y = 0; y < _airObjects.GetLength(y); y++)
+            for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
                 float temperature = _roomThermalManager.GetTemperature(new Vector3(x, y)).ToCelsius().Value;
 

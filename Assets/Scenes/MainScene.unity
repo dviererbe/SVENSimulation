@@ -132,7 +132,6 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420030}
   - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
@@ -149,27 +148,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
---- !u!50 &519420030
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -241,6 +219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MovementSpeed: 0.1
   CameraZoomSpeed: 10
+  inMenu: 0
 --- !u!1 &801540346
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,7 +251,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _roomWidth: 30
   _roomHeight: 30
-  _wallsPerGrid: 3
   _wallThickness: 1
   _airPrefab: {fileID: 8201179130157193194, guid: 2b20a50232746684f81b7c14b39e62f2,
     type: 3}
@@ -281,7 +259,7 @@ MonoBehaviour:
   _userPrefab: {fileID: 1261460215162830383, guid: 738dfff0a5f19f84f958807fdac85eaf,
     type: 3}
   _initialTemperature: 22
-  _initialThermalPixelSize: 1
+  _initialThermalPixelSize: 3
 --- !u!4 &801540349
 Transform:
   m_ObjectHideFlags: 0
@@ -312,7 +290,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1271716959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,7 +298,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1271716958}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c0abc17ff3056f4bb222a6f23083fe6, type: 3}
   m_Name: 
