@@ -27,12 +27,15 @@ namespace Assets.Scripts.Remote
 
             try
             {
+                //Heizung sollt auf 0 sein (wenn richtig eingestellt)
                 float start = heizung.get();
                 Debug.Log("Heizung: " + start);
+
                 heizung.set(30);
                 float value = heizung.get();
                 Debug.Log("Heizung: " + value);
-                heizung.set("temperatur",start);
+
+                heizung.set("temperatur", start);
                 value = heizung.get("temperatur");
                 Debug.Log("Heizung: " + value);
 
@@ -44,16 +47,13 @@ namespace Assets.Scripts.Remote
                 Debug.LogError(exception);
             }
 
-            try
+            Options options = new Options();
+
+            foreach(String fhem in options.getFHEM())
             {
-                Debug.Log(connection.GetData("anyViews", "icon%20on"));
-                Debug.Log("Getting Data succeeded.");
+                Debug.Log("Load: " + fhem);
             }
-            catch (Exception exception)
-            {
-                Debug.LogError("Getting Data failed.");
-                Debug.LogError(exception);
-            }
+
         }
     }
 }

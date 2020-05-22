@@ -179,8 +179,42 @@ namespace Assets.Scripts
             _requiresAuthenticationToggle.isOn = _requiresAuthentication;
         }
 
-        private void OnClick_StartSimulation()
+        public void OnClick_StartSimulation()
         {
+            //speichern der Optionen
+            Options options = new Options();
+
+            {
+                float width = float.Parse(_roomWidthInputField.GetComponent<InputField>().text);
+                float heigth = float.Parse(_roomHeightInputField.GetComponent<InputField>().text);
+                float wall = float.Parse(_wallThicknessInputField.GetComponent<InputField>().text);
+
+                options.setGeometry(width, heigth, wall);
+            }
+
+            {
+                float outside = float.Parse(_outsideTemperatureInputField.GetComponent<InputField>().text);
+                float inside = float.Parse(_initialRoomTemperatureInputField.GetComponent<InputField>().text);
+                float size = float.Parse(_thermalPixelSizeInputField.GetComponent<InputField>().text);
+
+                options.setGeometry(outside, inside, size);
+            }
+
+            {
+                string username = _usernameInputField.GetComponent<InputField>().text;
+                string password = _passwordInputField.GetComponent<InputField>().text;
+                string serveradresse = _serverAddressInputField.GetComponent<InputField>().text;
+                bool needed = _requiresAuthenticationToggle.GetComponent<Toggle>().isOn;
+
+                options.setFHEM(username, password, serveradresse, needed);
+            }
+
+            {
+                int user = int.Parse(_userCountInputField.GetComponent<InputField>().text);
+
+                options.setOther(user);
+            }
+
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
         }
 

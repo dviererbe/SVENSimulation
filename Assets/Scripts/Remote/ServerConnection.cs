@@ -170,7 +170,7 @@ namespace Assets.Scripts.Remote
                         if (response.StatusCode.IsSuccess())
                         {
                             Debug.LogWarning(response.StatusCode.ToString());
-                            throw new Exception("Request was not successful.");
+                            //throw new Exception("Request was not successful.");
                         }
                     }
                 }

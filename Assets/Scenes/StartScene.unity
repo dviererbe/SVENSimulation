@@ -3568,7 +3568,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1890026264}
-        m_MethodName: StartSimulation
+        m_MethodName: OnClick_StartSimulation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
