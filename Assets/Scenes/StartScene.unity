@@ -917,7 +917,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &189865024
 GameObject:
@@ -1673,8 +1673,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 984798465}
-        m_MethodName: OnBack_Click
+      - m_Target: {fileID: 933085234}
+        m_MethodName: OptionsMenu_BackButton_OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1960,7 +1960,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 933085234}
-        m_MethodName: OnStart_Click
+        m_MethodName: MainMenu_StartSimulationButton_OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2098,7 +2098,7 @@ GameObject:
   - component: {fileID: 656462885}
   - component: {fileID: 656462884}
   m_Layer: 5
-  m_Name: Option_Menu
+  m_Name: Option Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2177,7 +2177,7 @@ RectTransform:
   m_Children:
   - {fileID: 1810755745}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2422,8 +2422,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1890026264}
-        m_MethodName: OnBack_Click
+      - m_Target: {fileID: 933085234}
+        m_MethodName: SimulationMenu_BackButton_OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2839,6 +2839,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 737142227}
   m_CullTransparentMesh: 0
+--- !u!1 &749801848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 749801850}
+  - component: {fileID: 749801849}
+  m_Layer: 0
+  m_Name: OptionsManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &749801849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749801848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8a8dbe9756c67e46904d0762f43d2db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roomWidth: 30
+  _roomHeight: 30
+  _wallThickness: 1
+  _outsideTemperature: 10
+  _initialRoomTemperature: 20
+  _thermalPixelSize: 3
+  _username: 
+  _password: 
+  _serverAddress: 
+  _requiresAuthentication: 0
+  _userCount: 1
+  _movementSpeed: 5
+  _cameraZoomSpeed: 4
+--- !u!4 &749801850
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749801848}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -465.40137, y: -231.70337, z: 755.1306}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &760776622
 GameObject:
   m_ObjectHideFlags: 0
@@ -3553,7 +3609,7 @@ GameObject:
   - component: {fileID: 933085233}
   - component: {fileID: 933085234}
   m_Layer: 0
-  m_Name: Main_Menu_Controller
+  m_Name: Menu Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3571,7 +3627,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &933085234
 MonoBehaviour:
@@ -3582,58 +3638,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 933085232}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 13b0fc97a6d0fa84f9e4def895f92866, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f2dd1332b419c9458edef4371c06b35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Simulation_Menu: {fileID: 1593621495}
-  _Main_Menu: {fileID: 2005013070}
-  _Option_Menu: {fileID: 656462883}
---- !u!1 &984798464
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 984798466}
-  - component: {fileID: 984798465}
-  m_Layer: 0
-  m_Name: Option_Menu_Controller
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &984798465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 984798464}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67cd0ecade08a5742b1ab74e43f86574, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _Main_Menu: {fileID: 2005013070}
-  _Option_Menu: {fileID: 656462883}
-  _Slider: {fileID: 1153434657}
---- !u!4 &984798466
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 984798464}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 543.4051, y: 430.56122, z: -5561.8516}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  _normalColor: {r: 1, g: 1, b: 1, a: 1}
+  _errorColor: {r: 1, g: 0, b: 0, a: 1}
+  _mainMenu: {fileID: 2005013070}
+  _optionMenu: {fileID: 656462883}
+  _simulationMenu: {fileID: 1593621495}
+  _roomWidthInputField: {fileID: 1866500057}
+  _roomHeightInputField: {fileID: 805441858}
+  _wallThicknessInputField: {fileID: 720743487}
+  _outsideTemperatureInputField: {fileID: 1169086966}
+  _initialRoomTemperatureInputField: {fileID: 1319754983}
+  _thermalPixelSizeInputField: {fileID: 1904388952}
+  _usernameInputField: {fileID: 1953705174}
+  _passwordInputField: {fileID: 1634332040}
+  _serverAddressInputField: {fileID: 1119292706}
+  _requiresAuthenticationToggle: {fileID: 145548722}
+  _userCountInputField: {fileID: 1528082051}
+  _cameraMovementSlider: {fileID: 1153434657}
 --- !u!1 &1000293181
 GameObject:
   m_ObjectHideFlags: 0
@@ -4766,7 +4790,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 984798465}
+      - m_Target: {fileID: 0}
         m_MethodName: OnSliderMove
         m_Mode: 1
         m_Arguments:
@@ -5020,8 +5044,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1890026264}
-        m_MethodName: OnClick_StartSimulation
+      - m_Target: {fileID: 933085234}
+        m_MethodName: SimulationMenu_StartSimulationButton_OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5149,7 +5173,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1233418501
 GameObject:
@@ -5234,7 +5258,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 933085234}
-        m_MethodName: OnQuit_Click
+        m_MethodName: MainMenu_QuitButton_OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5999,7 +6023,7 @@ GameObject:
   - component: {fileID: 1593621497}
   - component: {fileID: 1593621496}
   m_Layer: 5
-  m_Name: Simulation_Menu
+  m_Name: Simulation Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6078,7 +6102,7 @@ RectTransform:
   m_Children:
   - {fileID: 1769879399}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -7404,76 +7428,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866500055}
   m_CullTransparentMesh: 0
---- !u!1 &1890026263
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1890026265}
-  - component: {fileID: 1890026264}
-  m_Layer: 0
-  m_Name: Simulation_Menu_Controler
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1890026264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1890026263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f2dd1332b419c9458edef4371c06b35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _normalColor: {r: 1, g: 1, b: 1, a: 1}
-  _errorColor: {r: 1, g: 0, b: 0, a: 1}
-  _roomWidth: 30
-  _roomHeight: 30
-  _wallThickness: 1
-  _outsideTemperature: 14
-  _initialRoomTemperature: 20
-  _thermalPixelSize: 3
-  _username: 
-  _password: 
-  _serverAddress: shadow-castle.de:8083
-  _requiresAuthentication: 1
-  _userCount: 0
-  _roomWidthInputField: {fileID: 1866500057}
-  _roomHeightInputField: {fileID: 805441858}
-  _wallThicknessInputField: {fileID: 720743487}
-  _outsideTemperatureInputField: {fileID: 1169086966}
-  _initialRoomTemperatureInputField: {fileID: 1319754983}
-  _thermalPixelSizeInputField: {fileID: 1904388952}
-  _usernameInputField: {fileID: 1953705174}
-  _passwordInputField: {fileID: 1634332040}
-  _serverAddressInputField: {fileID: 1119292706}
-  _requiresAuthenticationToggle: {fileID: 145548722}
-  _userCountInputField: {fileID: 1528082051}
-  _startSimulationButton: {fileID: 1200611090}
-  _Simulation_Menu: {fileID: 1593621495}
-  _Main_Menu: {fileID: 2005013070}
---- !u!4 &1890026265
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1890026263}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -465.40137, y: -231.70337, z: 755.1306}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1904388950
 GameObject:
   m_ObjectHideFlags: 0
@@ -7999,7 +7953,7 @@ GameObject:
   - component: {fileID: 2005013072}
   - component: {fileID: 2005013071}
   m_Layer: 5
-  m_Name: Main_Menu
+  m_Name: Main Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8079,7 +8033,7 @@ RectTransform:
   - {fileID: 1704974296}
   - {fileID: 1292554770}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -8481,7 +8435,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 933085234}
-        m_MethodName: OnOption_Click
+        m_MethodName: MainMenu_OptionsButton_OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -5,25 +5,25 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.InputValidation
 {
-    internal class InputFieldInputChecker<T> : InputChecker
+    internal class InputFieldInputChecker<TValueType> : IInputChecker
     {
-        private T _value;
+        private TValueType _value;
         private bool _isValid;
         
         private InputField _inputField;
         private Color _normalColor;
         private Color _errorColor;
 
-        private Func<string, T> _parser;
-        private Func<T, bool> _validator;
+        private Func<string, TValueType> _parser;
+        private Func<TValueType, bool> _validator;
 
         public InputFieldInputChecker(
             InputField inputField, 
-            T initialValue,
+            TValueType initialValue,
             Color normalColor, 
             Color errorColor,
-            Func<string, T> inputParser,
-            Func<T, bool> validator)
+            Func<string, TValueType> inputParser,
+            Func<TValueType, bool> validator)
         {
             if (inputField == null)
                 throw new ArgumentNullException(nameof(inputField));
@@ -52,19 +52,33 @@ namespace Assets.Scripts.InputValidation
             _inputField.onEndEdit.AddListener(OnEndEdit);
         }
 
-        public T Value
+        public TValueType Value
         {
             get => _value;
             private set
             {
                 _value = value;
                 _isValid = _validator(value);
-
+                
                 SetColor(_isValid ? _normalColor : _errorColor);
             }
         }
 
         public bool IsValid => _isValid;
+
+        public Type ValueType => typeof(TValueType);
+
+        public object GetValue() => Value;
+
+        public TReturnType GetValueAs<TReturnType>()
+        {
+            if (Value is TReturnType)
+            {
+                return (TReturnType)GetValue();
+            }
+
+            throw new NotSupportedException();
+        }
 
         private void SetColor(Color color)
         {

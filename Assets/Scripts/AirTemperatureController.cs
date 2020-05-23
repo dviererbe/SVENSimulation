@@ -8,7 +8,7 @@ using UnityEngine;
 public class AirTemperatureController : MonoBehaviour
 {
     private float _temperature = 0f;
-    private SpriteRenderer _spriteRenderer;
+    private SpriteRenderer _airSprite;
 
     public Vector2 Position { get; set; }
 
@@ -21,7 +21,7 @@ public class AirTemperatureController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _airSprite = GetComponent<SpriteRenderer>();
     }
 
     public void SetColor(float highestTemperature, float lowestTemperature)
@@ -31,13 +31,13 @@ public class AirTemperatureController : MonoBehaviour
         //avoid division by zero error
         if (minMaxDelta == 0f)
         {
-            _spriteRenderer.color = Color.black;
+            _airSprite.color = Color.black;
         }
         else
         {
             //Diff = HighestTemp - LowestTemp
             //Formula creates a transformation from [0, Diff] -> [0, 1.0f]. Thus, we have rough transitions between each air-pixel.
-            _spriteRenderer.color = new Color((_temperature - lowestTemperature) / minMaxDelta, 0, 0);
+            _airSprite.color = new Color((_temperature - lowestTemperature) / minMaxDelta, 0, 0);
         }
     }
 }
