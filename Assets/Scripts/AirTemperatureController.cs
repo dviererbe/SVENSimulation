@@ -24,20 +24,8 @@ public class AirTemperatureController : MonoBehaviour
         _airSprite = GetComponent<SpriteRenderer>();
     }
 
-    public void SetColor(float highestTemperature, float lowestTemperature)
+    public void SetColor(ref Color32 col)
     {
-        float minMaxDelta = highestTemperature - lowestTemperature;
-
-        //avoid division by zero error
-        if (minMaxDelta == 0f)
-        {
-            _airSprite.color = Color.black;
-        }
-        else
-        {
-            //Diff = HighestTemp - LowestTemp
-            //Formula creates a transformation from [0, Diff] -> [0, 1.0f]. Thus, we have rough transitions between each air-pixel.
-            _airSprite.color = new Color((_temperature - lowestTemperature) / minMaxDelta, 0, 0);
-        }
+        _airSprite.color = col;
     }
 }
