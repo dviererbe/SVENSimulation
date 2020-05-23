@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Assets.Scripts;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
@@ -50,7 +51,7 @@ public class RoomCreator : MonoBehaviour
     public GameObject AirPrefab
     {
         get => _airPrefab;
-        set => throw new NotImplementedException(); //TODO: Implemet me!
+        set => _airPrefab = value;
     }
 
     /// <summary>
@@ -132,6 +133,10 @@ public class RoomCreator : MonoBehaviour
 
         #endregion
 
+        int[,] test = new int[2, 3];
+        UnityEngine.Debug.Log(test.GetLength(0));
+        UnityEngine.Debug.Log(test.GetLength(1));
+
         GameObject userObject = Instantiate(_userPrefab);
         UserController userController = userObject.GetComponent<UserController>();
         userController.RoomThermalManager = _roomThermalManager;
@@ -147,9 +152,9 @@ public class RoomCreator : MonoBehaviour
             (RoomHeight - 2) * Convert.ToInt32(_initialThermalPixelSize),
             (RoomWidth - 2) * Convert.ToInt32(_initialThermalPixelSize)];
 
-        for (int i = 0; i < _airObjects.GetLength(i); i++)
+        for (int i = 0; i < _airObjects.GetLength(0); i++)
         {
-            for (int j = 0; j < _airObjects.GetLength(j); j++)
+            for (int j = 0; j < _airObjects.GetLength(1); j++)
             {
                 //Position im Grid für die Temperatur berechnung
                 Vector2Int position = new Vector2Int(
@@ -235,9 +240,9 @@ public class RoomCreator : MonoBehaviour
     {
         SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature);
 
-        for (int x = 0; x < _airObjects.GetLength(x); x++)
+        for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
-            for (int y = 0; y < _airObjects.GetLength(y); y++)
+            for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
                 _airObjects[x, y].GetComponent<AirTemperatureController>().SetColor(highestTemperature, lowestTemperature);
             }
