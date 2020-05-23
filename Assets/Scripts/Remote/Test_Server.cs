@@ -9,14 +9,30 @@ namespace Assets.Scripts.Remote
 {
     public class Test_Server : MonoBehaviour
     {
-        public string Username = "tsuksdl";
-        public string Password = "A00Schottisch!";
-        public string ServerAddress = "192.168.1.102:8083";
-        public bool RequiresAuthentication = true;
+        [SerializeField]
+        private string Username;
+
+        [SerializeField]
+        private string Password;
+
+        [SerializeField]
+        private string ServerAddress;
+
+        [SerializeField]
+        private bool RequiresAuthentication;
 
         // Start is called before the first frame update
         void Start()
         {
+            Username = OptionsManager.Username;
+            Password = OptionsManager.Password;
+            ServerAddress = OptionsManager.ServerAddress;
+            RequiresAuthentication = OptionsManager.RequiresAuthentication;
+
+            Debug.Log($"Username: {Username}");
+            Debug.Log($"Password: {Password}");
+            Debug.Log($"ServerAddress: {ServerAddress}");
+            Debug.Log($"RequiresAuthentication: {RequiresAuthentication}");
 
             Debug.Log("Tests erfolgen");
 
@@ -46,14 +62,6 @@ namespace Assets.Scripts.Remote
                 Debug.LogError("Setting Data failed.");
                 Debug.LogError(exception);
             }
-
-            Options options = new Options();
-
-            foreach(String fhem in options.getFHEM())
-            {
-                Debug.Log("Load: " + fhem);
-            }
-
         }
     }
 }

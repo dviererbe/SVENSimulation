@@ -100,10 +100,6 @@ public class UserController : MonoBehaviour
             _direction = GetRandomDirection();
         }
 
-        Debug.Log("User Position: " + _rigidbody.position);
-        Debug.Log("Room Position: " + RoomThermalManager.RoomPosition);
-        Debug.Log("Room Position (upper Corner): " + _upperRightCorner);
-
         bool valueUnchanged = true;
 
         do

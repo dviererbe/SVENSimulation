@@ -27,12 +27,6 @@ public class RoomCreator : MonoBehaviour
     [SerializeField]
     private GameObject _userPrefab;
 
-    [SerializeField]
-    private float _initialTemperature = 22f;
-
-    [SerializeField]
-    private float _initialThermalPixelSize = 1f;
-
     private float _passedTime = 0;
 
     private float _waitTimer = 0.5f;
@@ -104,27 +98,19 @@ public class RoomCreator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        #region LoadOption
-        Options option = new Options();
-
-        float[] values = option.getGeometry();
-
-        _roomHeight = Convert.ToInt32(values[0]);
-        _roomWidth = Convert.ToInt32(values[1]);
-        _wallThickness = Convert.ToInt32(values[2]);
-
-        values = option.getThermodynamics();
-
-        _initialTemperature = values[1];
-        _initialThermalPixelSize = values[2];
+        #region Load Options
+        
+        _roomHeight = Mathf.RoundToInt(OptionsManager.RoomHeight);
+        _roomWidth = Mathf.RoundToInt(OptionsManager.RoomWidth);
+        _wallThickness = OptionsManager.WallThickness;
 
         #endregion
 
         #region ThermalManager
 
         RoomThermalManagerBuilder thermalManagerBuilder = new RoomThermalManagerBuilder();
-        thermalManagerBuilder.InitialTemperature = new Temperature(_initialTemperature, TemperatureUnit.Celsius);
-        thermalManagerBuilder.ThermalPixelSize = _initialThermalPixelSize;
+        thermalManagerBuilder.InitialTemperature = new Temperature(OptionsManager.InitialRoomTemperature, TemperatureUnit.Celsius);
+        thermalManagerBuilder.ThermalPixelSize = OptionsManager.ThermalPixelSize;
         thermalManagerBuilder.Position = new Vector3(1, 1, 0);
         thermalManagerBuilder.Size = new Vector3(RoomWidth - 1, RoomHeight - 1);
 
@@ -149,8 +135,8 @@ public class RoomCreator : MonoBehaviour
             z: WallThickness);
 
         _airObjects = new GameObject[
-            (RoomHeight - 2) * Convert.ToInt32(_initialThermalPixelSize),
-            (RoomWidth - 2) * Convert.ToInt32(_initialThermalPixelSize)];
+            (RoomHeight - 2) * Convert.ToInt32(_roomThermalManager.ThermalPixelSize),
+            (RoomWidth - 2) * Convert.ToInt32(_roomThermalManager.ThermalPixelSize)];
 
         for (int i = 0; i < _airObjects.GetLength(0); i++)
         {
@@ -164,8 +150,8 @@ public class RoomCreator : MonoBehaviour
                 GameObject airObject = Instantiate(
                         AirPrefab, //the GameObject that will be instantiated
                         position: new Vector3(
-                            x: (i + 2f) * WallThickness * (1/_initialThermalPixelSize),
-                            y: (j + 2f) * WallThickness * (1/_initialThermalPixelSize)),
+                            x: (i + 2f) * WallThickness / _roomThermalManager.ThermalPixelSize,
+                            y: (j + 2f) * WallThickness / _roomThermalManager.ThermalPixelSize),
                         rotation: AirPrefab.transform.rotation);
 
                 airObject.transform.parent = gameObject.transform;
