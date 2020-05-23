@@ -58,7 +58,7 @@ namespace Assets.Scripts.Simulation.Abstractions
         {
             public override float Density => 1.225f; //at 15°C and 1013.25 hPa
 
-            public override float SpecificHeatCapacity => 1.012f; //isobaric mass heat capacity at 20°C and 101,3kPa
+            public override float SpecificHeatCapacity => 1.012f * 1000; //isobaric mass heat capacity at 20°C and 101,3kPa
 
             public override float ThermalConductivity => 0.025f; //at 20°C and 101,3kPa
 
