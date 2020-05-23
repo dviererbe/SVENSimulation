@@ -142,8 +142,8 @@ public class RoomCreator : MonoBehaviour
                 GameObject airObject = Instantiate(
                         AirPrefab, //the GameObject that will be instantiated
                         position: new Vector3(
-                            x: 0.66666f + i * AirPrefab.transform.localScale.x,
-                            y: 0.66666f + j * AirPrefab.transform.localScale.y),
+                            x: 0.66666f * _wallThickness + i * AirPrefab.transform.localScale.x,
+                            y: 0.66666f * _wallThickness + j * AirPrefab.transform.localScale.y),
                         rotation: AirPrefab.transform.rotation) ;
 
                 airObject.transform.parent = gameObject.transform;
