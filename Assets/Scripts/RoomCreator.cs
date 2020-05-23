@@ -147,9 +147,9 @@ public class RoomCreator : MonoBehaviour
             (RoomHeight - 2) * Convert.ToInt32(_initialThermalPixelSize),
             (RoomWidth - 2) * Convert.ToInt32(_initialThermalPixelSize)];
 
-        for (int i = 0; i < _airObjects.GetLength(0); i++)
+        for (int i = 0; i < _airObjects.GetLength(i); i++)
         {
-            for (int j = 0; j < _airObjects.GetLength(1); j++)
+            for (int j = 0; j < _airObjects.GetLength(j); j++)
             {
                 //Position im Grid für die Temperatur berechnung
                 Vector2Int position = new Vector2Int(
@@ -235,9 +235,9 @@ public class RoomCreator : MonoBehaviour
     {
         SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature);
 
-        for (int x = 0; x < _airObjects.GetLength(0); x++)
+        for (int x = 0; x < _airObjects.GetLength(x); x++)
         {
-            for (int y = 0; y < _airObjects.GetLength(1); y++)
+            for (int y = 0; y < _airObjects.GetLength(y); y++)
             {
                 _airObjects[x, y].GetComponent<AirTemperatureController>().SetColor(highestTemperature, lowestTemperature);
             }
