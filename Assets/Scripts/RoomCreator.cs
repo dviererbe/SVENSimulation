@@ -119,10 +119,6 @@ public class RoomCreator : MonoBehaviour
 
         #endregion
 
-        int[,] test = new int[2, 3];
-        UnityEngine.Debug.Log(test.GetLength(0));
-        UnityEngine.Debug.Log(test.GetLength(1));
-
         GameObject userObject = Instantiate(_userPrefab);
         UserController userController = userObject.GetComponent<UserController>();
         userController.RoomThermalManager = _roomThermalManager;
@@ -150,8 +146,8 @@ public class RoomCreator : MonoBehaviour
                 GameObject airObject = Instantiate(
                         AirPrefab, //the GameObject that will be instantiated
                         position: new Vector3(
-                            x: (i + 2f) * WallThickness / _roomThermalManager.ThermalPixelSize,
-                            y: (j + 2f) * WallThickness / _roomThermalManager.ThermalPixelSize),
+                            x: (i + 1f) * WallThickness / _roomThermalManager.ThermalPixelSize,
+                            y: (j + 1f) * WallThickness / _roomThermalManager.ThermalPixelSize),
                         rotation: AirPrefab.transform.rotation);
 
                 airObject.transform.parent = gameObject.transform;
