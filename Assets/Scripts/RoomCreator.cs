@@ -226,6 +226,7 @@ public class RoomCreator : MonoBehaviour
             {
                 colorSection = _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature - lowestTemperature;
                 colorSection = colorSection / temperatureStep;
+                // With "(TileTemp - lowestTemp) / temperatureStep", we create a transformation from [0, (highestTemp-lowestTemp)] -> [0, AmounOfColorsWeHave-1]
                 _airObjects[x, y].GetComponent<AirTemperatureController>().SetColor(ref AirColors.ColorArray[(int)Math.Round(colorSection, 0)]);
             }
         }
@@ -242,8 +243,14 @@ public class RoomCreator : MonoBehaviour
     /// the numeric value of the highest temperature displayed in the currently rendered frame.
     /// </param>
     /// <param name="lowestTemperature">
-    ///When this method returns, contains single-precision floating-point number equivalent to
+    /// When this method returns, contains single-precision floating-point number equivalent to
     /// the numeric value of the lowest temperature displayed in the currently rendered frame.
+    /// </param>
+    /// /// <param name="temperatureStep">
+    /// When this method returns, contains single-precision floating-point number equivalent to
+    /// the numeric value of the lowest temperature displayed in the currently rendered frame.
+    /// temperatureStep is highestTemperature-lowestTemperature / amounts of colors we use
+    /// that's an easy possibility in order to specify the color
     /// </param>
     private void SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature, out float temperatureStep)
     {
