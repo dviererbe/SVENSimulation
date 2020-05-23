@@ -126,9 +126,9 @@ public class RoomCreator : MonoBehaviour
         #region Air Creator
 
         AirPrefab.transform.localScale = new Vector3(
-            x: WallThickness,
-            y: WallThickness,
-            z: WallThickness);
+            x: WallThickness / _roomThermalManager.ThermalPixelSize,
+            y: WallThickness / _roomThermalManager.ThermalPixelSize,
+            z: WallThickness / _roomThermalManager.ThermalPixelSize);
 
         _airObjects = new GameObject[
             (RoomHeight - 2) * Convert.ToInt32(_roomThermalManager.ThermalPixelSize),
@@ -138,22 +138,18 @@ public class RoomCreator : MonoBehaviour
         {
             for (int j = 0; j < _airObjects.GetLength(1); j++)
             {
-                //Position im Grid für die Temperatur berechnung
-                Vector2Int position = new Vector2Int(
-                    x: i,
-                    y: j);
 
                 GameObject airObject = Instantiate(
                         AirPrefab, //the GameObject that will be instantiated
                         position: new Vector3(
-                            x: (i + 1f) * WallThickness / _roomThermalManager.ThermalPixelSize,
-                            y: (j + 1f) * WallThickness / _roomThermalManager.ThermalPixelSize),
-                        rotation: AirPrefab.transform.rotation);
+                            x: 0.66666f + i * AirPrefab.transform.localScale.x,
+                            y: 0.66666f + j * AirPrefab.transform.localScale.y),
+                        rotation: AirPrefab.transform.rotation) ;
 
                 airObject.transform.parent = gameObject.transform;
-                airObject.GetComponent<AirTemperatureController>().Position = position;
+                airObject.GetComponent<AirTemperatureController>().Position = new Vector2Int(i, j);
 
-                _airObjects[position.x, position.y] = airObject;
+                _airObjects[i,j] = airObject;
             }
         }
 
