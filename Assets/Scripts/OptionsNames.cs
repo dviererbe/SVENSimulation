@@ -21,5 +21,6 @@ namespace Assets.Scripts
         public const string USER_COUNT = "User Count";
         public const string MOVEMENT_SPEED = "Movement Speed";
         public const string CAMERA_SPEED = "Camera Speed";
+        public const string VORLESUNG = "Vorlesung";
     }
 }

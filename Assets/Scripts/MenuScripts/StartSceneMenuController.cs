@@ -61,9 +61,6 @@ namespace Assets.Scripts
         [SerializeField]
         private InputField _userCountInputField;
 
-        [SerializeField]
-        private Slider _cameraMovementSlider;
-
         private InputFieldInputChecker<float> CreateScaleInputChecker(InputField inputField, float initialValue)
         {
             return new InputFieldInputChecker<float>(
@@ -155,11 +152,6 @@ namespace Assets.Scripts
             return true;
         }
 
-        public void CameraMovementSlider_OnSliderMove()
-        {
-            OptionsManager.MovementSpeed = _cameraMovementSlider.value;
-        }
-
         public void MainMenu_StartSimulationButton_OnClick()
         {
             _mainMenu.SetActive(false);
@@ -198,6 +190,16 @@ namespace Assets.Scripts
         {
             _optionMenu.SetActive(false);
             _mainMenu.SetActive(true);
+        }
+
+        public void MovementSpeed_Slider(Slider slider)
+        {
+            OptionsManager.MovementSpeed = slider.value;
+        }
+
+        public void ZoomSpeed_Slider(Slider slider)
+        {
+            OptionsManager.CameraZoomSpeed = slider.value;
         }
     }
 }

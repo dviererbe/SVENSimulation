@@ -50,6 +50,9 @@ namespace Assets.Scripts
         [SerializeField]
         private float _cameraZoomSpeed = 4f;
 
+        [SerializeField]
+        private bool _vorlesung = false;
+
         private static OptionsManager _instance;
 
         void Awake()
@@ -314,6 +317,15 @@ namespace Assets.Scripts
                 }
 
                 _instance._cameraZoomSpeed = value;
+            }
+        }
+
+        public static bool Vorlesung
+        {
+            get => _instance._vorlesung;
+            set
+            {
+                _instance._vorlesung = value;
             }
         }
 
