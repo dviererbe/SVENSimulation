@@ -22,5 +22,7 @@ namespace Assets.Scripts
         public const string MOVEMENT_SPEED = "Movement Speed";
         public const string CAMERA_SPEED = "Camera Speed";
         public const string VORLESUNG = "Vorlesung";
+        public const string MINTEMP = "minimum Temperatur";
+        public const string MAXTEMP = "maximum Temperatur";
     }
 }

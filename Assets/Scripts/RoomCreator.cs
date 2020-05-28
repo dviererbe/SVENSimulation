@@ -220,6 +220,9 @@ public class RoomCreator : MonoBehaviour
 
         float colorSection;
 
+        OptionsManager.MinTemperatur = lowestTemperature;
+        OptionsManager.MaxTemperatur = highestTemperature;
+
         for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
             for (int y = 0; y < _airObjects.GetLength(1); y++)

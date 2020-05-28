@@ -53,6 +53,21 @@ namespace Assets.Scripts
         [SerializeField]
         private bool _vorlesung = false;
 
+        [SerializeField]
+        private float _minTemperature = 0.0f;
+
+        [SerializeField]
+        private float _maxTemperature = 0.0f;
+
+        [SerializeField]
+        private int _windowMode = 0;
+
+        [SerializeField]
+        private int _windowHeight = 0;
+
+        [SerializeField]
+        private int _windowWidth = 0;
+
         private static OptionsManager _instance;
 
         void Awake()
@@ -317,6 +332,106 @@ namespace Assets.Scripts
                 }
 
                 _instance._cameraZoomSpeed = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the minimum Temperatur in the room.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float MinTemperatur
+        {
+            get => _instance._minTemperature;
+            set
+            {
+                if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(MinTemperatur), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                _instance._minTemperature = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the maximal Temperatur for the room.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float MaxTemperatur
+        {
+            get => _instance._maxTemperature;
+            set
+            {
+                if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(MaxTemperatur), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                _instance._maxTemperature = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the maximal Temperatur for the room.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static int WindowMode
+        {
+            get => _instance._windowMode;
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(WindowMode), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                _instance._windowMode = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the maximal Temperatur for the room.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static int WindowHeigth
+        {
+            get => _instance._windowHeight;
+            set
+            {
+                if (value < 100)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(WindowHeigth), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                _instance._windowHeight = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the maximal Temperatur for the room.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static int WindowWidth
+        {
+            get => _instance._windowWidth;
+            set
+            {
+                if (value < 100)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(WindowWidth), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                _instance._windowWidth = value;
             }
         }
 

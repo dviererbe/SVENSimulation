@@ -13,6 +13,15 @@ public class UserInterface : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _toggleVorlesung;
 
+    [SerializeField]
+    private GameObject _regulators;
+
+    [SerializeField]
+    private Button _minmizeRegulators_Button;
+
+    [SerializeField]
+    private Button _maximizeRegulators_Button;
+
     private float _minTempStart;
     private float _maxTempStart;
 
@@ -35,7 +44,8 @@ public class UserInterface : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //TODO: Laden der Temperaturen
+        _maxTempStart = OptionsManager.MaxTemperatur;
+        _minTempStart = OptionsManager.MinTemperatur;
 
         float temp = _maxTempStart;
         float div = (_maxTempStart - _minTempStart) / (_textContainer.transform.childCount - 1);
@@ -60,5 +70,19 @@ public class UserInterface : MonoBehaviour
             _toggleVorlesung.text = "Vorlesung aktiv";
             OptionsManager.Vorlesung = true;
         }
+    }
+
+    public void minimzeRegulators_OnClick()
+    {
+        _minmizeRegulators_Button.interactable = false;
+        _maximizeRegulators_Button.interactable = true;
+        _regulators.SetActive(false);
+    }
+
+    public void maximzeRegulators_OnClick()
+    {
+        _minmizeRegulators_Button.interactable = true;
+        _maximizeRegulators_Button.interactable = false;
+        _regulators.SetActive(true);
     }
 }
