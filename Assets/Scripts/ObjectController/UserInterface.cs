@@ -31,13 +31,13 @@ public class UserInterface : MonoBehaviour
         _minTempStart = 25.0f;
         _maxTempStart = 40.0f;
 
-        if (OptionsManager.Vorlesung)
+        if (OptionsManager.Lecture)
         {
-            _toggleVorlesung.text = "Vorlesung aktiv";
+            _toggleVorlesung.text = "Lecture active";
         }
         else
         {
-            _toggleVorlesung.text = "Vorlesung pause";
+            _toggleVorlesung.text = "Lecture paused";
         }
     }
 
@@ -60,15 +60,15 @@ public class UserInterface : MonoBehaviour
 
     public void onVorlesung_Toggle ()
     {
-        if(OptionsManager.Vorlesung)
+        if(OptionsManager.Lecture)
         {
-            _toggleVorlesung.text = "Vorlesung pause";
-            OptionsManager.Vorlesung = false;
+            _toggleVorlesung.text = "Lecture paused";
+            OptionsManager.Lecture = false;
         }
         else
         {
-            _toggleVorlesung.text = "Vorlesung aktiv";
-            OptionsManager.Vorlesung = true;
+            _toggleVorlesung.text = "Lecture active";
+            OptionsManager.Lecture = true;
         }
     }
 

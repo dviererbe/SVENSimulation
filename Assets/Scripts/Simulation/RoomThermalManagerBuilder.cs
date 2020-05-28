@@ -10,57 +10,89 @@ namespace Assets.Scripts.Simulation
 {
     public partial class RoomThermalManagerBuilder
     {
-        private Vector3? _position;
-        private Vector3? _size;
-        private Temperature _initialTemperature = new Temperature(22f, TemperatureUnit.Celsius);
-
+        private float _thermalPixelSize = 0.1f; //meter
+        private float _thermalTickDuration = 0.25f; //herz
+        private readonly List<IThermalObject> _thermalObjects;
+        
         public RoomThermalManagerBuilder()
         {
-
+            _thermalObjects = new List<IThermalObject>();
         }
 
-        public Vector3 Position
+        public IRoom Room { get; set; } = null;
+
+        public float ThermalPixelSize
         {
-            get
+            get => _thermalPixelSize;
+            set
             {
-                if (_position.HasValue)
-                    return _position.Value;
+                #region Validation
 
-                throw new InvalidOperationException("No value was set previously.");
+                if (float.IsNaN(value))
+                    throw new ArgumentOutOfRangeException(nameof(ThermalPixelSize), value, "NaN is an invalid size value.");
+
+                if (float.IsPositiveInfinity(value))
+                    throw new ArgumentOutOfRangeException(nameof(ThermalPixelSize), value, "Positive infinity is an invalid size value.");
+
+                if (float.IsNegativeInfinity(value))
+                    throw new ArgumentOutOfRangeException(nameof(ThermalPixelSize), value, "Negative infinity is an invalid size value.");
+
+                if (value <= 0f)
+                    throw new ArgumentOutOfRangeException(nameof(ThermalPixelSize), value, "Zero or negative values are invalid size values.");
+
+                #endregion
+
+                _thermalPixelSize = value;
             }
-            set => _position = value;
         }
 
-        public Vector3 Size
+        public float ThermalTickDuration
         {
-            get
+            get => _thermalTickDuration;
+            set
             {
-                if (_size.HasValue)
-                    return _size.Value;
+                #region Validation
 
-                throw new InvalidOperationException("No value was set previously.");
+                if (float.IsNaN(value))
+                    throw new ArgumentOutOfRangeException(nameof(ThermalTickDuration), value, "NaN is an invalid duration value.");
+
+                if (float.IsPositiveInfinity(value))
+                    throw new ArgumentOutOfRangeException(nameof(ThermalTickDuration), value, "Positive infinity is an invalid duration value.");
+
+                if (float.IsNegativeInfinity(value))
+                    throw new ArgumentOutOfRangeException(nameof(ThermalTickDuration), value, "Negative infinity is an invalid duration value.");
+
+                if (value <= 0f)
+                    throw new ArgumentOutOfRangeException(nameof(ThermalTickDuration), value, "Zero or negative values are invalid duration values.");
+
+                #endregion
+
+                _thermalPixelSize = value;
             }
-            set => _size = value;
         }
 
-        public float ThermalPixelSize { get; set; } = 1f;
+        public ITemperatureSource OutsideTemperature { get; set; }
 
-        public Temperature InitialTemperature { get; set; } = new Temperature(22f, TemperatureUnit.Celsius);
+        public ITemperatureSource<Vector3> InitialRoomTemperature { get; set; }
 
         public RoomThermalManagerBuilder AddThermalObject(IThermalObject thermalObject)
         {
-            throw new NotImplementedException();
+            _thermalObjects.Add(thermalObject);
+            return this;
         }
 
         public IRoomThermalManager Build()
         {
-            if (!_size.HasValue)
-                throw new InvalidOperationException($"No value for the property {nameof(Size)} was set previously.");
+            if (Room == null)
+                throw new InvalidOperationException($"No value for the property {nameof(Room)} was set.");
 
-            if (!_position.HasValue)
-                throw new InvalidOperationException($"No value for the property {nameof(Position)} was set previously.");
-
-            return new RoomRoomThermalManager(_size.Value, _position.Value, ThermalPixelSize, InitialTemperature);
+            return new RoomThermalManager(
+                Room, 
+                _thermalPixelSize, 
+                _thermalTickDuration,
+                OutsideTemperature ?? new ConstantTemperatureSource(Temperature.FromCelsius(10f)), 
+                InitialRoomTemperature ?? new ConstantTemperatureSource(Temperature.FromCelsius(22f)), 
+                _thermalObjects);
         }
     }
 }

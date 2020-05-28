@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Scripts.Simulation.Abstractions;
@@ -9,25 +11,36 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
+    public struct OnSettingChangedEventArgs
+    {
+        public string SettingName;
+        public object OldValue;
+    }
+
     public class OptionsManager : MonoBehaviour
     {
-        [SerializeField]
-        private float _roomWidth = 30;
+        public event EventHandler<OnSettingChangedEventArgs> OnSettingChanged; 
 
         [SerializeField]
-        private float _roomHeight = 30;
+        private float _roomWidth = 30f;
 
         [SerializeField]
-        private float _wallThickness = 1;
+        private float _roomHeight = 30f;
 
         [SerializeField]
-        private float _outsideTemperature = 10;
+        private float _wallThickness = 1f;
 
         [SerializeField]
-        private float _initialRoomTemperature = 20;
+        private float _outsideTemperature = 10f;
 
         [SerializeField]
-        private float _thermalPixelSize = 3;
+        private float _initialRoomTemperature = 20f;
+
+        [SerializeField]
+        private float _thermalPixelSize = 0.1f;
+
+        [SerializeField]
+        private float _thermalTickDuration = 0.25f;
 
         [SerializeField]
         private string _username = string.Empty;
@@ -51,8 +64,7 @@ namespace Assets.Scripts
         private float _cameraZoomSpeed = 4f;
 
         [SerializeField]
-        private bool _vorlesung = false;
-
+        private bool _lecture = false;
         [SerializeField]
         private float _minTemperature = 0.0f;
 
@@ -69,12 +81,13 @@ namespace Assets.Scripts
         private int _windowWidth = 0;
 
         private static OptionsManager _instance;
+        private static OptionsManager Instance { get; set; }
 
         void Awake()
         {
-            if (_instance == null)
+            if (Instance == null)
             {
-                _instance = this;
+                Instance = this;
                 DontDestroyOnLoad(this);
             }
             else
@@ -91,7 +104,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float RoomWidth
         {
-            get => _instance._roomWidth;
+            get => Instance._roomWidth;
             set
             {
                 if (!IsValidSize(value))
@@ -99,7 +112,17 @@ namespace Assets.Scripts
                     throw new ArgumentOutOfRangeException(nameof(RoomWidth), value, "An attempt was made to set the value to zero or an negative value.");
                 }
 
-                _instance._roomWidth = value;
+                if (value != Instance._roomWidth)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.ROOM_WIDTH,
+                        OldValue = Instance._roomWidth
+                    };
+
+                    Instance._roomWidth = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -111,7 +134,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float RoomHeight
         {
-            get => _instance._roomHeight;
+            get => Instance._roomHeight;
             set
             {
                 if (!IsValidSize(value))
@@ -119,7 +142,17 @@ namespace Assets.Scripts
                     throw new ArgumentOutOfRangeException(nameof(RoomHeight), value, "An attempt was made to set the value to zero or an negative value.");
                 }
 
-                _instance._roomHeight = value;
+                if (value != Instance._roomHeight)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.ROOM_HEIGHT,
+                        OldValue = Instance._roomHeight
+                    };
+
+                    Instance._roomHeight = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -131,7 +164,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float WallThickness
         {
-            get => _instance._wallThickness;
+            get => Instance._wallThickness;
             set
             {
                 if (!IsValidSize(value))
@@ -139,7 +172,17 @@ namespace Assets.Scripts
                     throw new ArgumentOutOfRangeException(nameof(WallThickness), value, "An attempt was made to set the value to zero or an negative value.");
                 }
 
-                _instance._wallThickness = value;
+                if (value != Instance._wallThickness)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.WALL_THICKNESS,
+                        OldValue = Instance._wallThickness
+                    };
+
+                    Instance._wallThickness = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -151,7 +194,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float OutsideTemperature
         {
-            get => _instance._outsideTemperature;
+            get => Instance._outsideTemperature;
             set
             {
                 if (!IsValidTemperature(value))
@@ -159,7 +202,17 @@ namespace Assets.Scripts
                     throw new ArgumentOutOfRangeException(nameof(OutsideTemperature), value, "An attempt was made to set the value below absolute zero.");
                 }
 
-                _instance._outsideTemperature = value;
+                if (value != Instance._outsideTemperature)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.OUTSIDE_TEMPERATURE,
+                        OldValue = Instance._outsideTemperature
+                    };
+
+                    Instance._outsideTemperature = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -171,7 +224,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float InitialRoomTemperature
         {
-            get => _instance._initialRoomTemperature;
+            get => Instance._initialRoomTemperature;
             set
             {
                 if (!IsValidTemperature(value))
@@ -180,7 +233,17 @@ namespace Assets.Scripts
                     
                 }
 
-                _instance._initialRoomTemperature = value;
+                if (value != Instance._initialRoomTemperature)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.INITIAL_ROOM_TEMPERATURE,
+                        OldValue = Instance._initialRoomTemperature
+                    };
+
+                    Instance._initialRoomTemperature = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -192,7 +255,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float ThermalPixelSize
         {
-            get => _instance._thermalPixelSize;
+            get => Instance._thermalPixelSize;
             set
             {
                 if (!IsValidSize(value))
@@ -201,10 +264,50 @@ namespace Assets.Scripts
                     
                 }
 
-                _instance._thermalPixelSize = value;
+                if (value != Instance._thermalPixelSize)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.THERMAL_PIXEL_SIZE,
+                        OldValue = Instance._thermalPixelSize
+                    };
+
+                    Instance._thermalPixelSize = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
+        /// <summary>
+        /// Gets or sets the size of the thermal pixels.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value below <see cref="Temperature.AbsoluteZero"/>.
+        /// </exception>
+        public static float ThermalTickDuration
+        {
+            get => Instance._thermalTickDuration;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(ThermalPixelSize), value, "An attempt was made to set the value to zero or an negative value.");
+
+                }
+
+                if (value != Instance._thermalTickDuration)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.THERMAL_TICK_DURATION,
+                        OldValue = Instance._thermalTickDuration
+                    };
+
+                    Instance._thermalTickDuration = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the username to login with to the FHEM server.
@@ -214,7 +317,7 @@ namespace Assets.Scripts
         /// </exception>
         public static string Username
         {
-            get => _instance._username;
+            get => Instance._username;
             set
             {
                 if (value is null)
@@ -222,7 +325,17 @@ namespace Assets.Scripts
                     throw new ArgumentNullException(nameof(Username), "An attempt was made to set the value to null.");
                 }
 
-                _instance._username = value;
+                if (!value.Equals(Instance._username))
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.USERNAME,
+                        OldValue = Instance._username
+                    };
+
+                    Instance._username = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -234,7 +347,7 @@ namespace Assets.Scripts
         /// </exception>
         public static string Password
         {
-            get => _instance._password;
+            get => Instance._password;
             set
             {
                 if (value is null)
@@ -242,7 +355,17 @@ namespace Assets.Scripts
                     throw new ArgumentNullException(nameof(Password), "An attempt was made to set the value to null.");
                 }
 
-                _instance._password = value;
+                if (!value.Equals(Instance._password))
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.PASSWORD,
+                        OldValue = Instance._password
+                    };
+
+                    Instance._password = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -254,7 +377,7 @@ namespace Assets.Scripts
         /// </exception>
         public static string ServerAddress
         {
-            get => _instance._serverAddress;
+            get => Instance._serverAddress;
             set
             {
                 if (value is null)
@@ -262,7 +385,17 @@ namespace Assets.Scripts
                     throw new ArgumentNullException(nameof(ServerAddress), "An attempt was made to set the value to null.");
                 }
 
-                _instance._serverAddress = value;
+                if (!value.Equals(Instance._serverAddress))
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.SERVER_ADDRESS,
+                        OldValue = Instance._serverAddress
+                    };
+
+                    Instance._serverAddress = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -271,8 +404,21 @@ namespace Assets.Scripts
         /// </summary>
         public static bool RequiresAuthentication
         {
-            get => _instance._requiresAuthentication;
-            set => _instance._requiresAuthentication = value;
+            get => Instance._requiresAuthentication;
+            set
+            {
+                if (value != Instance._requiresAuthentication)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.REQUIRES_AUTHENTICATION,
+                        OldValue = Instance._requiresAuthentication
+                    };
+
+                    Instance._requiresAuthentication = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }   
         }
 
         /// <summary>
@@ -283,7 +429,7 @@ namespace Assets.Scripts
         /// </exception>
         public static int UserCount
         {
-            get => _instance._userCount;
+            get => Instance._userCount;
             set
             {
                 if (value <= 0)
@@ -291,7 +437,17 @@ namespace Assets.Scripts
                     throw new ArgumentOutOfRangeException(nameof(UserCount), value, "An attempt was made to set the value to zero or an negative value.");
                 }
 
-                _instance._userCount = value;
+                if (value != Instance._userCount)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.USER_COUNT,
+                        OldValue = Instance._userCount
+                    };
+
+                    Instance._userCount = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -303,7 +459,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float MovementSpeed
         {
-            get => _instance._movementSpeed;
+            get => Instance._movementSpeed;
             set
             {
                 if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
@@ -311,7 +467,17 @@ namespace Assets.Scripts
                     throw new ArgumentOutOfRangeException(nameof(MovementSpeed), value, "An attempt was made to set the value to zero or an negative value.");
                 }
 
-                _instance._movementSpeed = value;
+                if (value != Instance._movementSpeed)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.MOVEMENT_SPEED,
+                        OldValue = Instance._movementSpeed
+                    };
+
+                    Instance._movementSpeed = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
@@ -323,7 +489,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float CameraZoomSpeed
         {
-            get => _instance._cameraZoomSpeed;
+            get => Instance._cameraZoomSpeed;
             set
             {
                 if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
@@ -331,10 +497,21 @@ namespace Assets.Scripts
                     throw new ArgumentOutOfRangeException(nameof(CameraZoomSpeed), value, "An attempt was made to set the value to zero or an negative value.");
                 }
 
-                _instance._cameraZoomSpeed = value;
+                if (value != Instance._cameraZoomSpeed)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.CAMERA_SPEED,
+                        OldValue = Instance._cameraZoomSpeed
+                    };
+
+                    Instance._cameraZoomSpeed = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 
+<<<<<<< HEAD
         /// <summary>
         /// Gets or sets the minimum Temperatur in the room.
         /// </summary>
@@ -436,11 +613,24 @@ namespace Assets.Scripts
         }
 
         public static bool Vorlesung
+=======
+        public static bool Lecture
+>>>>>>> 4bfea98e66af6b4483f5f01605930cb532ee92eb
         {
-            get => _instance._vorlesung;
+            get => Instance._lecture;
             set
             {
-                _instance._vorlesung = value;
+                if (value != Instance._lecture)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.LECTURE,
+                        OldValue = Instance._lecture
+                    };
+
+                    Instance._lecture = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 

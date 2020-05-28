@@ -2176,7 +2176,8 @@ MonoBehaviour:
   _wallThickness: 1
   _outsideTemperature: 10
   _initialRoomTemperature: 20
-  _thermalPixelSize: 3
+  _thermalPixelSize: 0.1
+  _thermalTickDuration: 0.25
   _username: 
   _password: 
   _serverAddress: 
@@ -2184,12 +2185,16 @@ MonoBehaviour:
   _userCount: 1
   _movementSpeed: 5
   _cameraZoomSpeed: 4
+<<<<<<< HEAD
   _vorlesung: 0
   _minTemperature: 0
   _maxTemperature: 0
   _windowMode: 0
   _windowHeight: 0
   _windowWidth: 0
+=======
+  _lecture: 0
+>>>>>>> 4bfea98e66af6b4483f5f01605930cb532ee92eb
 --- !u!4 &749801850
 Transform:
   m_ObjectHideFlags: 0
@@ -2966,6 +2971,11 @@ MonoBehaviour:
   _serverAddressInputField: {fileID: 1119292706}
   _requiresAuthenticationToggle: {fileID: 145548722}
   _userCountInputField: {fileID: 1528082051}
+<<<<<<< HEAD
+=======
+  _movementSpeed: {fileID: 1700215960}
+  _zoomSpeed: {fileID: 1700215959}
+>>>>>>> 4bfea98e66af6b4483f5f01605930cb532ee92eb
 --- !u!1 &1000293181
 GameObject:
   m_ObjectHideFlags: 0
@@ -5700,7 +5710,8 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ZoomSpeed_Slider
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8304290267198720497, guid: 6e0cb483853a2e149a6bd63d4025466e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6e0cb483853a2e149a6bd63d4025466e, type: 3}
 --- !u!1 &1700215958 stripped
 GameObject:
@@ -5708,6 +5719,30 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1700215957}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1700215959 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8312643713018065875, guid: 6e0cb483853a2e149a6bd63d4025466e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1700215957}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1700215960 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5064042805579728894, guid: 6e0cb483853a2e149a6bd63d4025466e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1700215957}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1704974295
 GameObject:
   m_ObjectHideFlags: 0

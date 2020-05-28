@@ -17,6 +17,11 @@ namespace Assets.Scripts.Simulation.Abstractions
             Unit = unit;
             Value = value;
 
+            if (float.IsNaN(value) || float.IsInfinity(value))
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), value, "Non finite value provided.");
+            }
+
 #if CHECK_ON_INITIALIZATION_IF_TEMPERATURE_IS_NOT_BELOW_ABSOLUTE_ZERO
 
             const string exceptionMessage = "Temperature value can't be below absolute zero.";

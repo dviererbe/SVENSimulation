@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Assets.Scripts;
 using Assets.Scripts.Remote.Abstractions;
 using UnityEngine;
@@ -39,20 +40,20 @@ namespace Assets.Scripts.Remote
             IServerConnection connection = ServerConnectionFactory.CreateServerConnection(Username, Password, ServerAddress,
                     RequiresAuthentication);
 
-            Heizung heizung = new Heizung(connection, "Heizung");
+            RemoteHeater remoteHeater = new RemoteHeater(connection, "Heizung");
 
             try
             {
                 //Heizung sollt auf 0 sein (wenn richtig eingestellt)
-                float start = heizung.get();
+                float start = remoteHeater.GetState();
                 Debug.Log("Heizung: " + start);
 
-                heizung.set(30);
-                float value = heizung.get();
+                remoteHeater.SetState(30);
+                float value = remoteHeater.GetState();
                 Debug.Log("Heizung: " + value);
 
-                heizung.set("temperatur", start);
-                value = heizung.get("temperatur");
+                remoteHeater.SetAttribute("temperatur", start.ToString(CultureInfo.InvariantCulture));
+                value = float.Parse(remoteHeater.GetAttribute("temperatur"));
                 Debug.Log("Heizung: " + value);
 
                 Debug.Log ("Setting Data succeeded.");

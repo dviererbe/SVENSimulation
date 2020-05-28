@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Random = System.Random;
 
 namespace Assets.Scripts.Simulation.Abstractions
 {
@@ -10,14 +11,15 @@ namespace Assets.Scripts.Simulation.Abstractions
     /// </remarks>
     public abstract class ThermalMaterial
     { 
-        public static ThermalMaterial Air = new AirThermalMaterial();
-        public static ThermalMaterial Human = new HumanThermalMaterial();
-        public static ThermalMaterial Wall = null;
-        public static ThermalMaterial Window = null;
+        public static readonly ThermalMaterial InsideAir = new InsideAirThermalMaterial();
+        public static readonly ThermalMaterial OutsideAir = new OutsideAirThermalMaterial();
+        public static readonly ThermalMaterial Wall = new WallThermalMaterial();
+        public static readonly ThermalMaterial Human = new HumanThermalMaterial();
+        public static readonly ThermalMaterial WindowOpen = new WindowOpenThermalMaterial();
+        public static readonly ThermalMaterial WindowClosed = new WindowClosedThermalMaterial();
+        public static readonly ThermalMaterial Heater = new HeaterThermalMaterial();
 
-        private ThermalMaterial()
-        {
-        }
+        protected abstract uint ID { get; }
 
         /// <summary>
         /// Density of the <see cref="ThermalMaterial"/> in kg/m³.
@@ -52,36 +54,170 @@ namespace Assets.Scripts.Simulation.Abstractions
         /// <returns>
         /// The heat transfer coefficient from this <see cref="ThermalMaterial"/> to <paramref name="otherThermalMaterial"/> in W/(m²·K).
         /// </returns>
-        public abstract float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial);
+        public abstract float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial, float temperatureDifference);
 
-        private class AirThermalMaterial : ThermalMaterial
+        private class InsideAirThermalMaterial : ThermalMaterial
         {
+            private static float[] HeatTransferCoefficients;
+
+            static InsideAirThermalMaterial()
+            {
+                //TODO: find a better solution
+
+                float[] heatTransferCoefficients = new float[7];
+                heatTransferCoefficients[0] = 8.1f; //InsideAir
+                heatTransferCoefficients[1] = 14f; //OutsideAir
+                heatTransferCoefficients[2] = 8.1f; //Wall
+                heatTransferCoefficients[3] = 7f; //Human
+                heatTransferCoefficients[4] = 8.1f; //WindowClosed
+                heatTransferCoefficients[5] = 12f; //WindowOpen
+                heatTransferCoefficients[6] = 1000f; //Heater
+
+                HeatTransferCoefficients = heatTransferCoefficients;
+            }
+
+            protected override uint ID => 0;
+
             public override float Density => 1.225f; //at 15°C and 1013.25 hPa
 
-            public override float SpecificHeatCapacity => 1.012f * 1000; //isobaric mass heat capacity at 20°C and 101,3kPa
+            public override float SpecificHeatCapacity => 1012f; //isobaric mass heat capacity at 20°C and 101,3kPa
 
             public override float ThermalConductivity => 0.025f; //at 20°C and 101,3kPa
 
-            public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial)
+            public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial, float temperatureDifference)
             {
-                if (otherThermalMaterial == Air)
-                    return 8.1f;
+                uint id = otherThermalMaterial.ID;
 
-                throw new NotImplementedException();
+                if (id < HeatTransferCoefficients.Length)
+                    return HeatTransferCoefficients[id];
+                else
+                    return 0f;
+            }
+        }
+
+        private class OutsideAirThermalMaterial : ThermalMaterial
+        {
+            protected override uint ID => 1;
+
+            public override float Density => 1.225f; //at 15°C and 1013.25 hPa
+
+            public override float SpecificHeatCapacity => 1012f; //isobaric mass heat capacity at 20°C and 101,3kPa
+
+            public override float ThermalConductivity => 0.025f; //at 20°C and 101,3kPa
+
+            public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial, float temperatureDifference)
+            {
+                if (otherThermalMaterial == Wall)
+                    return 23f;
+                else
+                    return 0f;
+            }
+        }
+
+        private class WallThermalMaterial : ThermalMaterial
+        {
+            private static readonly float[] HeatTransferCoefficients;
+
+            static WallThermalMaterial()
+            {
+                HeatTransferCoefficients = new float[2];
+                HeatTransferCoefficients[0] = 8.1f; //InsideAir
+                HeatTransferCoefficients[1] = 23f; //OutsideAir
+            }
+
+            protected override uint ID => 2;
+
+            public override float Density => 2100;
+
+            public override float SpecificHeatCapacity => 900f;
+
+            public override float ThermalConductivity => 1.1f;
+
+            public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial, float temperatureDifference)
+            {
+                uint id = otherThermalMaterial.ID;
+
+                if (id < HeatTransferCoefficients.Length)
+                    return HeatTransferCoefficients[id];
+                else
+                    return 0f;
             }
         }
 
         private class HumanThermalMaterial : ThermalMaterial
         {
-            public override float Density => 1000f; //at 20°C and 101,3kPa
+            protected override uint ID => 3;
 
-            public override float SpecificHeatCapacity => 4.19f; //at 20°C
+            public override float Density => 998f;
 
-            public override float ThermalConductivity => 0.6f; //at 20°C and 101,3kPa
+            public override float SpecificHeatCapacity => 0.209f;
 
-            public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial)
+            public override float ThermalConductivity => throw new NotSupportedException();
+
+            public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial, float temperatureDifference)
             {
-                throw new NotImplementedException();
+                if (otherThermalMaterial == InsideAir)
+                    return 1.183f * Mathf.Pow(temperatureDifference, 0.347f);
+
+                else
+                    return 0f;
+            }
+        }
+
+        private class WindowOpenThermalMaterial : ThermalMaterial
+        {
+            protected override uint ID => 4;
+
+            public override float Density => 2579f;
+
+            public override float SpecificHeatCapacity => 840f;
+
+            public override float ThermalConductivity => throw new NotSupportedException();
+
+            public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial, float temperatureDifference)
+            {
+                if (otherThermalMaterial == InsideAir)
+                    return 8.1f;
+                else
+                    return 0f;
+            }
+        }
+
+        private class WindowClosedThermalMaterial : ThermalMaterial
+        {
+            protected override uint ID => 5;
+
+            public override float Density => 2579f;
+
+            public override float SpecificHeatCapacity => 840;
+
+            public override float ThermalConductivity => throw new NotSupportedException();
+
+            public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial, float temperatureDifference)
+            {
+                if (otherThermalMaterial == InsideAir)
+                    return 12f;
+                else
+                    return 0f;
+            }
+        }
+
+        private class HeaterThermalMaterial : ThermalMaterial
+        {
+            protected override uint ID => 6;
+
+            public override float Density => 1000f;
+
+            public override float SpecificHeatCapacity => 4190;
+
+            public override float ThermalConductivity => throw new NotSupportedException();
+
+            public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial, float temperatureDifference)
+            {
+                if (otherThermalMaterial == InsideAir)
+                    return 1500f;
+                else
+                    return 0f;
             }
         }
     }
