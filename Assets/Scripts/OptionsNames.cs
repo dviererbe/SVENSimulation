@@ -14,6 +14,7 @@ namespace Assets.Scripts
         public const string OUTSIDE_TEMPERATURE = "Outside Temperature";
         public const string INITIAL_ROOM_TEMPERATURE = "Initial Room Temperature";
         public const string THERMAL_PIXEL_SIZE = "Thermal Pixel Size";
+        public const string THERMAL_TICK_DURATION = "Thermal Tick Duration";
         public const string USERNAME = "Username";
         public const string PASSWORD = "Password";
         public const string SERVER_ADDRESS = "Server Address";
@@ -21,6 +22,6 @@ namespace Assets.Scripts
         public const string USER_COUNT = "User Count";
         public const string MOVEMENT_SPEED = "Movement Speed";
         public const string CAMERA_SPEED = "Camera Speed";
-        public const string VORLESUNG = "Vorlesung";
+        public const string LECTURE = "Lecture";
     }
 }

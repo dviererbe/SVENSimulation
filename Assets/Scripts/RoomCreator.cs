@@ -3,11 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Assets.Scripts;
+using Assets.Scripts.ObjectController;
+using Assets.Scripts.Remote;
+using Assets.Scripts.Remote.Abstractions;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
 
-public class RoomCreator : MonoBehaviour
+public class RoomCreator : MonoBehaviour, IRoom
 {
     [SerializeField]
     private int _roomWidth = 30;
@@ -25,11 +28,16 @@ public class RoomCreator : MonoBehaviour
     private GameObject _wallPrefab;
 
     [SerializeField]
-    private GameObject _userPrefab;
+    private GameObject _thermometerPrefab;
 
-    private float _passedTime = 0;
+    [SerializeField]
+    private GameObject _userGroupControllerPrefab;
 
-    private float _waitTimer = 0.5f;
+    [SerializeField]
+    private GameObject _windowPrefab;
+
+    [SerializeField]
+    private GameObject _heaterPrefab;
 
     private GameObject[,] _airObjects;
 
@@ -58,31 +66,28 @@ public class RoomCreator : MonoBehaviour
     }
 
     /// <summary>
-    /// TODO: Write me!
+    /// Gets the dimensional extent of the <see cref="IRoom"/> in meter (without the wall).
     /// </summary>
-    public int RoomWidth
-    {
-        get => _roomWidth;
-        set => throw new NotImplementedException(); //TODO: Implemet me!
-    }
+    /// <remarks>
+    /// This value is not allowed to change.
+    /// </remarks>
+    public Vector3 RoomSize => new Vector3(_roomWidth - 1, _roomHeight - 1); //TODO: replace by constant;
 
     /// <summary>
-    /// TODO: Write me!
+    /// Gets the global position of the <see cref="IRoom"/>.
     /// </summary>
-    public int RoomHeight
-    {
-        get => _roomHeight;
-        set => throw new NotImplementedException(); //TODO: Implemet me!
-    }
+    /// <remarks>
+    /// This value is not allowed to change.
+    /// </remarks>
+    public Vector3 RoomPosition => new Vector3(1, 1, 0); //TODO: replace by constant;
 
     /// <summary>
-    /// TODO: Write me!
+    /// Gets the thickness of the walls of the <see cref="IRoom"/>.
     /// </summary>
-    public float WallThickness
-    {
-        get => _wallThickness;
-        set => throw new NotImplementedException(); //TODO: Implemet me!
-    }
+    /// <remarks>
+    /// This value is not allowed to change.
+    /// </remarks>
+    public float WallThickness => _wallThickness;
 
     /// <summary>
     /// TODO: Write me!
@@ -106,23 +111,48 @@ public class RoomCreator : MonoBehaviour
 
         #endregion
 
+        IServerConnection serverConnection = GameObject.Find("SimulatedServer").GetComponent<SimulatedServer>().SimulatedRemoteConnection;
+
         #region ThermalManager
 
+        GameObject userGroupControllerObject = Instantiate(_userGroupControllerPrefab);
+        UserGroupController userGroupController = userGroupControllerObject.GetComponent<UserGroupController>();
+
+        GameObject windowObject = Instantiate(_windowPrefab);
+        windowObject.transform.position = new Vector3(5, 0);
+        WindowController windowController = windowObject.GetComponent<WindowController>();
+        windowController.RemoteWindow = new RemoteWindow(serverConnection, "window");
+
+
         RoomThermalManagerBuilder thermalManagerBuilder = new RoomThermalManagerBuilder();
-        thermalManagerBuilder.InitialTemperature = new Temperature(OptionsManager.InitialRoomTemperature, TemperatureUnit.Celsius);
+        thermalManagerBuilder.Room = this;
+        thermalManagerBuilder.ThermalPixelSize = new Temperature(OptionsManager.InitialRoomTemperature, TemperatureUnit.Celsius);
+        thermalManagerBuilder.OutsideTemperature = OutsideTemperatureSource.Instance;
+        thermalManagerBuilder.InitialRoomTemperature = new ConstantTemperatureSource(Temperature.FromCelsius(OptionsManager.InitialRoomTemperature));
         thermalManagerBuilder.ThermalPixelSize = OptionsManager.ThermalPixelSize;
-        thermalManagerBuilder.Position = new Vector3(1, 1, 0);
-        thermalManagerBuilder.Size = new Vector3(RoomWidth - 1, RoomHeight - 1);
+        userGroupController.CreateUsers(thermalManagerBuilder);
+        thermalManagerBuilder.AddThermalObject(windowController);
+
 
         _roomThermalManager = thermalManagerBuilder.Build();
         _roomThermalManager.Start();
 
+        userGroupController.AddRoomThermalManagerToUsers(_roomThermalManager);
+        windowController.RoomThermalManager = _roomThermalManager;
+
         #endregion
 
-        GameObject userObject = Instantiate(_userPrefab);
-        UserController userController = userObject.GetComponent<UserController>();
-        userController.RoomThermalManager = _roomThermalManager;
+        
 
+        
+
+        GameObject thermometerObject = Instantiate(_thermometerPrefab);
+        thermometerObject.transform.parent = gameObject.transform;
+        ThermometerController thermometerController = thermometerObject.GetComponent<ThermometerController>();
+        thermometerController.RoomThermalManager = _roomThermalManager;
+        thermometerController.RemoteThermometer = new RemoteThermometer(serverConnection, "thermometer");
+        thermometerController.Position = new Vector3(1, 1);
+        
         #region Air Creator
 
         AirPrefab.transform.localScale = new Vector3(
@@ -131,8 +161,8 @@ public class RoomCreator : MonoBehaviour
             z: WallThickness / _roomThermalManager.ThermalPixelSize);
 
         _airObjects = new GameObject[
-            (RoomHeight - 2) * Convert.ToInt32(_roomThermalManager.ThermalPixelSize),
-            (RoomWidth - 2) * Convert.ToInt32(_roomThermalManager.ThermalPixelSize)];
+            (_roomHeight - 2) * Convert.ToInt32(_roomThermalManager.ThermalPixelSize),
+            (_roomHeight - 2) * Convert.ToInt32(_roomThermalManager.ThermalPixelSize)];
 
         for (int i = 0; i < _airObjects.GetLength(0); i++)
         {
@@ -160,14 +190,14 @@ public class RoomCreator : MonoBehaviour
         float tileSizeX = transform.lossyScale.x;
         float tileSizeY = transform.localScale.y;
 
-        _wallObjects = new GameObject[RoomHeight, RoomWidth];
+        _wallObjects = new GameObject[_roomHeight, _roomWidth];
 
-        for (int i = 0; i < RoomHeight; i++)
+        for (int i = 0; i < _roomHeight; i++)
         {
-            for (int j = 0; j < RoomWidth; j++)
+            for (int j = 0; j < _roomWidth; j++)
             {
-                if ((i == 0 || i == RoomHeight - 1) ||
-                    (j == 0 || j == RoomWidth - 1))
+                if ((i == 0 || i == _roomHeight - 1) ||
+                    (j == 0 || j == _roomWidth - 1))
                 {
                     GameObject wallObject = Instantiate(
                                 WallPrefab, //the GameObject that will be instantiated

@@ -7,38 +7,74 @@ using UnityEngine;
 
 namespace Assets.Scripts.Simulation.Abstractions
 {
-    public interface IRoomThermalManager
+    /// <summary>
+    /// Abstraction for a thermal simulation of a <see cref="IRoom"/>.
+    /// </summary>
+    public interface IRoomThermalManager : ITemperatureSource<Vector3>
     {
-        Vector3 RoomSize { get; }
+        /// <summary>
+        /// Occurs when <see cref="ThermalPixelSize"/> changed.
+        /// </summary>
+        event EventHandler<float> OnThermalPixelSizeChanged;
 
-        Vector3 RoomPosition { get; }
+        /// <summary>
+        /// Occurs when <see cref="ThermalTickDuration"/> changed.
+        /// </summary>
+        event EventHandler<float> OnThermalTickDurationChanged;
 
+        /// <summary>
+        /// Gets the <see cref="IRoom"/> that is thermally simulated.
+        /// </summary>
+        IRoom Room { get; }
+
+        /// <summary>
+        /// Gets or sets the size of the thermal-pixels in meter.
+        /// </summary>
         float ThermalPixelSize { get; set; }
 
         /// <summary>
-        /// called on the frame when a script is enabled just before any of the Update methods are called the first time
+        /// Gets or sets the duration of an thermal-update in seconds.
+        /// </summary>
+        float ThermalTickDuration { get; set; }
+
+        /// <summary>
+        /// Gets the temperature statistics of all rendered frames.
+        /// </summary>
+        TemperatureStatistics TotalTemperatureStatistics { get; }
+
+        /// <summary>
+        /// Gets the temperature statistics of the captured time frame.
+        /// </summary>
+        TemperatureStatistics CapturedTemperatureStatistics { get; }
+
+        /// <summary>
+        /// Gets the temperature statistics of the current rendered frame.
+        /// </summary>
+        TemperatureStatistics CurrentTemperatureStatistics { get; }
+
+        /// <summary>
+        /// Resets the <see cref="TemperatureStatistics"/> for the <see cref="CapturedTemperatureStatistics"/> property.
+        /// </summary>
+        void ResetCapturedTemperatureStatistics();
+
+        /// <summary>
+        /// Adds a <see cref="IThermalObject"/> to the thermal simulation of the <see cref="Room"/>.
+        /// </summary>
+        /// <param name="thermalObject">
+        /// The <see cref="IThermalObject"/> that should be added.
+        /// </param>
+        void AddThermalObject(IThermalObject thermalObject);
+
+        /// <summary>
+        /// Called on the frame when a script is enabled just before any of the Update methods are called the first time.
         /// <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Start.html">MonoBehaviour.Start</see>
         /// </summary>
         void Start();
 
         /// <summary>
-        /// called every frame, if the MonoBehaviour is enabled
+        /// Called every frame, if the MonoBehaviour is enabled.
         /// <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html">MonoBehaviour.Update</see>
         /// </summary>
         void Update();
-
-        /// <summary>
-        /// Gets the temperature at a certain point in space.
-        /// </summary>
-        /// <param name="position">
-        ///
-        /// </param>
-        /// <param name="temperatureUnit">
-        ///
-        /// </param>
-        /// <returns>
-        ///
-        /// </returns>
-        Temperature GetTemperature(Vector3 position);
     }
 }

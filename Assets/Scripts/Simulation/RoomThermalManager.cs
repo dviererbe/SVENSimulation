@@ -2,364 +2,774 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using Assets.Scripts.Simulation.Abstractions;
+using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Simulation
 {
     partial class RoomThermalManagerBuilder
     {
-        private class RoomRoomThermalManager : IRoomThermalManager
+        //TODO: Documentation
+        private class RoomThermalManager : IRoomThermalManager
         {
-            private readonly struct ThermalPixel
+            private struct SurfaceDescriptor
             {
-                public readonly Temperature Temperature;
+                public readonly Vector2Int LeftBottomPixel;
+                public readonly Vector2Int RightUpperPixel;
 
-                public ThermalPixel(Temperature temperature)
+                public SurfaceDescriptor(Vector2Int leftBottomPixel, Vector2Int rightUpperPixel)
                 {
-                    Temperature = temperature;
+                    LeftBottomPixel = leftBottomPixel;
+                    RightUpperPixel = rightUpperPixel;
                 }
             }
 
-            private Vector3 _upperRightCorner;
+            private struct ThermalPixel
+            {
+                public readonly ThermalMaterial ThermalMaterial;
+                public readonly Temperature Temperature;
+                public readonly IThermalObject Reference;
+
+                public List<IThermalObject> MovableThermalObjects;
+
+                public ThermalPixel(
+                    ThermalMaterial thermalMaterial, 
+                    Temperature temperature,
+                    IThermalObject reference = null)
+                {
+                    ThermalMaterial = thermalMaterial;
+                    Temperature = temperature;
+                    Reference = reference;
+                    MovableThermalObjects = null;
+                }
+
+                public ThermalPixel(
+                    ThermalPixel thermalPixel,
+                    Temperature temperature)
+                {
+                    ThermalMaterial = thermalPixel.ThermalMaterial;
+                    Temperature = temperature;
+                    Reference = thermalPixel.Reference;
+                    MovableThermalObjects = null;
+                }
+            }
+
+            /// <summary>
+            /// Occurs when <see cref="ThermalPixelSize"/> changed.
+            /// </summary>
+            public event EventHandler<float> OnThermalPixelSizeChanged;
+
+            /// <summary>
+            /// Occurs when <see cref="ThermalTickDuration"/> changed.
+            /// </summary>
+            public event EventHandler<float> OnThermalTickDurationChanged;
+
+            private readonly object _thermalUpdateLock;
 
             private float _thermalPixelSize;
+            private float _thermalPixelSizeSquared;
+            private float _thermalPixelSizeCubed;
 
-            private Temperature _outsideTemperature;
-
-            private ThermalPixel[,] _thermalPixels;
+            private float _thermalTickDuration;
 
             private float _remainingTime = 0f;
 
-            public RoomRoomThermalManager(
-                Vector3 roomSize,
-                Vector3 roomPosition,
-                float thermalPixelSize,
-                Temperature initialTemperature)
+            private ThermalPixel[,] _thermalPixels;
+
+            private Temperature _outsideTemperature;
+            private readonly ITemperatureSource _outsideTemperatureSource;
+
+            private readonly List<IThermalObject> _movableThermalObjects;
+            private readonly List<IThermalObject> _stationaryThermalObjects;
+
+            private readonly Dictionary<IThermalObject, float> _surfaceAreaPerThermalPixelOfThermalObject;
+
+            private readonly Dictionary<IThermalObject, (Vector2 Position, SurfaceDescriptor? Surface)> _movableThermalObjectsPositionCache;
+            
+            private Vector2Int _leftBottomRoomPixel;
+
+            private readonly TemperatureStatisticsBuilder _totalTemperatureStatisticsBuilder;
+            private TemperatureStatisticsBuilder _capturedTemperatureStatisticsBuilder;
+
+            public RoomThermalManager(
+                IRoom room, 
+                float initialThermalPixelSize,
+                float initialThermalTickDuration,
+                ITemperatureSource outsideTemperatureSource,
+                ITemperatureSource<Vector3> initialRoomTemperatureSource,
+                IEnumerable<IThermalObject> initialThermalObjects = null)
             {
-                RoomSize = roomSize;
-                RoomPosition = roomPosition;
-                _thermalPixelSize = thermalPixelSize;
-                _outsideTemperature = Temperature.FromCelsius(10f);
+                #region Thermal Pixel Size Validation
 
-                DrawThermalPixels(initialTemperature);
-            }
+                if (float.IsNaN(initialThermalPixelSize))
+                    throw new ArgumentOutOfRangeException(nameof(initialThermalPixelSize), initialThermalPixelSize, "NaN is an invalid size value.");
 
-            public Vector3 RoomSize { get; }
+                if (float.IsPositiveInfinity(initialThermalPixelSize))
+                    throw new ArgumentOutOfRangeException(nameof(initialThermalPixelSize), initialThermalPixelSize, "Positive infinity is an invalid size value.");
 
-            public Vector3 RoomPosition { get; }
+                if (float.IsNegativeInfinity(initialThermalPixelSize))
+                    throw new ArgumentOutOfRangeException(nameof(initialThermalPixelSize), initialThermalPixelSize, "Negative infinity is an invalid size value.");
 
-            public Temperature OutsideTemperature
-            {
-                get => _outsideTemperature;
-                set
+                if (initialThermalPixelSize <= 0f)
+                    throw new ArgumentOutOfRangeException(nameof(initialThermalPixelSize), initialThermalPixelSize, "Zero or negative values are invalid size values.");
+                
+                #endregion
+
+                #region Thermal Tick Duration Validation
+
+                if (float.IsNaN(initialThermalTickDuration))
+                    throw new ArgumentOutOfRangeException(nameof(initialThermalTickDuration), initialThermalTickDuration, "NaN is an invalid duration value.");
+
+                if (float.IsPositiveInfinity(initialThermalTickDuration))
+                    throw new ArgumentOutOfRangeException(nameof(initialThermalTickDuration), initialThermalTickDuration, "Positive infinity is an invalid duration value.");
+
+                if (float.IsNegativeInfinity(initialThermalTickDuration))
+                    throw new ArgumentOutOfRangeException(nameof(initialThermalTickDuration), initialThermalTickDuration, "Negative infinity is an invalid duration value.");
+
+                if (initialThermalTickDuration <= 0f)
+                    throw new ArgumentOutOfRangeException(nameof(initialThermalTickDuration), initialThermalTickDuration, "Zero or negative values are invalid duration values.");
+
+                #endregion
+
+                _thermalUpdateLock = new object();
+
+                Room = room ?? throw new ArgumentNullException(nameof(room));
+
+                _thermalPixelSize = initialThermalPixelSize;
+                _thermalPixelSizeSquared = _thermalPixelSize * _thermalPixelSize;
+                _thermalPixelSizeCubed = _thermalPixelSizeSquared * _thermalPixelSize;
+
+                _thermalTickDuration = initialThermalTickDuration;
+                _outsideTemperatureSource = outsideTemperatureSource ?? throw new ArgumentNullException(nameof(outsideTemperatureSource));
+                _outsideTemperature = outsideTemperatureSource.GetTemperature();
+
+                _stationaryThermalObjects = new List<IThermalObject>();
+                _movableThermalObjects = new List<IThermalObject>();
+                _movableThermalObjectsPositionCache = new Dictionary<IThermalObject, (Vector2 Position, SurfaceDescriptor? Surface)>();
+                
+                if (initialThermalObjects != null)
                 {
-                    if (value != _outsideTemperature)
+                    foreach (IThermalObject thermalObject in initialThermalObjects)
                     {
-                        throw new NotImplementedException();
+                        if (thermalObject.CanNotChangePosition)
+                        {
+                            _stationaryThermalObjects.Add(thermalObject);
+                        }
+                        else
+                        {
+                            _movableThermalObjects.Add(thermalObject);
+                        }
                     }
                 }
+
+                _totalTemperatureStatisticsBuilder = new TemperatureStatisticsBuilder();
+                _capturedTemperatureStatisticsBuilder = new TemperatureStatisticsBuilder();
+
+                _surfaceAreaPerThermalPixelOfThermalObject = new Dictionary<IThermalObject, float>();
+
+                CalculateThermalPixels(initialThermalPixelSize, initialRoomTemperatureSource);
             }
 
+            /// <summary>
+            /// Gets the <see cref="IRoom"/> that is thermally simulated.
+            /// </summary>
+            public IRoom Room { get; }
+
+            /// <summary>
+            /// Gets or sets the size of the thermal-pixels in meter.
+            /// </summary>
             public float ThermalPixelSize
             {
                 get => _thermalPixelSize;
                 set
                 {
-                    if (Mathf.Abs(_thermalPixelSize - value) > 0.01f)
+                    if (float.IsNaN(value))
+                        throw new ArgumentOutOfRangeException(nameof(ThermalPixelSize), value, "NoN is an invalid size value.");
+
+                    if (float.IsPositiveInfinity(value))
+                        throw new ArgumentOutOfRangeException(nameof(ThermalPixelSize), value, "Positive infinity is an invalid size value.");
+
+                    if (float.IsNegativeInfinity(value))
+                        throw new ArgumentOutOfRangeException(nameof(ThermalPixelSize), value, "Negative infinity is an invalid size value.");
+
+                    if (value <= 0f)
+                        throw new ArgumentOutOfRangeException(nameof(ThermalPixelSize), value, "Zero or negative values are invalid size values.");
+
+                    //dynamic neighbourhood "https://en.wikipedia.org/wiki/Neighbourhood_(mathematics)"
+                    //change of pixel size has to be grater than 1% of the value tried to set or 10cm.
+                    if (Mathf.Abs(_thermalPixelSize - value) > Mathf.Min(value * 0.01f, 0.1f))
+                        return;
+
+                    lock (_thermalUpdateLock)
                     {
-                        RedrawThermalPixels(value);
+                        CalculateThermalPixels(value, this);
+                        _thermalPixelSize = value;
+                        _thermalPixelSizeSquared = value * value;
+                        _thermalPixelSizeCubed = _thermalPixelSizeSquared * value;
+
+                        OnThermalPixelSizeChanged?.Invoke(this, value);
                     }
                 }
             }
 
             /// <summary>
-            /// called on the frame when a script is enabled just before any of the Update methods are called the first time
+            /// Gets or sets the duration of an thermal-update in seconds.
+            /// </summary>
+            public float ThermalTickDuration
+            {
+                get => _thermalTickDuration;
+                set
+                {
+                    if (float.IsNaN(value))
+                        throw new ArgumentOutOfRangeException(nameof(ThermalTickDuration), value, "NoN is an invalid duration value.");
+
+                    if (float.IsPositiveInfinity(value))
+                        throw new ArgumentOutOfRangeException(nameof(ThermalTickDuration), value, "Positive infinity is an invalid duration value.");
+
+                    if (float.IsNegativeInfinity(value))
+                        throw new ArgumentOutOfRangeException(nameof(ThermalTickDuration), value, "Negative infinity is an invalid duration value.");
+
+                    if (value <= 0f)
+                        throw new ArgumentOutOfRangeException(nameof(ThermalTickDuration), value, "Zero or negative values are invalid duration values.");
+
+                    //dynamic neighbourhood "https://en.wikipedia.org/wiki/Neighbourhood_(mathematics)"
+                    //change of pixel size has to be grater than 1% of the value tried to set or 1ms.
+                    if (Mathf.Abs(_thermalTickDuration - value) > Mathf.Min(value * 0.01f, 0.001f))
+                        return;
+
+                    lock (_thermalUpdateLock)
+                    {
+                        _thermalTickDuration = value;
+
+                        OnThermalTickDurationChanged?.Invoke(this, value);
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Gets the temperature statistics of all rendered frames.
+            /// </summary>
+            public TemperatureStatistics TotalTemperatureStatistics { get; private set; } = null;
+
+            /// <summary>
+            /// Gets the temperature statistics of the captured time frame.
+            /// </summary>
+            public TemperatureStatistics CapturedTemperatureStatistics { get; private set; } = null;
+
+            /// <summary>
+            /// Gets the temperature statistics of the current rendered frame.
+            /// </summary>
+            public TemperatureStatistics CurrentTemperatureStatistics { get; private set; } = null;
+
+            /// <summary>
+            /// Resets the <see cref="TemperatureStatistics"/> for the <see cref="CapturedTemperatureStatistics"/> property.
+            /// </summary>
+            public void ResetCapturedTemperatureStatistics()
+            {
+                lock (_thermalUpdateLock)
+                {
+                    _capturedTemperatureStatisticsBuilder = new TemperatureStatisticsBuilder();
+                    CapturedTemperatureStatistics = null;
+                }
+            }
+
+            /// <summary>
+            /// Adds a <see cref="IThermalObject"/> to the thermal simulation of the <see cref="Room"/>.
+            /// </summary>
+            /// <param name="thermalObject">
+            /// The <see cref="IThermalObject"/> that should be added.
+            /// </param>
+            public void AddThermalObject(IThermalObject thermalObject)
+            {
+                if (thermalObject == null) 
+                    return;
+
+                lock (_thermalUpdateLock)
+                {
+                    if (thermalObject.CanNotChangePosition)
+                    {
+                        if (_stationaryThermalObjects.Contains(thermalObject))
+                            return;
+
+                        _stationaryThermalObjects.Add(thermalObject);
+                        CalculateThermalPixels(_thermalPixelSize, this);
+                    }
+                    else
+                    {
+                        if (_movableThermalObjects.Contains(thermalObject))
+                            return;
+
+                        _movableThermalObjects.Add(thermalObject);
+                        _surfaceAreaPerThermalPixelOfThermalObject.Add(
+                            thermalObject,
+                            CalculateSurfaceAreaPerThermalPixelOfThermalObject(thermalObject));
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Gets the <see cref="Temperature"/> at a certain <paramref name="position"/> in the room.
+            /// </summary>
+            /// <param name="position">
+            /// Absolute (global) position where the <see cref="Temperature"/> should be returned.
+            /// </param>
+            /// <returns>
+            /// The <see cref="Temperature"/> at the specified <paramref name="position"/>.
+            /// </returns>
+            public Temperature GetTemperature(Vector3 position)
+            {
+                Vector2 relativePosition = position - Room.RoomPosition;
+
+                Vector2Int thermalPixelIndex = GetThermalPixelIndexOfPosition(relativePosition, _thermalPixelSize, _leftBottomRoomPixel);
+
+                if (thermalPixelIndex.x < 0 ||
+                    thermalPixelIndex.y < 0 ||
+                    thermalPixelIndex.x >= _thermalPixels.GetLength(0) ||
+                    thermalPixelIndex.y >= _thermalPixels.GetLength(1))
+                {
+                    return _outsideTemperature;
+                }
+                else
+                {
+                    return _thermalPixels[thermalPixelIndex.x, thermalPixelIndex.y].Temperature;
+                }
+            }
+
+            /// <summary>
+            /// Called on the frame when a script is enabled just before any of the Update methods are called the first time.
             /// <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Start.html">MonoBehaviour.Start</see>
             /// </summary>
             public void Start()
             {
-                //Just for Testing Purpose...
-                //TODO: REMOVE THIS IN PRODUCTION
-                _thermalPixels[0, 0] = new ThermalPixel(Temperature.FromCelsius(80));
+                //do nothing here
             }
 
             /// <summary>
-            /// called every frame, if the MonoBehaviour is enabled
+            /// Called every frame, if the MonoBehaviour is enabled.
             /// <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Update.html">MonoBehaviour.Update</see>
             /// </summary>
             public void Update()
             {
                 float passedTime = _remainingTime + Time.deltaTime;
-                int thermalTicks = Convert.ToInt32(passedTime);
+                int thermalTicks = Mathf.FloorToInt(passedTime / _thermalTickDuration);
 
-                _remainingTime = passedTime - thermalTicks;
+                _remainingTime = passedTime - thermalTicks * _thermalTickDuration;
 
-                for (int i = 0; i < thermalTicks; ++i)
+                TemperatureStatisticsBuilder currentTemperatureStatisticsBuilder = null;
+
+                for (int remainingThermalTicks = thermalTicks; remainingThermalTicks > 0; --remainingThermalTicks)
                 {
-                    UpdateThermalValues();
-                }
-            }
+                    #region Thermal Update
 
-            private ThermalPixel CalculateUpdatedThermalPixel(ThermalPixel[,] thermalPixels, int x, int y)
-            {
-                int count = 0;
-                float q = 0f;
-
-                int xLength = thermalPixels.GetLength(0);
-                int yLength = thermalPixels.GetLength(1);
-
-                if (x > 0 && xLength > 1)
-                {
-                    q += thermalPixels[x - 1, y].Temperature.ToKelvin();
-                    ++count;
-                }
-
-                if (y > 0 && yLength > 1)
-                {
-                    q += thermalPixels[x, y - 1].Temperature.ToKelvin();
-                    ++count;
-                }
-
-                if (x < (xLength - 1) && xLength > 1)
-                {
-                    q += thermalPixels[x + 1, y].Temperature.ToKelvin();
-                    ++count;
-                }
-
-                if (y < (yLength - 1) && yLength > 1)
-                {
-                    q += thermalPixels[x, y + 1].Temperature.ToKelvin();
-                    ++count;
-                }
-
-                q -= count * thermalPixels[x,y].Temperature.ToKelvin();
-
-                return new ThermalPixel(new Temperature(
-                        value: ((q * ThermalMaterial.Air.GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial.Air)) / 
-                                (ThermalMaterial.Air.Density * _thermalPixelSize * ThermalMaterial.Air.SpecificHeatCapacity))
-                               + thermalPixels[x, y].Temperature.ToKelvin(),
-                        unit: TemperatureUnit.Kelvin));
-            }
-
-            private void UpdateThermalValues()
-            {
-                lock (_thermalPixels)
-                {
-                    Vector2Int discreteRoomSize = new Vector2Int(
-                        x: _thermalPixels.GetLength(0),
-                        y: _thermalPixels.GetLength(1));
-
-                    if (discreteRoomSize.x == 0 || discreteRoomSize.y == 0)
-                        return;
-
-                    if (discreteRoomSize.x == 1 && discreteRoomSize.y == 1)
-                        return;
-
-                    ThermalPixel[,] thermalPixels = new ThermalPixel[discreteRoomSize.x, discreteRoomSize.y];
-
-                    for (int x = 0; x < discreteRoomSize.x; ++x)
+                    if (remainingThermalTicks == 1)
                     {
-                        for (int y = 0; y < discreteRoomSize.y; ++y)
+                        currentTemperatureStatisticsBuilder = new TemperatureStatisticsBuilder();
+                    }
+
+                    lock (_thermalUpdateLock)
+                    {
+                        Debug.Log("Thermal Tick");
+
+                        _outsideTemperature = _outsideTemperatureSource.GetTemperature();
+
+                        Vector2Int discreteRoomSize = new Vector2Int(
+                            x: _thermalPixels.GetLength(0),
+                            y: _thermalPixels.GetLength(1));
+
+                        ThermalPixel[,] thermalPixels = new ThermalPixel[discreteRoomSize.x,discreteRoomSize.y];
+                        Dictionary<IThermalObject, float> heatFlowToThermalObjects = new Dictionary<IThermalObject, float>();
+
+                        foreach (IThermalObject movableThermalObject in _movableThermalObjects)
                         {
-                            thermalPixels[x, y] = CalculateUpdatedThermalPixel(_thermalPixels, x, y);
+                            Vector2 objectPosition = movableThermalObject.Position;
+                            SurfaceDescriptor? surfaceDescriptor = null;
+
+                            if (_movableThermalObjectsPositionCache.TryGetValue(movableThermalObject, out var cacheEntry))
+                            {
+                                if (objectPosition.GetDistanceTo(cacheEntry.Position) < (_thermalPixelSize / 4))
+                                {
+                                    objectPosition = cacheEntry.Position;
+                                    surfaceDescriptor = cacheEntry.Surface;
+
+                                    goto AddThermalObjectToPixels;
+                                }
+
+                                _movableThermalObjectsPositionCache.Remove(movableThermalObject);
+                            }
+
+                            if (TryGetThermalPixelsOfSurface(
+                                objectPosition,
+                                movableThermalObject.Size,
+                                _thermalPixels,
+                                _thermalPixelSize,
+                                _leftBottomRoomPixel,
+                                out var surface))
+                            {
+                                surfaceDescriptor = surface;
+                            }
+                            else
+                            {
+                                surfaceDescriptor = null;
+                            }
+
+                            _movableThermalObjectsPositionCache.Add(movableThermalObject, (objectPosition, surfaceDescriptor));
+
+                            AddThermalObjectToPixels:
+                            
+                            if (surfaceDescriptor.HasValue)
+                            {
+                                surface = surfaceDescriptor.Value;
+
+                                for (int x = surface.LeftBottomPixel.x; x <= surface.RightUpperPixel.x; ++x)
+                                {
+                                    for (int y = surface.LeftBottomPixel.y; y <= surface.RightUpperPixel.y; ++y)
+                                    {
+                                        List<IThermalObject> movableThermalObjectsList = _thermalPixels[x, y].MovableThermalObjects;
+
+                                        if (movableThermalObjectsList == null)
+                                        {
+                                            movableThermalObjectsList = new List<IThermalObject>();
+                                            _thermalPixels[x, y].MovableThermalObjects = movableThermalObjectsList;
+                                        }
+
+                                        movableThermalObjectsList.Add(movableThermalObject);
+                                    }
+                                }
+                            }
+                        }
+
+                        int mostRightX = discreteRoomSize.x - 1;
+                        int mostUpY = discreteRoomSize.y - 1;
+
+                        for (int x = 0; x < discreteRoomSize.x; ++x)
+                        {
+                            for (int y = 0; y < discreteRoomSize.y; ++y)
+                            {
+                                int outsidePixelNeighbours = 0;
+
+                                float heatFlow = 0f;
+                                float partialHeatFlow;
+                                float temperatureDifference;
+
+                                ThermalPixel thermalPixel = _thermalPixels[x, y];
+                                
+                                if (x > 0) //Thermal pixel has a left neighbour pixel.
+                                {
+                                    heatFlow += CalculateHeatFlow(thermalPixel, _thermalPixels[x - 1, y]);
+                                }
+                                else 
+                                {
+                                    ++outsidePixelNeighbours;
+                                }
+
+                                if (y > 0) //Thermal pixel has a bottom neighbour pixel.
+                                {
+                                    heatFlow += CalculateHeatFlow(thermalPixel, _thermalPixels[x, y - 1]);
+                                }
+                                else 
+                                {
+                                    ++outsidePixelNeighbours;
+                                }
+
+                                if (x < mostRightX) //Thermal pixel has a right neighbour pixel.
+                                {
+                                    heatFlow += CalculateHeatFlow(thermalPixel, _thermalPixels[x + 1, y]);
+                                }
+                                else 
+                                {
+                                    ++outsidePixelNeighbours;
+                                }
+
+                                if (y < mostUpY) //Thermal pixel has a bottom neighbour pixel.
+                                {
+                                    heatFlow += CalculateHeatFlow(thermalPixel, _thermalPixels[x, y + 1]);
+                                }
+                                else 
+                                {
+                                    ++outsidePixelNeighbours;
+                                }
+
+                                if (thermalPixel.Reference != null)
+                                {
+                                    partialHeatFlow = CalculateHeatFlow(thermalPixel, thermalPixel.Reference);
+                                    heatFlow += partialHeatFlow;
+
+                                    if (heatFlowToThermalObjects.ContainsKey(thermalPixel.Reference))
+                                    {
+                                        heatFlowToThermalObjects[thermalPixel.Reference] -= partialHeatFlow;
+                                    }
+                                    else
+                                    {
+                                        heatFlowToThermalObjects.Add(thermalPixel.Reference, -partialHeatFlow);
+                                    }
+                                }
+
+                                if (thermalPixel.MovableThermalObjects != null)
+                                {
+                                    foreach (var movableThermalObject in thermalPixel.MovableThermalObjects)
+                                    {
+                                        partialHeatFlow = CalculateHeatFlow(thermalPixel, movableThermalObject);
+                                        heatFlow += partialHeatFlow;
+
+                                        if (heatFlowToThermalObjects.ContainsKey(movableThermalObject))
+                                        {
+                                            heatFlowToThermalObjects[movableThermalObject] -= partialHeatFlow;
+                                        }
+                                        else
+                                        {
+                                            heatFlowToThermalObjects.Add(movableThermalObject, -partialHeatFlow);
+                                        }
+                                    }
+                                }
+
+                                if (outsidePixelNeighbours > 0)
+                                {
+                                    temperatureDifference =
+                                        _outsideTemperature.ToKelvin().Value -
+                                        thermalPixel.Temperature.ToKelvin().Value;
+
+                                    heatFlow += _thermalPixelSizeSquared *
+                                                       thermalPixel.ThermalMaterial.GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial.OutsideAir, temperatureDifference) *
+                                                       temperatureDifference * outsidePixelNeighbours;
+                                }
+
+                                float newTemperatureValue = thermalPixel.Temperature.ToKelvin().Value +
+                                                            (heatFlow * _thermalTickDuration) /
+                                                            (thermalPixel.ThermalMaterial.Density *
+                                                             _thermalPixelSizeCubed * thermalPixel.ThermalMaterial
+                                                                 .SpecificHeatCapacity);
+
+                                if (float.IsNaN(newTemperatureValue) || float.IsInfinity(newTemperatureValue))
+                                    Debug.Log(newTemperatureValue);
+
+                                Temperature newTemperature = Temperature.FromKelvin(newTemperatureValue);
+                                
+                                currentTemperatureStatisticsBuilder?.AddTemperatureValue(newTemperature);
+                                _capturedTemperatureStatisticsBuilder.AddTemperatureValue(newTemperature);
+                                _totalTemperatureStatisticsBuilder.AddTemperatureValue(newTemperature);
+
+                                thermalPixels[x,y] = new ThermalPixel(thermalPixel, newTemperature);
+                            }
+                        }
+
+                        foreach (var heatFlowToThermalObject in heatFlowToThermalObjects)
+                        {
+                            //Key = Thermal object.
+                            //Value = Heat that was transferred to the thermal object during the thermal update.
+
+                            heatFlowToThermalObject.Key.ThermalUpdate(heatFlowToThermalObject.Value * ThermalTickDuration);    
+                        }
+
+                        _thermalPixels = thermalPixels;
+                    }
+
+                    #endregion
+                }
+
+                if (thermalTicks > 0)
+                {
+                    //currentTemperatureStatisticsBuilder is guaranteed to be not null
+                    CurrentTemperatureStatistics = currentTemperatureStatisticsBuilder.Build();
+                }
+
+                CapturedTemperatureStatistics = _capturedTemperatureStatisticsBuilder.Build();
+                TotalTemperatureStatistics = _totalTemperatureStatisticsBuilder.Build();
+            }
+
+            private Vector2Int GetThermalPixelIndexOfPosition(
+                Vector2 relativePosition,
+                float thermalPixelSize,
+                Vector2Int leftBottomRoomPixel)
+            {
+                return new Vector2Int(
+                    x: Mathf.FloorToInt(relativePosition.x / thermalPixelSize) + leftBottomRoomPixel.x,
+                    y: Mathf.FloorToInt(relativePosition.y / thermalPixelSize) + leftBottomRoomPixel.y);
+            }
+
+            private bool TryGetThermalPixelsOfSurface(
+                Vector2 position, 
+                Vector2 size, 
+                ThermalPixel[,] thermalPixels, 
+                float thermalPixelSize,
+                Vector2Int leftBottomRoomPixel,
+                out SurfaceDescriptor surfaceDescriptor)
+            {
+                Vector2 relativePosition = position - (Vector2)Room.RoomPosition;
+
+                Vector2Int leftBottomPixelIndex = GetThermalPixelIndexOfPosition(relativePosition, thermalPixelSize, leftBottomRoomPixel);
+                Vector2Int rightUpperPixelIndex = GetThermalPixelIndexOfPosition(relativePosition + size, thermalPixelSize, leftBottomRoomPixel);
+
+                
+                if (rightUpperPixelIndex.x < 0 ||
+                    rightUpperPixelIndex.y < 0 ||
+                    leftBottomPixelIndex.x >= thermalPixels.GetLength(0) ||
+                    leftBottomPixelIndex.y >= thermalPixels.GetLength(1))
+                {
+                    surfaceDescriptor = default;
+                    return false;
+                }
+
+                if (leftBottomPixelIndex.x < 0)
+                {
+                    leftBottomPixelIndex.x = 0;
+                }
+
+                if (leftBottomPixelIndex.y < 0)
+                {
+                    leftBottomPixelIndex.y = 0;
+                }
+
+                if (rightUpperPixelIndex.x >= thermalPixels.GetLength(0))
+                {
+                    rightUpperPixelIndex.x = thermalPixels.GetLength(0) - 1;
+                }
+
+                if (rightUpperPixelIndex.y >= thermalPixels.GetLength(1))
+                {
+                    rightUpperPixelIndex.y = thermalPixels.GetLength(1) - 1;
+                }
+
+                surfaceDescriptor = new SurfaceDescriptor(leftBottomPixelIndex, rightUpperPixelIndex);
+
+                return true;
+            }
+
+            private void CalculateThermalPixels(float thermalPixelSize, ITemperatureSource<Vector3> temperatureSource)
+            {
+                //Calculate Room Size
+                int wallThermalPixelCount = Mathf.RoundToInt(Room.WallThickness / thermalPixelSize);
+                
+                Vector2Int roomThermalPixelCount = new Vector2Int(
+                    x: Mathf.RoundToInt(Room.RoomSize.x / thermalPixelSize),
+                    y: Mathf.RoundToInt(Room.RoomSize.y / thermalPixelSize));
+
+                ThermalPixel[,] thermalPixels = new ThermalPixel[
+                    roomThermalPixelCount.x + 2 * wallThermalPixelCount,  
+                    roomThermalPixelCount.y + 2 * wallThermalPixelCount];
+
+                Vector2Int leftBottomRoomPixel = new Vector2Int(
+                    x: wallThermalPixelCount,
+                    y: wallThermalPixelCount);
+
+                Vector2Int rightUpperRoomPixel = new Vector2Int(
+                    x: thermalPixels.GetLength(0) - 1 - wallThermalPixelCount,
+                    y: thermalPixels.GetLength(1) - 1 - wallThermalPixelCount);
+
+                TemperatureStatisticsBuilder currentTemperatureStatisticsBuilder = new TemperatureStatisticsBuilder();
+
+                for (int x = 0; x < thermalPixels.GetLength(0); ++x)
+                {
+                    for (int y = 0; y < thermalPixels.GetLength(1); ++y)
+                    {
+                        Temperature temperature = temperatureSource.GetTemperature(new Vector3(
+                            x: 0.5f * thermalPixelSize + x - wallThermalPixelCount + Room.RoomPosition.x,
+                            y: 0.5f * thermalPixelSize + y - wallThermalPixelCount + Room.RoomPosition.y));
+
+                        currentTemperatureStatisticsBuilder.AddTemperatureValue(temperature);
+                        _capturedTemperatureStatisticsBuilder.AddTemperatureValue(temperature);
+                        _totalTemperatureStatisticsBuilder.AddTemperatureValue(temperature);
+
+                        if (x >= leftBottomRoomPixel.x &&
+                            x <= rightUpperRoomPixel.x &&
+                            y >= leftBottomRoomPixel.y &&
+                            y <= rightUpperRoomPixel.y)
+                        {
+                            thermalPixels[x,y] = new ThermalPixel(
+                                ThermalMaterial.InsideAir, 
+                                temperature);
+                        }
+                        else
+                        {
+                            thermalPixels[x, y] = new ThermalPixel(
+                                ThermalMaterial.Wall,
+                                temperature);
+                        }
+                    }
+                }
+
+                CurrentTemperatureStatistics = currentTemperatureStatisticsBuilder.Build();
+                CapturedTemperatureStatistics = _capturedTemperatureStatisticsBuilder.Build();
+                TotalTemperatureStatistics = _totalTemperatureStatisticsBuilder.Build();
+
+                _surfaceAreaPerThermalPixelOfThermalObject.Clear();
+
+                foreach (IThermalObject stationaryThermalObject in _stationaryThermalObjects)
+                {
+                    if (TryGetThermalPixelsOfSurface(
+                        stationaryThermalObject.Position,
+                        stationaryThermalObject.Size,
+                        thermalPixels,
+                        thermalPixelSize,
+                        leftBottomRoomPixel,
+                        out var surfaceDescriptor))
+                    {
+                        for (int x = surfaceDescriptor.LeftBottomPixel.x; x <= surfaceDescriptor.RightUpperPixel.x; ++x)
+                        {
+                            for (int y = surfaceDescriptor.LeftBottomPixel.y; y <= surfaceDescriptor.RightUpperPixel.y; ++y)
+                            {
+                                ThermalPixel thermalPixel = thermalPixels[x, y];
+
+                                if (thermalPixel.Reference != null)
+                                    throw new Exception("Overlapping Stationary Thermal Objects!");
+
+                                thermalPixels[x, y] = new ThermalPixel(thermalPixel.ThermalMaterial, thermalPixel.Temperature, stationaryThermalObject);
+                            }
                         }
                     }
 
-                    _thermalPixels = thermalPixels;
-
-
-                    /*
-                    //This implementation has a lot of code duplication, but this will run
-                    //more efficient, because we don't have to check 
-
-
-
-                    #region left bottom corner
-
-                    if (isInXDirectionGreaterThan1 && isInYDirectionGreaterThan1)
-                    {
-                        _thermalPixels[0, 0] = CalculateUpdatedThermalPixel(_thermalPixels[0, 0], _thermalPixels[1, 0], _thermalPixels[0, 1]);
-                    }
-                    else if (isInXDirectionGreaterThan1)
-                    {
-                        _thermalPixels[0, 0] = CalculateUpdatedThermalPixel(_thermalPixels[0, 0], _thermalPixels[1, 0]);
-                    }
-                    else if (isInYDirectionGreaterThan1)
-                    {
-                        _thermalPixels[0, 0] = CalculateUpdatedThermalPixel(_thermalPixels[0, 0], _thermalPixels[0, 1]);
-                    }
-
-                    #endregion
-
-                    #region left upper corner
-
-                    if (isInXDirectionGreaterThan1 && isInYDirectionGreaterThan1)
-                    {
-                        _thermalPixels[0, discreteRoomSize.y - 1] = CalculateUpdatedThermalPixel(_thermalPixels[0, discreteRoomSize.y - 1], _thermalPixels[1, discreteRoomSize.y - 1], _thermalPixels[0, discreteRoomSize.y - 2]);
-                    }
-                    else if (isInXDirectionGreaterThan1)
-                    {
-                        _thermalPixels[0, discreteRoomSize.y - 1] = CalculateUpdatedThermalPixel(_thermalPixels[0, discreteRoomSize.y - 1], _thermalPixels[1, discreteRoomSize.y - 1]);
-                    }
-                    else if (isInYDirectionGreaterThan1)
-                    {
-                        _thermalPixels[0, discreteRoomSize.y - 1] = CalculateUpdatedThermalPixel(_thermalPixels[0, discreteRoomSize.y - 1], _thermalPixels[0, discreteRoomSize.y - 2]);
-                    }
-
-                    #endregion
-
-                    #region right upper corner
-
-                    if (isInXDirectionGreaterThan1 && isInYDirectionGreaterThan1)
-                    {
-                        _thermalPixels[discreteRoomSize.y - 1, discreteRoomSize.y - 1] = CalculateUpdatedThermalPixel(_thermalPixels[0, discreteRoomSize.y - 1], _thermalPixels[1, discreteRoomSize.y - 1], _thermalPixels[0, discreteRoomSize.y - 2]);
-                    }
-                    else if (isInXDirectionGreaterThan1)
-                    {
-                        _thermalPixels[0, discreteRoomSize.y - 1] = CalculateUpdatedThermalPixel(_thermalPixels[0, discreteRoomSize.y - 1], _thermalPixels[1, discreteRoomSize.y - 1]);
-                    }
-                    else if (isInYDirectionGreaterThan1)
-                    {
-                        _thermalPixels[0, discreteRoomSize.y - 1] = CalculateUpdatedThermalPixel(_thermalPixels[0, discreteRoomSize.y - 1], _thermalPixels[0, discreteRoomSize.y - 2]);
-                    }
-
-                    #endregion
-
-
-                    thermalPixels[0, 0] = CalculateUpdatedThermalPixel(thermalPixels[0, 0], )
-
-                    /*
-
-                    
-
-
-
-
-                    //left
-                    if (discreteRoomSize.x > 0)
-                    {
-                        if (discreteRoomSize.y > 0)
-                    }
-
-                    //right line
-                    if (discreteRoomSize.x > 1)
-                    {
-
-                    }
-
-
-                    for (int x = 0; x < _thermalPixels.GetLength(0); ++x)
-                    {
-                        for (int y = 0; y < _thermalPixels.GetLength(0); ++y)
-                        {
-
-                        }
-                    }
-                    */
-
-                }
-            }
-
-            /// <summary>
-            /// Gets the temperature at a certain point in space.
-            /// </summary>
-            /// <param name="position">
-            /// Position (relative to the game world) where the temperature should be probed.
-            /// </param>
-            /// <returns>
-            /// The temperature at the specified <paramref name="position"/> as <see cref="Temperature"/>.
-            /// </returns>
-            public Temperature GetTemperature(Vector3 position)
-            {
-                if (position.x < RoomPosition.x || 
-                    position.y < RoomPosition.y)
-                {
-                    return _outsideTemperature;
+                    _surfaceAreaPerThermalPixelOfThermalObject.Add(
+                        stationaryThermalObject,
+                        CalculateSurfaceAreaPerThermalPixelOfThermalObject(stationaryThermalObject));
                 }
 
-                Vector2Int discreteRoomPosition = new Vector2Int(
-                    x: Mathf.FloorToInt((position.x - RoomPosition.x) / ThermalPixelSize),
-                    y: Mathf.FloorToInt((position.y - RoomPosition.y) / ThermalPixelSize));
-
-                if (discreteRoomPosition.x >= _thermalPixels.GetLength(0) ||
-                    discreteRoomPosition.y >= _thermalPixels.GetLength(1))
+                foreach (IThermalObject movableThermalObject in _movableThermalObjects)
                 {
-                    return _outsideTemperature;
-                }
-
-                return _thermalPixels[discreteRoomPosition.x, discreteRoomPosition.y].Temperature;
-            }
-
-            private void DrawThermalPixels(Temperature initialTemperature)
-            {
-                if (_thermalPixelSize <= 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(_thermalPixelSize), _thermalPixelSize, "Thermal-Pixel Size can't be negative.");
-                }
-
-                if (RoomSize.x <= 0 || RoomSize.y <= 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(RoomSize), RoomSize, "Size of room can't be negative.");
-                }
-
-                //The size of the room in amounts of thermal pixels.
-                Vector2Int discreteRoomSize = new Vector2Int(
-                    x: Mathf.RoundToInt(RoomSize.x / ThermalPixelSize), 
-                    y: Mathf.RoundToInt(RoomSize.y / ThermalPixelSize));
-
-                ThermalPixel[,] thermalPixels = new ThermalPixel[discreteRoomSize.x, discreteRoomSize.y];
-
-                for (int x = 0; x < discreteRoomSize.x; ++x)
-                {
-                    for (int y = 0; y < discreteRoomSize.y; ++y)
-                    {
-                        thermalPixels[x,y] = new ThermalPixel(initialTemperature.ToKelvin());
-                    }
+                    _surfaceAreaPerThermalPixelOfThermalObject.Add(
+                        movableThermalObject, 
+                        CalculateSurfaceAreaPerThermalPixelOfThermalObject(movableThermalObject));
                 }
 
                 _thermalPixels = thermalPixels;
-                _upperRightCorner = new Vector3(
-                    x: RoomPosition.x + discreteRoomSize.x * ThermalPixelSize,
-                    y: RoomPosition.y + discreteRoomSize.y * ThermalPixelSize,
-                    z: RoomPosition.z);
+                _leftBottomRoomPixel = leftBottomRoomPixel;
+                _movableThermalObjectsPositionCache.Clear();
             }
 
-            private void RedrawThermalPixels(float thermalPixelSize)
+            private float CalculateSurfaceAreaPerThermalPixelOfThermalObject(IThermalObject thermalObject)
             {
-                lock (_thermalPixels)
+                int thermalPixelCount = Mathf.RoundToInt(thermalObject.Size.x / _thermalPixelSize) *
+                                        Mathf.RoundToInt(thermalObject.Size.y / _thermalPixelSize);
+
+                return thermalObject.ThermalSurfaceArea / thermalPixelCount;
+            }
+
+            private float CalculateHeatFlow(ThermalPixel from, IThermalObject to)
+            {
+                float surfaceArea = _surfaceAreaPerThermalPixelOfThermalObject[to];
+                float temperatureDifference = (to.Temperature - from.Temperature).ToKelvin();
+
+                return surfaceArea *
+                       from.ThermalMaterial.GetHeatTransferCoefficientToOtherThermalMaterial(to.ThermalMaterial, temperatureDifference) *
+                       temperatureDifference;
+            }
+
+            private float CalculateHeatFlow(ThermalPixel from, ThermalPixel to)
+            {
+                float temperatureDifference = (to.Temperature - from.Temperature).ToKelvin();
+
+                if (from.ThermalMaterial == to.ThermalMaterial)
                 {
-                    if (thermalPixelSize <= 0)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(thermalPixelSize), thermalPixelSize, "Thermal-Pixel Size can't be negative.");
-                    }
-
-                    //The size of the room in amounts of thermal pixels.
-                    Vector2Int discreteRoomSize = new Vector2Int(
-                        x: Mathf.RoundToInt(RoomSize.x / thermalPixelSize),
-                        y: Mathf.RoundToInt(RoomSize.y / thermalPixelSize));
-
-                    ThermalPixel[,] thermalPixels = new ThermalPixel[discreteRoomSize.x, discreteRoomSize.y];
-
-                    for (int x = 0; x < discreteRoomSize.x; ++x)
-                    {
-                        for (int y = 0; y < discreteRoomSize.y; ++y)
-                        {
-                            Vector3 thermalPixelPosition = new Vector3(
-                                x: (x + 0.5f) * thermalPixelSize,
-                                y: (y + 0.5f) * thermalPixelSize);
-
-                            thermalPixels[x, y] = new ThermalPixel(GetTemperature(thermalPixelPosition).ToKelvin());
-                        }
-                    }
-
-                    _thermalPixels = thermalPixels;
-                    _upperRightCorner = new Vector3(
-                        x: RoomPosition.x + discreteRoomSize.x * thermalPixelSize,
-                        y: RoomPosition.y + discreteRoomSize.y * thermalPixelSize,
-                        z: RoomPosition.z);
-                    _thermalPixelSize = thermalPixelSize;
+                    return _thermalPixelSize * from.ThermalMaterial.ThermalConductivity * temperatureDifference;
+                }
+                else
+                {
+                    return _thermalPixelSizeSquared *
+                           from.ThermalMaterial.GetHeatTransferCoefficientToOtherThermalMaterial(to.ThermalMaterial, temperatureDifference) *
+                           temperatureDifference;
                 }
             }
         }

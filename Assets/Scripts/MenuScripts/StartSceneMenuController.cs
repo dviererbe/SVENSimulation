@@ -61,6 +61,12 @@ namespace Assets.Scripts
         [SerializeField]
         private InputField _userCountInputField;
 
+        [SerializeField]
+        private Slider _movementSpeed;
+
+        [SerializeField]
+        private Slider _zoomSpeed;
+
         private InputFieldInputChecker<float> CreateScaleInputChecker(InputField inputField, float initialValue)
         {
             return new InputFieldInputChecker<float>(
@@ -124,6 +130,8 @@ namespace Assets.Scripts
             };
 
             _requiresAuthenticationToggle.isOn = OptionsManager.RequiresAuthentication;
+            _zoomSpeed.value = OptionsManager.CameraZoomSpeed;
+            _movementSpeed.value = OptionsManager.MovementSpeed;
         }
 
         private bool ValidateAndSaveOptions()
