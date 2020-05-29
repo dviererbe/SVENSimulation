@@ -2185,16 +2185,12 @@ MonoBehaviour:
   _userCount: 1
   _movementSpeed: 5
   _cameraZoomSpeed: 4
-<<<<<<< HEAD
-  _vorlesung: 0
+  _lecture: 0
   _minTemperature: 0
   _maxTemperature: 0
   _windowMode: 0
   _windowHeight: 0
   _windowWidth: 0
-=======
-  _lecture: 0
->>>>>>> 4bfea98e66af6b4483f5f01605930cb532ee92eb
 --- !u!4 &749801850
 Transform:
   m_ObjectHideFlags: 0
@@ -2971,11 +2967,8 @@ MonoBehaviour:
   _serverAddressInputField: {fileID: 1119292706}
   _requiresAuthenticationToggle: {fileID: 145548722}
   _userCountInputField: {fileID: 1528082051}
-<<<<<<< HEAD
-=======
   _movementSpeed: {fileID: 1700215960}
   _zoomSpeed: {fileID: 1700215959}
->>>>>>> 4bfea98e66af6b4483f5f01605930cb532ee92eb
 --- !u!1 &1000293181
 GameObject:
   m_ObjectHideFlags: 0

@@ -65,6 +65,7 @@ namespace Assets.Scripts
 
         [SerializeField]
         private bool _lecture = false;
+
         [SerializeField]
         private float _minTemperature = 0.0f;
 
@@ -511,7 +512,6 @@ namespace Assets.Scripts
             }
         }
 
-<<<<<<< HEAD
         /// <summary>
         /// Gets or sets the minimum Temperatur in the room.
         /// </summary>
@@ -520,7 +520,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float MinTemperatur
         {
-            get => _instance._minTemperature;
+            get => Instance._minTemperature;
             set
             {
                 if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
@@ -528,7 +528,7 @@ namespace Assets.Scripts
                     throw new ArgumentOutOfRangeException(nameof(MinTemperatur), value, "An attempt was made to set the value to zero or an negative value.");
                 }
 
-                _instance._minTemperature = value;
+                Instance._minTemperature = value;
             }
         }
 
@@ -540,7 +540,7 @@ namespace Assets.Scripts
         /// </exception>
         public static float MaxTemperatur
         {
-            get => _instance._maxTemperature;
+            get => Instance._maxTemperature;
             set
             {
                 if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
@@ -548,7 +548,7 @@ namespace Assets.Scripts
                     throw new ArgumentOutOfRangeException(nameof(MaxTemperatur), value, "An attempt was made to set the value to zero or an negative value.");
                 }
 
-                _instance._maxTemperature = value;
+                Instance._maxTemperature = value;
             }
         }
 
@@ -612,10 +612,7 @@ namespace Assets.Scripts
             }
         }
 
-        public static bool Vorlesung
-=======
         public static bool Lecture
->>>>>>> 4bfea98e66af6b4483f5f01605930cb532ee92eb
         {
             get => Instance._lecture;
             set
