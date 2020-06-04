@@ -7,9 +7,16 @@ using UnityEngine;
 
 public class AirTemperatureController : MonoBehaviour
 {
+    private float _temperature = 0f;
     private SpriteRenderer _airSprite;
 
     public Vector2 Position { get; set; }
+
+    public float Temperature
+    {
+        get => _temperature;
+        set => _temperature = value;
+    }
 
     // Start is called before the first frame update
     void Start()
