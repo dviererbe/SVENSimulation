@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Roomplan">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Room" minOccurs="1" maxOccurs="1"/>
+				<xs:sequence>
+					<xs:element name="Heigth">
+						<xs:simpleType>
+							<xs:restriction base="xs:integer"/>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Width">
+						<xs:simpleType>
+							<xs:restriction base="xs:integer"/>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+				<xs:element name="Walls">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Window">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="StartPostion" type="pos"/>
+										<xs:element name="EndPostion" type="pos"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Door">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="StartPostion" type="pos"/>
+										<xs:element name="EndPostion" type="pos"/>
+										<xs:element name="OpenDirecktion">
+											<xs:simpleType>
+												<xs:restriction  base="xs:string">
+													<xs:enumeration value="north"/>
+													<xs:enumeration value="east"/>
+													<xs:enumeration value="south"/>
+													<xs:enumeration value="vest"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Wall">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="StartPostion" type="pos"/>
+										<xs:element name="EndPostion" type="pos"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Furniture">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Chair">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Position" type="pos"/>
+										<xs:element name="Rotation">
+											<xs:simpleType>
+												<xs:restriction base="xs:decimal"/>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Table">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Position" type="pos"/>
+										<xs:element name="Rotation">
+											<xs:simpleType>
+												<xs:restriction base="xs:decimal"/>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>							
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="pos">
+		<xs:sequence>
+			<xs:element name="Heigth">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Width">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer"/>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
