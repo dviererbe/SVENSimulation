@@ -5813,8 +5813,8 @@ MonoBehaviour:
   _movementSpeed: 5
   _cameraZoomSpeed: 4
   _lecture: 0
-  _minTemperature: 0
-  _maxTemperature: 0
+  _minTemperature: 10
+  _maxTemperature: 30
   _windowMode: 0
   _windowHeight: 0
   _windowWidth: 0

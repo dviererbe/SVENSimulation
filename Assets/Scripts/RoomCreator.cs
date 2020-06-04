@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using Assets.Scripts;
 using Assets.Scripts.ObjectController;
 using Assets.Scripts.Remote;
@@ -192,6 +194,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         _wallObjects = new GameObject[_roomHeight, _roomWidth];
 
+
         for (int i = 0; i < _roomHeight; i++)
         {
             for (int j = 0; j < _roomWidth; j++)
@@ -207,6 +210,8 @@ public class RoomCreator : MonoBehaviour, IRoom
                                 rotation: WallPrefab.transform.rotation);
 
                     wallObject.transform.parent = gameObject.transform;
+
+                    wallObject.name = "Wall_" + i + j;
 
                     Vector3 tempscale = wallObject.transform.localScale;
 
@@ -250,8 +255,8 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         float colorSection;
 
-        OptionsManager.MinTemperatur = lowestTemperature;
-        OptionsManager.MaxTemperatur = highestTemperature;
+        //OptionsManager.MinTemperatur = lowestTemperature;
+        //OptionsManager.MaxTemperatur = highestTemperature;
 
         for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
