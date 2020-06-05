@@ -3,35 +3,38 @@
 	<xs:element name="Roomplan">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="Room" minOccurs="1" maxOccurs="1"/>
-				<xs:sequence>
-					<xs:element name="Heigth">
-						<xs:simpleType>
-							<xs:restriction base="xs:integer"/>
-						</xs:simpleType>
-					</xs:element>
-					<xs:element name="Width">
-						<xs:simpleType>
-							<xs:restriction base="xs:integer"/>
-						</xs:simpleType>
-					</xs:element>
-				</xs:sequence>
+				<xs:element name="Room" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Height">
+								<xs:simpleType>
+									<xs:restriction base="xs:integer"/>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Width">
+								<xs:simpleType>
+									<xs:restriction base="xs:integer"/>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
 				<xs:element name="Walls">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="Window">
+							<xs:element name="Window" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="StartPostion" type="pos"/>
-										<xs:element name="EndPostion" type="pos"/>
+										<xs:element name="StartPosition" type="Pos"/>
+										<xs:element name="EndPosition" type="Pos"/>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="Door">
+							<xs:element name="Door" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="StartPostion" type="pos"/>
-										<xs:element name="EndPostion" type="pos"/>
+										<xs:element name="StartPosition" type="Pos"/>
+										<xs:element name="EndPosition" type="Pos"/>
 										<xs:element name="OpenDirecktion">
 											<xs:simpleType>
 												<xs:restriction  base="xs:string">
@@ -45,39 +48,55 @@
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="Wall">
+							<xs:element name="Wall" minOccurs="4" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="StartPostion" type="pos"/>
-										<xs:element name="EndPostion" type="pos"/>
+										<xs:element name="StartPosition" type="Pos"/>
+										<xs:element name="EndPosition" type="Pos"/>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="Furniture">
+				<xs:element name="Furniture" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="Chair">
+							<xs:element name="Chair" minOccurs="0" maxOccurs="unbounded"> 
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="Position" type="pos"/>
+										<xs:element name="Position" type="Pos"/>
 										<xs:element name="Rotation">
 											<xs:simpleType>
 												<xs:restriction base="xs:decimal"/>
 											</xs:simpleType>
 										</xs:element>
+										<xs:element name="Type">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Normal"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="Table">
+							<xs:element name="Table" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="Position" type="pos"/>
-										<xs:element name="Rotation">
+										<xs:element name="Position" type="Pos"/> <!-- Defiens the Position of the right Part of the Tabel -->
+										<xs:element name="Rotation"> <!-- Positive Value = rotation counter clockwies-->
 											<xs:simpleType>
 												<xs:restriction base="xs:decimal"/>
+											</xs:simpleType>
+										</xs:element><xs:element name="Type">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Dozent"/>
+													<xs:enumeration value="Student"/>
+													<xs:enumeration value="Blank"/>
+													<xs:enumeration value="Lecurehall"/>
+												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
 									</xs:sequence>
@@ -89,9 +108,9 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:complexType name="pos">
+	<xs:complexType name="Pos"> 
 		<xs:sequence>
-			<xs:element name="Heigth">
+			<xs:element name="Height">
 				<xs:simpleType>
 					<xs:restriction base="xs:integer"/>
 				</xs:simpleType>

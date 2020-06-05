@@ -8,6 +8,7 @@ using Assets.Scripts;
 using Assets.Scripts.ObjectController;
 using Assets.Scripts.Remote;
 using Assets.Scripts.Remote.Abstractions;
+using Assets.Scripts.Roomcreation;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
@@ -39,6 +40,12 @@ public class RoomCreator : MonoBehaviour, IRoom
     private GameObject _windowPrefab;
 
     [SerializeField]
+    private GameObject _tablePrefab;
+
+    [SerializeField]
+    private GameObject _chairPrefab;
+
+    [SerializeField]
     private GameObject _heaterPrefab;
 
     private GameObject[,] _airObjects;
@@ -46,6 +53,9 @@ public class RoomCreator : MonoBehaviour, IRoom
     private GameObject[,] _wallObjects;
 
     private IRoomThermalManager _roomThermalManager;
+
+    private static int CHAIR = 0;
+    private static int TABLE = 1;
 
     #region Properties
 
@@ -105,10 +115,15 @@ public class RoomCreator : MonoBehaviour, IRoom
     // Start is called before the first frame update
     void Start()
     {
+
+        Roomreader roomreader = new Roomreader(Application.dataPath + "/Roomdefinition/Room_0.xml");
+        int[,] walls;
+        Roomobjects[] roomObjects = roomreader.ReadRoom( out walls, out _roomHeight, out _roomWidth);
+
         #region Load Options
-        
-        _roomHeight = Mathf.RoundToInt(OptionsManager.RoomHeight);
-        _roomWidth = Mathf.RoundToInt(OptionsManager.RoomWidth);
+
+        //_roomHeight = Mathf.RoundToInt(OptionsManager.RoomHeight);
+        //_roomWidth = Mathf.RoundToInt(OptionsManager.RoomWidth);
         _wallThickness = OptionsManager.WallThickness;
 
         #endregion
@@ -120,10 +135,10 @@ public class RoomCreator : MonoBehaviour, IRoom
         GameObject userGroupControllerObject = Instantiate(_userGroupControllerPrefab);
         UserGroupController userGroupController = userGroupControllerObject.GetComponent<UserGroupController>();
 
-        GameObject windowObject = Instantiate(_windowPrefab);
-        windowObject.transform.position = new Vector3(5, 0);
-        WindowController windowController = windowObject.GetComponent<WindowController>();
-        windowController.RemoteWindow = new RemoteWindow(serverConnection, "window");
+        //GameObject windowObject = Instantiate(_windowPrefab);
+        //windowObject.transform.position = new Vector3(5, 0);
+        //WindowController windowController = windowObject.GetComponent<WindowController>();
+        //windowController.RemoteWindow = new RemoteWindow(serverConnection, "window");
 
 
         RoomThermalManagerBuilder thermalManagerBuilder = new RoomThermalManagerBuilder();
@@ -133,14 +148,14 @@ public class RoomCreator : MonoBehaviour, IRoom
         thermalManagerBuilder.InitialRoomTemperature = new ConstantTemperatureSource(Temperature.FromCelsius(OptionsManager.InitialRoomTemperature));
         thermalManagerBuilder.ThermalPixelSize = OptionsManager.ThermalPixelSize;
         userGroupController.CreateUsers(thermalManagerBuilder);
-        thermalManagerBuilder.AddThermalObject(windowController);
+        //thermalManagerBuilder.AddThermalObject(windowController);
 
 
         _roomThermalManager = thermalManagerBuilder.Build();
         _roomThermalManager.Start();
 
         userGroupController.AddRoomThermalManagerToUsers(_roomThermalManager);
-        windowController.RoomThermalManager = _roomThermalManager;
+        //windowController.RoomThermalManager = _roomThermalManager;
 
         #endregion
 
@@ -189,9 +204,6 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #region Wall Creator
 
-        float tileSizeX = transform.lossyScale.x;
-        float tileSizeY = transform.localScale.y;
-
         _wallObjects = new GameObject[_roomHeight, _roomWidth];
 
 
@@ -199,8 +211,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         {
             for (int j = 0; j < _roomWidth; j++)
             {
-                if ((i == 0 || i == _roomHeight - 1) ||
-                    (j == 0 || j == _roomWidth - 1))
+                if (walls[i, j] == 1)
                 {
                     GameObject wallObject = Instantiate(
                                 WallPrefab, //the GameObject that will be instantiated
@@ -211,7 +222,43 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                     wallObject.transform.parent = gameObject.transform;
 
-                    wallObject.name = "Wall_" + i + j;
+                    wallObject.name = "Wall_" + i + ":" + j;
+
+                    bool[] neightbours = new bool[4];
+
+                    if(i == 0)
+                    {
+                        neightbours[1] = walls[i + 1, j] == 1 ? true : false;
+                        neightbours[3] = false;
+                    }
+                    else if( i == _roomHeight - 1)
+                    {
+                        neightbours[1] = false;
+                        neightbours[3] = walls[i - 1, j] == 1 ? true : false;
+                    }
+                    else
+                    {
+                        neightbours[1] = walls[i + 1, j] == 1 ? true : false;
+                        neightbours[3] = walls[i - 1, j] == 1 ? true : false;
+                    }
+
+                    if (j == 0)
+                    {
+                        neightbours[0] = walls[i, j + 1] == 1 ? true : false;
+                        neightbours[2] = false;
+                    }
+                    else if (j == _roomWidth - 1)
+                    {
+                        neightbours[0] = false;
+                        neightbours[2] = walls[i, j - 1] == 1 ? true : false;
+                    }
+                    else
+                    {
+                        neightbours[0] = walls[i, j + 1] == 1 ? true : false;
+                        neightbours[2] = walls[i, j - 1] == 1 ? true : false;
+                    }
+
+                    wallObject.GetComponent<WallController>().SetWalls(neightbours);
 
                     Vector3 tempscale = wallObject.transform.localScale;
 
@@ -221,11 +268,85 @@ public class RoomCreator : MonoBehaviour, IRoom
                     wallObject.transform.localScale = tempscale;
 
                     _wallObjects[i, j] = wallObject;
+                }
+                else if(walls[i, j] == 2)
+                {
+                    GameObject windowObject = Instantiate(
+                               _windowPrefab, //the GameObject that will be instantiated
+                               position: new Vector3(
+                                   x: WallThickness * i,
+                                   y: WallThickness * j),
+                               rotation: _windowPrefab.transform.rotation);
 
+                    windowObject.transform.parent = gameObject.transform;
+
+                    windowObject.name = "Window_" + i + ":" + j;
+
+                    if( !(i == 0))
+                    {
+                        if(walls[i - 1, j] == 1 || walls[i - 1, j] == 2)
+                        {
+                            windowObject.transform.Rotate(90, 0, 0);
+                        }
+                    }
+
+                    Vector3 tempscale = windowObject.transform.localScale;
+
+                    tempscale.x *= WallThickness;
+                    tempscale.y *= WallThickness;
+
+                    windowObject.transform.localScale = tempscale;
+
+                    WindowController windowController = windowObject.GetComponent<WindowController>();
+                    windowController.RemoteWindow = new RemoteWindow(serverConnection, "window");
+                    thermalManagerBuilder.AddThermalObject(windowController);
+                    windowController.RoomThermalManager = _roomThermalManager;
+
+                    _wallObjects[i, j] = windowObject;
+                }
+                else if(walls[i, j] == 3)
+                {
+                    //TODO: Door Sprite und THermalmanger??!!
                 }
             }
         }
 
+
+
+        #endregion
+
+        #region Roomobjects Creator
+
+        foreach(Roomobjects obj in roomObjects)
+        {
+            GameObject roomObject = null;
+
+            if(obj.Element == CHAIR)
+            {
+                roomObject = Instantiate(
+                               _chairPrefab, //the GameObject that will be instantiated
+                               position: new Vector3(
+                                   x: WallThickness * obj.PosX,
+                                   y: WallThickness * obj.PosY),
+                               rotation: _chairPrefab.transform.rotation);
+                //roomObject.GetComponent<>().setSprite(obj.Type);
+            }
+            else if(obj.Element == TABLE)
+            {
+                roomObject = Instantiate(
+                               _tablePrefab, //the GameObject that will be instantiated
+                               position: new Vector3(
+                                   x: WallThickness * obj.PosX,
+                                   y: WallThickness * obj.PosY),
+                               rotation: _tablePrefab.transform.rotation);
+                roomObject.GetComponent<TableController>().setSprite(obj.Type);
+            }
+            if (roomObject != null)
+            {
+                roomObject.transform.Rotate(0, 0, obj.Rotation);
+            }
+            
+        }
         #endregion
     }
 

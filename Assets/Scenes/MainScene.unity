@@ -2224,7 +2224,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 801540346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d9717a0c638b614fbea481f72961f94, type: 3}
+  m_Script: {fileID: 11500000, guid: efd6c2187a3f2b94c893947a667d7501, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _roomWidth: 30
@@ -2239,6 +2239,10 @@ MonoBehaviour:
   _userGroupControllerPrefab: {fileID: 7519788706447050337, guid: 7e94a6ffc7302bc459e43251ec961568,
     type: 3}
   _windowPrefab: {fileID: 200402973003714423, guid: 75d647b624187aa4a918ef6e15a79f49,
+    type: 3}
+  _tablePrefab: {fileID: 4826106135051387292, guid: 1b27b7a120582554180159256688711a,
+    type: 3}
+  _chairPrefab: {fileID: 2039657041563021227, guid: dc5005e9002b5f84ab8cb9838c716c90,
     type: 3}
   _heaterPrefab: {fileID: 0}
 --- !u!4 &801540349

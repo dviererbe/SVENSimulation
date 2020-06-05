@@ -61,77 +61,77 @@ public class WallController : MonoBehaviour
     public void SetWalls(bool[] neighbours)
     {
         //Alle Set
-        if(neighbours[0] && neighbours [1] && neighbours[2] && neighbours[3])
+        if(neighbours[0] && !neighbours[1] && !neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallNorthEastSouthVest;
         }
         //NorthEastSouth
-        else if (neighbours[0] && neighbours[1] && neighbours[2] && !neighbours[3])
+        else if (!neighbours[0] && !neighbours[1] && !neighbours[2] && neighbours[3])
         {
             _wall.sprite = _wallNorthEastSouth;
         }
         //NorthEastVest
-        else if (neighbours[0] && neighbours[1] && !neighbours[2] && neighbours[3])
+        else if (!neighbours[0] && !neighbours[1] && neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallNorthEastVest;
         }
         //NorthSouthVest
-        else if (neighbours[0] && !neighbours[1] && neighbours[2] && neighbours[3])
+        else if (!neighbours[0] && neighbours[1] && !neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallNorthSouthVest;
         }
         //EastSouthVest
-        else if (!neighbours[0] && neighbours[1] && neighbours[2] && neighbours[3])
+        else if (neighbours[0] && !neighbours[1] && !neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallEastSouthVest;
         }
         //NorthEast
-        else if (neighbours[0] && neighbours[1] && !neighbours[2] && !neighbours[3])
+        else if (!neighbours[0] && !neighbours[1] && neighbours[2] && neighbours[3])
         {
             _wall.sprite = _wallNorthEast;
         }
         //NorthSouth
-        else if (neighbours[0] && !neighbours[1] && neighbours[2] && !neighbours[3])
+        else if (!neighbours[0] && neighbours[1] && !neighbours[2] && neighbours[3])
         {
             _wall.sprite = _wallNorthSouth;
         }
-        //EastSouth
-        else if (!neighbours[0] && neighbours[1] && neighbours[2] && !neighbours[3])
-        {
-            _wall.sprite = _wallEastSouth;
-        }
         //NorthVest
-        else if (neighbours[0] && !neighbours[1] && !neighbours[2] && neighbours[3])
+        else if (!neighbours[0] && neighbours[1] && neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallNorthVest;
         }
+        //EastSouth
+        else if (neighbours[0] && !neighbours[1] && !neighbours[2] && neighbours[3])
+        {
+            _wall.sprite = _wallEastSouth;
+        }
         //EastVest
-        else if (!neighbours[0] && neighbours[1] && !neighbours[2] && neighbours[3])
+        else if (neighbours[0] && !neighbours[1] && neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallEastVest;
         }
         //SouthVest
-        else if (!neighbours[0] && !neighbours[1] && neighbours[2] && neighbours[3])
+        else if (neighbours[0] && neighbours[1] && !neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallSouthVest;
         }
         //North
-        else if (neighbours[0] && !neighbours[1] && !neighbours[2] && !neighbours[3])
+        else if (!neighbours[0] && neighbours[1] && neighbours[2] && neighbours[3])
         {
             _wall.sprite = _wallNorth;
         }
         //East
-        else if (!neighbours[0] && neighbours[1] && !neighbours[2] && !neighbours[3])
+        else if (neighbours[0] && !neighbours[1] && neighbours[2] && neighbours[3])
         {
             _wall.sprite = _wallEast;
         }
         //South
-        else if (!neighbours[0] && !neighbours[1] && neighbours[2] && !neighbours[3])
+        else if (neighbours[0] && neighbours[1] && !neighbours[2] && neighbours[3])
         {
             _wall.sprite = _wallSouth;
         }
         //Vest
-        else if (!neighbours[0] && neighbours[1] && neighbours[2] && neighbours[3])
+        else if (neighbours[0] && !neighbours[1] && !neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallVest;
         }
