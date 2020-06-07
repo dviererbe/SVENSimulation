@@ -19,7 +19,7 @@ namespace Assets.Scripts.Roomcreation
         private int _posX;
         private int _posY;
         private float _rotation;
-        private int _roomElement;
+        private RoomElement _roomElement;
 
         public string Type
         {
