@@ -86,10 +86,10 @@ namespace Assets.Scripts
             #region furniture
 
             XmlNodeList chairs = root.SelectNodes(PATHCHAIR);
-            roomobjects = readRoomobjects(roomobjects, chairs, CHAIR);
+            roomobjects = readRoomobjects(roomobjects, chairs, RoomObjects.RoomElement.CHAIR);
 
             XmlNodeList tables = root.SelectNodes(PATHTABLE);
-            roomobjects = readRoomobjects(roomobjects, tables, TABLE);
+            roomobjects = readRoomobjects(roomobjects, tables, RoomObjects.RoomElement.TABLE);
 
             #endregion
             return roomobjects.Count == 0 ? new RoomObjects[0] : roomobjects.ToArray();
