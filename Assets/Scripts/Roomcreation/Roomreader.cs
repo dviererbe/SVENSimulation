@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    class Roomreader
+    class RoomReader
     {
         private static int WALL = 1;
         private static int WINDOW = 2;
@@ -32,7 +32,7 @@ namespace Assets.Scripts
 
         private string _xmlPath;
 
-        public Roomreader(string xmlPath)
+        public RoomReader(string xmlPath)
         {
             _xmlPath = xmlPath;
         }
@@ -160,7 +160,7 @@ namespace Assets.Scripts
             return walls;
         }
 
-        private List<RoomObjects> readRoomobjects(List<RoomObjects> roomobjects, XmlNodeList elementList, int type)
+        private List<RoomObjects> readRoomobjects(List<RoomObjects> roomobjects, XmlNodeList elementList, RoomObjects.RoomElement type)
         {
             if(elementList != null)
             {

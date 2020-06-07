@@ -113,7 +113,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     void Start()
     {
 
-        Roomreader roomreader = new Roomreader(Application.dataPath + "/Roomdefinition/Room_0.xml");
+        RoomReader roomreader = new RoomReader(Application.dataPath + "/Roomdefinition/Room_0.xml");
         int[,] walls;
         RoomObjects[] roomObjects = roomreader.ReadRoom( out walls, out _roomHeight, out _roomWidth);
 
