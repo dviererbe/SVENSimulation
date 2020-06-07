@@ -221,41 +221,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                     wallObject.name = "Wall_" + i + ":" + j;
 
-                    bool[] neightbours = new bool[4];
-
-                    if(i == 0)
-                    {
-                        neightbours[1] = walls[i + 1, j] == RoomObjects.RoomElement.WALL;
-                        neightbours[3] = false;
-                    }
-                    else if( i == _roomHeight - 1)
-                    {
-                        neightbours[1] = false;
-                        neightbours[3] = walls[i - 1, j] == RoomObjects.RoomElement.WALL;
-                    }
-                    else
-                    {
-                        neightbours[1] = walls[i + 1, j] == RoomObjects.RoomElement.WALL;
-                        neightbours[3] = walls[i - 1, j] == RoomObjects.RoomElement.WALL;
-                    }
-
-                    if (j == 0)
-                    {
-                        neightbours[0] = walls[i, j + 1] == RoomObjects.RoomElement.WALL;
-                        neightbours[2] = false;
-                    }
-                    else if (j == _roomWidth - 1)
-                    {
-                        neightbours[0] = false;
-                        neightbours[2] = walls[i, j - 1] == RoomObjects.RoomElement.WALL;
-                    }
-                    else
-                    {
-                        neightbours[0] = walls[i, j + 1] == RoomObjects.RoomElement.WALL;
-                        neightbours[2] = walls[i, j - 1] == RoomObjects.RoomElement.WALL;
-                    }
-
-                    wallObject.GetComponent<WallController>().SetWalls(neightbours);
+                    SetWallSprite(walls, i, j, out wallObject);
 
                     Vector3 tempscale = wallObject.transform.localScale;
 
@@ -345,6 +311,45 @@ public class RoomCreator : MonoBehaviour, IRoom
             
         }
         #endregion
+    }
+
+    private void SetWallSprite(RoomObjects.RoomElement[,] walls, int i, int j, out GameObject wallObject)
+    {
+        bool[] neightbours = new bool[4];
+
+        if (i == 0)
+        {
+            neightbours[1] = walls[i + 1, j] == RoomObjects.RoomElement.WALL;
+            neightbours[3] = false;
+        }
+        else if (i == _roomHeight - 1)
+        {
+            neightbours[1] = false;
+            neightbours[3] = walls[i - 1, j] == RoomObjects.RoomElement.WALL;
+        }
+        else
+        {
+            neightbours[1] = walls[i + 1, j] == RoomObjects.RoomElement.WALL;
+            neightbours[3] = walls[i - 1, j] == RoomObjects.RoomElement.WALL;
+        }
+
+        if (j == 0)
+        {
+            neightbours[0] = walls[i, j + 1] == RoomObjects.RoomElement.WALL;
+            neightbours[2] = false;
+        }
+        else if (j == _roomWidth - 1)
+        {
+            neightbours[0] = false;
+            neightbours[2] = walls[i, j - 1] == RoomObjects.RoomElement.WALL;
+        }
+        else
+        {
+            neightbours[0] = walls[i, j + 1] == RoomObjects.RoomElement.WALL;
+            neightbours[2] = walls[i, j - 1] == RoomObjects.RoomElement.WALL;
+        }
+
+        wallObject.GetComponent<WallController>().SetWalls(neightbours);
     }
 
     // Update is called once per frame
