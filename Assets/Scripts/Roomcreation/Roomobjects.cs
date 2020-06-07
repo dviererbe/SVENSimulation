@@ -12,7 +12,10 @@ namespace Assets.Scripts.Roomcreation
         public enum RoomElement
         {
             CHAIR,
-            TABLE
+            TABLE,
+            WINDOW,
+            DOOR,
+            WALL
         };
 
         private string _type;

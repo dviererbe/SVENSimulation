@@ -114,7 +114,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     {
 
         RoomReader roomreader = new RoomReader(Application.dataPath + "/Roomdefinition/Room_0.xml");
-        int[,] walls;
+        RoomObjects.RoomElement[,] walls;
         RoomObjects[] roomObjects = roomreader.ReadRoom( out walls, out _roomHeight, out _roomWidth);
 
         #region Load Options
@@ -208,7 +208,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         {
             for (int j = 0; j < _roomWidth; j++)
             {
-                if (walls[i, j] == 1)
+                if (walls[i, j] == RoomObjects.RoomElement.WALL)
                 {
                     GameObject wallObject = Instantiate(
                                 WallPrefab, //the GameObject that will be instantiated
@@ -225,34 +225,34 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                     if(i == 0)
                     {
-                        neightbours[1] = walls[i + 1, j] == 1;
+                        neightbours[1] = walls[i + 1, j] == RoomObjects.RoomElement.WALL;
                         neightbours[3] = false;
                     }
                     else if( i == _roomHeight - 1)
                     {
                         neightbours[1] = false;
-                        neightbours[3] = walls[i - 1, j] == 1;
+                        neightbours[3] = walls[i - 1, j] == RoomObjects.RoomElement.WALL;
                     }
                     else
                     {
-                        neightbours[1] = walls[i + 1, j] == 1;
-                        neightbours[3] = walls[i - 1, j] == 1;
+                        neightbours[1] = walls[i + 1, j] == RoomObjects.RoomElement.WALL;
+                        neightbours[3] = walls[i - 1, j] == RoomObjects.RoomElement.WALL;
                     }
 
                     if (j == 0)
                     {
-                        neightbours[0] = walls[i, j + 1] == 1;
+                        neightbours[0] = walls[i, j + 1] == RoomObjects.RoomElement.WALL;
                         neightbours[2] = false;
                     }
                     else if (j == _roomWidth - 1)
                     {
                         neightbours[0] = false;
-                        neightbours[2] = walls[i, j - 1] == 1;
+                        neightbours[2] = walls[i, j - 1] == RoomObjects.RoomElement.WALL;
                     }
                     else
                     {
-                        neightbours[0] = walls[i, j + 1] == 1;
-                        neightbours[2] = walls[i, j - 1] == 1;
+                        neightbours[0] = walls[i, j + 1] == RoomObjects.RoomElement.WALL;
+                        neightbours[2] = walls[i, j - 1] == RoomObjects.RoomElement.WALL;
                     }
 
                     wallObject.GetComponent<WallController>().SetWalls(neightbours);
@@ -266,7 +266,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                     _wallObjects[i, j] = wallObject;
                 }
-                else if(walls[i, j] == 2)
+                else if(walls[i, j] == RoomObjects.RoomElement.WINDOW)
                 {
                     GameObject windowObject = Instantiate(
                                _windowPrefab, //the GameObject that will be instantiated
@@ -281,7 +281,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                     if( !(i == 0))
                     {
-                        if(walls[i - 1, j] == 1 || walls[i - 1, j] == 2)
+                        if(walls[i - 1, j] == RoomObjects.RoomElement.WALL || walls[i - 1, j] == RoomObjects.RoomElement.WINDOW)
                         {
                             windowObject.transform.Rotate(90, 0, 0);
                         }
@@ -301,7 +301,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                     _wallObjects[i, j] = windowObject;
                 }
-                else if(walls[i, j] == 3)
+                else if(walls[i, j] == RoomObjects.RoomElement.DOOR)
                 {
                     //TODO: Door Sprite und THermalmanger??!!
                 }

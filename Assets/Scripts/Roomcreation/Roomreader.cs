@@ -7,12 +7,6 @@ namespace Assets.Scripts
 {
     class RoomReader
     {
-        private static int WALL = 1;
-        private static int WINDOW = 2;
-        private static int DOOR = 3;
-        private static int CHAIR = 0;
-        private static int TABLE = 1;
-
 
         private static string PATHWALL = "/Roomplan/Walls/Wall";
         private static string PATHWINDOW = "/Roomplan/Walls/Window";
@@ -37,7 +31,7 @@ namespace Assets.Scripts
             _xmlPath = xmlPath;
         }
 
-        public RoomObjects[] ReadRoom(out int[,] walls, out int height, out int width)
+        public RoomObjects[] ReadRoom(out RoomObjects.RoomElement[,] walls, out int height, out int width)
         {
             Debug.Log("Enter");
 
@@ -62,13 +56,13 @@ namespace Assets.Scripts
             #endregion
 
             #region Walls
-            walls = new int[height, width];
+            walls = new RoomObjects.RoomElement[height, width];
 
             Debug.Log("Heigth: " + height);
             Debug.Log("Width: " + width);
 
             XmlNodeList wallsNodeList = xmlDoc.SelectNodes(PATHWALL);
-            walls = readWallElements(walls, wallsNodeList, WALL);
+            walls = readWallElements(walls, wallsNodeList, RoomObjects.RoomElement.WALL);
             #endregion
 
             List<RoomObjects> roomobjects = new List<RoomObjects>();
@@ -76,10 +70,10 @@ namespace Assets.Scripts
             #region Windows and Doors
 
             XmlNodeList windows = root.SelectNodes(PATHWINDOW);
-            walls = readWallElements(walls, windows, WINDOW);
+            walls = readWallElements(walls, windows, RoomObjects.RoomElement.WINDOW);
 
             XmlNodeList doors = root.SelectNodes(PATHDOOR);
-            walls = readWallElements(walls, doors, DOOR);
+            walls = readWallElements(walls, doors, RoomObjects.RoomElement.DOOR);
 
             #endregion
 
@@ -96,7 +90,7 @@ namespace Assets.Scripts
 
         }
 
-        private int[,] readWallElements(int[,] walls, XmlNodeList elementList, int type)
+        private RoomObjects.RoomElement[,] readWallElements(RoomObjects.RoomElement[,] walls, XmlNodeList elementList, RoomObjects.RoomElement type)
         {
             if (elementList != null)
             {
