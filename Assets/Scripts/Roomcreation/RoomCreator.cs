@@ -245,7 +245,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                     windowObject.name = "Window_" + i + ":" + j;
 
-                    if( !(i == 0))
+                    if(i != 0)
                     {
                         if(walls[i - 1, j] == RoomObjects.RoomElement.WALL || walls[i - 1, j] == RoomObjects.RoomElement.WINDOW)
                         {
