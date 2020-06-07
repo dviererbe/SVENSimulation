@@ -225,34 +225,34 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                     if(i == 0)
                     {
-                        neightbours[1] = walls[i + 1, j] == 1 ? true : false;
+                        neightbours[1] = walls[i + 1, j] == 1;
                         neightbours[3] = false;
                     }
                     else if( i == _roomHeight - 1)
                     {
                         neightbours[1] = false;
-                        neightbours[3] = walls[i - 1, j] == 1 ? true : false;
+                        neightbours[3] = walls[i - 1, j] == 1;
                     }
                     else
                     {
-                        neightbours[1] = walls[i + 1, j] == 1 ? true : false;
-                        neightbours[3] = walls[i - 1, j] == 1 ? true : false;
+                        neightbours[1] = walls[i + 1, j] == 1;
+                        neightbours[3] = walls[i - 1, j] == 1;
                     }
 
                     if (j == 0)
                     {
-                        neightbours[0] = walls[i, j + 1] == 1 ? true : false;
+                        neightbours[0] = walls[i, j + 1] == 1;
                         neightbours[2] = false;
                     }
                     else if (j == _roomWidth - 1)
                     {
                         neightbours[0] = false;
-                        neightbours[2] = walls[i, j - 1] == 1 ? true : false;
+                        neightbours[2] = walls[i, j - 1] == 1;
                     }
                     else
                     {
-                        neightbours[0] = walls[i, j + 1] == 1 ? true : false;
-                        neightbours[2] = walls[i, j - 1] == 1 ? true : false;
+                        neightbours[0] = walls[i, j + 1] == 1;
+                        neightbours[2] = walls[i, j - 1] == 1;
                     }
 
                     wallObject.GetComponent<WallController>().SetWalls(neightbours);
