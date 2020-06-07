@@ -210,27 +210,7 @@ public class RoomCreator : MonoBehaviour, IRoom
             {
                 if (walls[i, j] == RoomObjects.RoomElement.WALL)
                 {
-                    GameObject wallObject = Instantiate(
-                                WallPrefab, //the GameObject that will be instantiated
-                                position: new Vector3(
-                                    x: WallThickness * i,
-                                    y: WallThickness * j),
-                                rotation: WallPrefab.transform.rotation);
-
-                    wallObject.transform.parent = gameObject.transform;
-
-                    wallObject.name = "Wall_" + i + ":" + j;
-
-                    SetWallSprite(walls, i, j, out wallObject);
-
-                    Vector3 tempscale = wallObject.transform.localScale;
-
-                    tempscale.x *= WallThickness;
-                    tempscale.y *= WallThickness;
-
-                    wallObject.transform.localScale = tempscale;
-
-                    _wallObjects[i, j] = wallObject;
+                    _wallObjects[i, j] = InstantiateWallObject(i, j, walls);
                 }
                 else if(walls[i, j] == RoomObjects.RoomElement.WINDOW)
                 {
@@ -313,7 +293,32 @@ public class RoomCreator : MonoBehaviour, IRoom
         #endregion
     }
 
-    private void SetWallSprite(RoomObjects.RoomElement[,] walls, int i, int j, out GameObject wallObject)
+    private GameObject InstantiateWallObject(int i, int j, RoomObjects.RoomElement[,] walls)
+    {
+        GameObject wallObject = Instantiate(
+                                WallPrefab, //the GameObject that will be instantiated
+                                position: new Vector3(
+                                    x: WallThickness * i,
+                                    y: WallThickness * j),
+                                rotation: WallPrefab.transform.rotation);
+
+        wallObject.transform.parent = gameObject.transform;
+
+        wallObject.name = "Wall_" + i + ":" + j;
+
+        SetWallSprite(walls, i, j, wallObject);
+
+        Vector3 tempscale = wallObject.transform.localScale;
+
+        tempscale.x *= WallThickness;
+        tempscale.y *= WallThickness;
+
+        wallObject.transform.localScale = tempscale;
+
+        return wallObject;
+    }
+
+    private void SetWallSprite(RoomObjects.RoomElement[,] walls, int i, int j, GameObject wallObject)
     {
         bool[] neightbours = new bool[4];
 
