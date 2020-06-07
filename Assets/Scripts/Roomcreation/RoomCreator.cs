@@ -312,7 +312,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #endregion
 
-        #region Roomobjects Creator
+        #region RoomObjects Creator
 
         foreach(RoomObjects obj in roomObjects)
         {
