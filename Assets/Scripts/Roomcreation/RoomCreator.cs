@@ -54,9 +54,6 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private IRoomThermalManager _roomThermalManager;
 
-    private static int CHAIR = 0;
-    private static int TABLE = 1;
-
     #region Properties
 
     /// <summary>
@@ -118,7 +115,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         Roomreader roomreader = new Roomreader(Application.dataPath + "/Roomdefinition/Room_0.xml");
         int[,] walls;
-        Roomobjects[] roomObjects = roomreader.ReadRoom( out walls, out _roomHeight, out _roomWidth);
+        RoomObjects[] roomObjects = roomreader.ReadRoom( out walls, out _roomHeight, out _roomWidth);
 
         #region Load Options
 
@@ -317,11 +314,11 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #region Roomobjects Creator
 
-        foreach(Roomobjects obj in roomObjects)
+        foreach(RoomObjects obj in roomObjects)
         {
             GameObject roomObject = null;
 
-            if(obj.Element == CHAIR)
+            if(obj.Element == RoomObjects.RoomElement.CHAIR)
             {
                 roomObject = Instantiate(
                                _chairPrefab, //the GameObject that will be instantiated
@@ -331,7 +328,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                                rotation: _chairPrefab.transform.rotation);
                 //roomObject.GetComponent<>().setSprite(obj.Type);
             }
-            else if(obj.Element == TABLE)
+            else if(obj.Element == RoomObjects.RoomElement.TABLE)
             {
                 roomObject = Instantiate(
                                _tablePrefab, //the GameObject that will be instantiated

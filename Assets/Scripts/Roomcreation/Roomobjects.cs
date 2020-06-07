@@ -7,13 +7,19 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Roomcreation
 {
-    class Roomobjects
+    class RoomObjects
     {
+        public enum RoomElement
+        {
+            CHAIR,
+            TABLE
+        };
+
         private string _type;
         private int _posX;
         private int _posY;
         private float _rotation;
-        private int _element;
+        private int _roomElement;
 
         public string Type
         {
@@ -21,10 +27,10 @@ namespace Assets.Scripts.Roomcreation
             set { _type = value; }
         }
 
-        public int Element
+        public RoomElement Element
         {
-            get { return _element; }
-            set { _element = value; }
+            get { return _roomElement; }
+            set { _roomElement = value; }
         }
 
         public int PosX

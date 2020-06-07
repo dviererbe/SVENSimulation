@@ -37,7 +37,7 @@ namespace Assets.Scripts
             _xmlPath = xmlPath;
         }
 
-        public Roomobjects[] ReadRoom(out int[,] walls, out int height, out int width)
+        public RoomObjects[] ReadRoom(out int[,] walls, out int height, out int width)
         {
             Debug.Log("Enter");
 
@@ -71,7 +71,7 @@ namespace Assets.Scripts
             walls = readWallElements(walls, wallsNodeList, WALL);
             #endregion
 
-            List<Roomobjects> roomobjects = new List<Roomobjects>();
+            List<RoomObjects> roomobjects = new List<RoomObjects>();
 
             #region Windows and Doors
 
@@ -92,7 +92,7 @@ namespace Assets.Scripts
             roomobjects = readRoomobjects(roomobjects, tables, TABLE);
 
             #endregion
-            return roomobjects.Count == 0 ? new Roomobjects[0] : roomobjects.ToArray();
+            return roomobjects.Count == 0 ? new RoomObjects[0] : roomobjects.ToArray();
 
         }
 
@@ -160,13 +160,13 @@ namespace Assets.Scripts
             return walls;
         }
 
-        private List<Roomobjects> readRoomobjects(List<Roomobjects> roomobjects, XmlNodeList elementList, int type)
+        private List<RoomObjects> readRoomobjects(List<RoomObjects> roomobjects, XmlNodeList elementList, int type)
         {
             if(elementList != null)
             {
                 foreach(XmlNode element in elementList)
                 {
-                    Roomobjects newobject = new Roomobjects();
+                    RoomObjects newobject = new RoomObjects();
                     newobject.Element = type;
 
                     XmlNode pos = element.SelectSingleNode(PATHHEIGHT);
