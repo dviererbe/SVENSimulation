@@ -16,6 +16,26 @@
 									<xs:restriction base="xs:integer"/>
 								</xs:simpleType>
 							</xs:element>
+							<xs:element name="ThermalPixelSize">
+								<xs:simpleType>
+									<xs:restriction base="xs:decimal"/>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="WallThickness">
+								<xs:simpleType>
+									<xs:restriction base="xs:decimal"/>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Masseinheit">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="Millimeter"/>
+										<xs:enumeration value="Centimeter"/>
+										<xs:enumeration value="Dezimeter"/>
+										<xs:enumeration value="Meter"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
@@ -66,6 +86,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="Position" type="Pos"/>
+										<xs:element name="Size" type="Size"/>
 										<xs:element name="Rotation">
 											<xs:simpleType>
 												<xs:restriction base="xs:decimal"/>
@@ -85,6 +106,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="Position" type="Pos"/> <!-- Defiens the Position of the right Part of the Tabel -->
+										<xs:element name="Size" type="Size"/>
 										<xs:element name="Rotation"> <!-- Positive Value = rotation counter clockwies-->
 											<xs:simpleType>
 												<xs:restriction base="xs:decimal"/>
@@ -102,6 +124,44 @@
 									</xs:sequence>
 								</xs:complexType>							
 							</xs:element>
+							<xs:element name="Heater" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Position" type="Pos"/>
+										<xs:element name="Size" type="Size"/>
+										<xs:element name="Rotation"> <!-- Positive Value = rotation counter clockwies-->
+											<xs:simpleType>
+												<xs:restriction base="xs:decimal"/>
+											</xs:simpleType>
+										</xs:element><xs:element name="Type">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Default"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>							
+							</xs:element>
+							<xs:element name="Closet" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Position" type="Pos"/>
+										<xs:element name="Size" type="Size"/>
+										<xs:element name="Rotation"> <!-- Positive Value = rotation counter clockwies-->
+											<xs:simpleType>
+												<xs:restriction base="xs:decimal"/>
+											</xs:simpleType>
+										</xs:element><xs:element name="Type">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Default"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>							
+							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
@@ -112,12 +172,26 @@
 		<xs:sequence>
 			<xs:element name="Height">
 				<xs:simpleType>
-					<xs:restriction base="xs:integer"/>
+					<xs:restriction base="xs:decimal"/>
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="Width">
 				<xs:simpleType>
-					<xs:restriction base="xs:integer"/>
+					<xs:restriction base="xs:decimal"/>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Size"> 
+		<xs:sequence>
+			<xs:element name="Height">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Width">
+				<xs:simpleType>
+					<xs:restriction base="xs:decimal"/>
 				</xs:simpleType>
 			</xs:element>
 		</xs:sequence>

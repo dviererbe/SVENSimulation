@@ -38,9 +38,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: User
-    uniqueID: 958751485
-    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Furniture
+    uniqueID: 3803762369
+    locked: 0
+  - name: User
+    uniqueID: 958751485
     locked: 0

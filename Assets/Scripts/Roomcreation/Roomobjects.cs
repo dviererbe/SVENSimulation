@@ -15,14 +15,18 @@ namespace Assets.Scripts.Roomcreation
             TABLE,
             WINDOW,
             DOOR,
-            WALL
+            WALL,
+            HEATER,
+            CLOSET
         };
 
         private string _type;
-        private int _posX;
-        private int _posY;
+        private float _posX;
+        private float _posY;
         private float _rotation;
         private RoomElement _roomElement;
+        private float _sizeheight;
+        private float _sizewidth;
 
         public string Type
         {
@@ -36,13 +40,13 @@ namespace Assets.Scripts.Roomcreation
             set { _roomElement = value; }
         }
 
-        public int PosX
+        public float PosX
         {
             get { return _posX; }
             set { _posX = value; }
         }
 
-        public int PosY
+        public float PosY
         {
             get { return _posY; }
             set { _posY = value; }
@@ -52,6 +56,17 @@ namespace Assets.Scripts.Roomcreation
         {
             get { return _rotation; }
             set { _rotation = value; }
+        }
+
+        public float Sizeheight
+        {
+            get { return _sizeheight; }
+            set { _sizeheight = value; }
+        }
+        public float Sizewidth
+        {
+            get { return _sizewidth; }
+            set { _sizewidth = value; }
         }
     }
 }

@@ -2,19 +2,34 @@
 using System.Collections.Generic;
 using System.Xml;
 using UnityEngine;
+using System.Globalization;
 
 namespace Assets.Scripts
 {
     class RoomReader
     {
+        private static string[] MASSEINHEIT = new string[]
+        {
+            "Millimeter",
+            "Centimeter",
+            "Dezimeter",
+            "Meter"
+        };
 
         private static string PATHWALL = "/Roomplan/Walls/Wall";
         private static string PATHWINDOW = "/Roomplan/Walls/Window";
         private static string PATHDOOR = "/Roomplan/Walls/Door";
         private static string PATHCHAIR = "/Roomplan/Furniture/Chair";
         private static string PATHTABLE = "/Roomplan/Furniture/Table";
+        private static string PATHHEATER = "/Roomplan/Furniture/Heater";
+        private static string PATHCLOSET = "/Roomplan/Furniture/Closet";
+
         private static string PATHROOMHEIGTH = "/Roomplan/Room/Height";
         private static string PATHROOMWIDTH = "/Roomplan/Room/Width";
+        private static string PATHROOMWALLTHICKNESS = "/Roomplan/Room/WallThickness";
+        private static string PATHROOMTHERMALPIXELSIZE = "/Roomplan/Room/ThermalPixelSize";
+
+        private static string PATHSCALING = "/Roomplan/Room/Masseinheit";
         private static string PATHSTARTHEIGTH = "./StartPosition/Height";
         private static string PATHSTARTWIDTH = "./StartPosition/Width";
         private static string PATHENDHEIGTH = "./EndPosition/Height";
@@ -22,6 +37,8 @@ namespace Assets.Scripts
         private static string PATHHEIGHT = "./Position/Height";
         private static string PATHWIDTH = "./Position/Width";
         private static string PATHROTATION= "./Rotation";
+        private static string PATHSIZEHEIGHT= "./Size/Height";
+        private static string PATHSIZEWIDTH= "./Size/Width";
         private static string PATHTYPE= "./Type";
 
         private string _xmlPath;
@@ -31,9 +48,11 @@ namespace Assets.Scripts
             _xmlPath = xmlPath;
         }
 
-        public RoomObjects[] ReadRoom(out RoomObjects.RoomElement[,] walls, out int height, out int width)
+        public RoomObjects[] ReadRoom(out RoomObjects.RoomElement[,] walls, out float scaling)
         {
             Debug.Log("Enter");
+
+            scaling = 1.0f;
 
             //StreamReader str = new StreamReader(_xmlPath);
             XmlDocument xmlDoc = new XmlDocument();
@@ -45,21 +64,42 @@ namespace Assets.Scripts
 
             #region Roomsize
             {
-
                 //read Roomsize
                 XmlNode heightNode = root.SelectSingleNode(PATHROOMHEIGTH);
-                height = int.Parse(heightNode.InnerText);
+                OptionsManager.RoomHeight = int.Parse(heightNode.InnerText);
 
                 XmlNode widthNode = root.SelectSingleNode(PATHROOMWIDTH);
-                width = int.Parse(widthNode.InnerText);
+                OptionsManager.RoomWidth = int.Parse(widthNode.InnerText);
+
+                XmlNode wallThickness = root.SelectSingleNode(PATHROOMWALLTHICKNESS);
+                OptionsManager.WallThickness = float.Parse(wallThickness.InnerText);
+
+                XmlNode thermalPixelSize = root.SelectSingleNode(PATHROOMTHERMALPIXELSIZE);
+                OptionsManager.ThermalPixelSize = float.Parse(thermalPixelSize.InnerText);
+
+                XmlNode scalingNode = root.SelectSingleNode(PATHSCALING);
+                if(scalingNode.InnerText.Equals(MASSEINHEIT[0]))
+                {
+                    scaling = 1000f;
+                }
+                else if(scalingNode.InnerText.Equals(MASSEINHEIT[1]))
+                {
+                    scaling = 100f;
+                }
+                else if(scalingNode.InnerText.Equals(MASSEINHEIT[2]))
+                {
+                    scaling = 10f;
+                }
+                else
+                {
+                    scaling = 1f;
+                }
+
             }
             #endregion
 
             #region Walls
-            walls = new RoomObjects.RoomElement[height, width];
-
-            Debug.Log("Heigth: " + height);
-            Debug.Log("Width: " + width);
+            walls = new RoomObjects.RoomElement[(int)OptionsManager.RoomWidth, (int)OptionsManager.RoomHeight];
 
             XmlNodeList wallsNodeList = xmlDoc.SelectNodes(PATHWALL);
             walls = readWallElements(walls, wallsNodeList, RoomObjects.RoomElement.WALL);
@@ -84,6 +124,12 @@ namespace Assets.Scripts
 
             XmlNodeList tables = root.SelectNodes(PATHTABLE);
             roomobjects = readRoomobjects(roomobjects, tables, RoomObjects.RoomElement.TABLE);
+
+            XmlNodeList heater = root.SelectNodes(PATHHEATER);
+            roomobjects = readRoomobjects(roomobjects, heater, RoomObjects.RoomElement.HEATER);
+
+            XmlNodeList closet = root.SelectNodes(PATHCLOSET);
+            roomobjects = readRoomobjects(roomobjects, closet, RoomObjects.RoomElement.CLOSET);
 
             #endregion
             return roomobjects.Count == 0 ? new RoomObjects[0] : roomobjects.ToArray();
@@ -127,7 +173,7 @@ namespace Assets.Scripts
 
                         for (int i = startwidth; i <= endwidth; i++)
                         {
-                            walls[startheight, i] = type;
+                            walls[i, startheight] = type;
                         }
                     }
                     else if (startwidth == endwidth)
@@ -142,7 +188,7 @@ namespace Assets.Scripts
 
                         for (int i = startheight; i <= endheight; i++)
                         {
-                            walls[i, startwidth] = type;
+                            walls[startwidth, i] = type;
                         }
                     }
                     else
@@ -164,10 +210,10 @@ namespace Assets.Scripts
                     newobject.Element = type;
 
                     XmlNode pos = element.SelectSingleNode(PATHHEIGHT);
-                    newobject.PosY = int.Parse(pos.InnerText);
+                    newobject.PosY = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHWIDTH);
-                    newobject.PosX = int.Parse(pos.InnerText);
+                    newobject.PosX = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHROTATION);
                     newobject.Rotation = float.Parse(pos.InnerText);
@@ -175,6 +221,12 @@ namespace Assets.Scripts
                     pos = element.SelectSingleNode(PATHTYPE);
                     newobject.Type = pos.InnerText;
 
+                    pos = element.SelectSingleNode(PATHSIZEHEIGHT);
+                    newobject.Sizeheight = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+
+                    pos = element.SelectSingleNode(PATHSIZEWIDTH);
+                    newobject.Sizewidth = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    
                     roomobjects.Add(newobject);
                 }
             }
