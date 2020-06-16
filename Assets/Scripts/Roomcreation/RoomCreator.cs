@@ -16,10 +16,10 @@ using UnityEngine;
 public class RoomCreator : MonoBehaviour, IRoom
 {
     [SerializeField]
-    private int _roomWidth = 30;
+    private int _roomWidth = Mathf.RoundToInt(OptionsManager.RoomWidth);
 
     [SerializeField] 
-    private int _roomHeight = 30;
+    private int _roomHeight = Mathf.RoundToInt(OptionsManager.RoomHeight);
 
     [SerializeField]
     private float _wallThickness = 1f;
@@ -180,13 +180,13 @@ public class RoomCreator : MonoBehaviour, IRoom
         #region Air Creator
 
         AirPrefab.transform.localScale = new Vector3(
-            x: WallThickness / _roomThermalManager.ThermalPixelSize,
-            y: WallThickness / _roomThermalManager.ThermalPixelSize,
-            z: WallThickness / _roomThermalManager.ThermalPixelSize);
+            x: _roomThermalManager.ThermalPixelSize,
+            y: _roomThermalManager.ThermalPixelSize,
+            z: _roomThermalManager.ThermalPixelSize);
 
         _airObjects = new GameObject[
-            (_roomWidth - 2) * Convert.ToInt32(_roomThermalManager.ThermalPixelSize),
-            (_roomHeight - 2) * Convert.ToInt32(_roomThermalManager.ThermalPixelSize)];
+            (_roomWidth - 1),
+            (_roomHeight - 1)];
 
         for (int i = 0; i < _airObjects.GetLength(0); i++)
         {
@@ -502,7 +502,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         {
             for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
-                float temperature = _roomThermalManager.GetTemperature(new Vector3(x, y)).ToCelsius().Value;
+                float temperature = _roomThermalManager.GetTemperature(_airObjects[x,y].transform.position).ToCelsius().Value;
 
                 _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature = temperature;
 
