@@ -436,12 +436,27 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// </summary>
     private void SetTemperatureColors()
     {
-        SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature, out float temperatureStep);
+        float lowestTemperature;
+        float highestTemperature;
+        float temperatureStep;
 
         float colorSection;
 
-        //OptionsManager.MinTemperatur = lowestTemperature;
-        //OptionsManager.MaxTemperatur = highestTemperature;
+        if (OptionsManager.DynamicSkalar)
+        {
+
+            SetTemperaturesAndGetHighestAndLowest(out highestTemperature, out lowestTemperature);
+            OptionsManager.MinTemperatur = lowestTemperature;
+            OptionsManager.MaxTemperatur = highestTemperature;
+        }
+        else
+        {
+            lowestTemperature = OptionsManager.MinTemperatur;
+            highestTemperature = OptionsManager.MaxTemperatur;
+        }
+
+        //Length -1, cuz otherwise we'd get values between 0 and 16
+        temperatureStep = (highestTemperature - lowestTemperature) / (AirColors.ColorArray.GetLength(0) - 1);
 
         for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
@@ -478,7 +493,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// temperatureStep is highestTemperature-lowestTemperature / amounts of colors we use
     /// that's an easy possibility in order to specify the color
     /// </param>
-    private void SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature, out float temperatureStep)
+    private void SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature)
     {
         highestTemperature = float.MinValue;
         lowestTemperature = float.MaxValue;
@@ -501,8 +516,5 @@ public class RoomCreator : MonoBehaviour, IRoom
                 }
             }
         }
-
-        //Length -1, cuz otherwise we'd get values between 0 and 16
-        temperatureStep = (highestTemperature - lowestTemperature) / (AirColors.ColorArray.GetLength(0) - 1);
     }
 }

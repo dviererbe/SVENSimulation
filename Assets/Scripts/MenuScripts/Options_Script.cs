@@ -17,6 +17,12 @@ public class Options_Script: MonoBehaviour
     [SerializeField]
     private TMP_Dropdown _resolutioDropdown;
 
+    [SerializeField]
+    private TMP_InputField _maxTemperatur;
+
+    [SerializeField]
+    private TMP_InputField _minTemperatur;
+
     private List<int[]> _resolutionList;
 
 
@@ -74,6 +80,11 @@ public class Options_Script: MonoBehaviour
         }
 
         _resolutioDropdown.AddOptions(options);
+
+        _maxTemperatur.interactable = !OptionsManager.DynamicSkalar;
+        _minTemperatur.interactable = !OptionsManager.DynamicSkalar;
+        _maxTemperatur.text = OptionsManager.MaxTemperatur.ToString();
+        _minTemperatur.text = OptionsManager.MinTemperatur.ToString();
     }
 
     public void WindowMode_Change(TMP_Dropdown dropdown)
@@ -101,5 +112,29 @@ public class Options_Script: MonoBehaviour
         OptionsManager.WindowWidth = width;
         OptionsManager.WindowHeigth = heigth;
 
+    }
+
+    public void DynamicSkalar_toggel(Toggle toggle)
+    {
+        OptionsManager.DynamicSkalar = toggle.isOn;
+
+        _maxTemperatur.interactable = !OptionsManager.DynamicSkalar;
+        _minTemperatur.interactable = !OptionsManager.DynamicSkalar;
+
+        if(!OptionsManager.DynamicSkalar)
+        {
+            OptionsManager.MaxTemperatur = float.Parse(_maxTemperatur.text);
+            OptionsManager.MinTemperatur = float.Parse(_minTemperatur.text);
+        }
+    }
+
+    public void EditMaxTemperatur()
+    {
+        OptionsManager.MaxTemperatur = float.Parse(_maxTemperatur.text);
+    }
+
+    public void EditMinTemperatur()
+    {
+        OptionsManager.MinTemperatur = float.Parse(_minTemperatur.text);
     }
 }

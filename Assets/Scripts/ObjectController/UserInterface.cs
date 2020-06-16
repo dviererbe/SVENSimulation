@@ -85,4 +85,39 @@ public class UserInterface : MonoBehaviour
         _maximizeRegulators_Button.interactable = false;
         _regulators.SetActive(true);
     }
+
+    public void MaxUserSpeed_Slider(Slider slider)
+    {
+        slider.GetComponentInChildren<TextMeshProUGUI>().text = slider.value.ToString();
+    }
+
+    public void MinUserSpeed_Slider(Slider slider)
+    {
+        slider.GetComponentInChildren<TextMeshProUGUI>().text = slider.value.ToString();
+    }
+
+    public void UpperMaxOKUserTemperatur(TMP_InputField input)
+    {
+
+    }
+    public void UpperMinOKUserTemperatur(TMP_InputField input)
+    {
+
+    }
+
+    public void LowerMaxOKUserTemperatur(TMP_InputField input)
+    {
+
+    }
+
+    public void LowerMinOKUserTemperatur(TMP_InputField input)
+    {
+
+    }
+
+
+    public void ProbabilityOfUserStandingUpInPause_Slider(Slider slider)
+    {
+        slider.GetComponentInChildren<TextMeshProUGUI>().text = slider.value.ToString() + "%";
+    }
 }

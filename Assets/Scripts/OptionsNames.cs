@@ -26,5 +26,6 @@ namespace Assets.Scripts
         public const string MINTEMP = "minimum Temperatur";
         public const string MAXTEMP = "maximum Temperatur";
         public const string LECTURE = "Lecture";
+        public const string DYNAMICTEMP = "dynamischer Temperaturskalar";
     }
 }

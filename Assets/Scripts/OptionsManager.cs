@@ -73,6 +73,9 @@ namespace Assets.Scripts
         private float _maxTemperature = 0.0f;
 
         [SerializeField]
+        private bool _dynamicSkalar = false;
+
+        [SerializeField]
         private int _windowMode = 0;
 
         [SerializeField]
@@ -626,6 +629,25 @@ namespace Assets.Scripts
                     };
 
                     Instance._lecture = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
+
+        public static bool DynamicSkalar
+        {
+            get => Instance._dynamicSkalar;
+            set
+            {
+                if (value != Instance._dynamicSkalar)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.LECTURE,
+                        OldValue = Instance._dynamicSkalar
+                    };
+
+                    Instance._dynamicSkalar = value;
                     Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
                 }
             }
