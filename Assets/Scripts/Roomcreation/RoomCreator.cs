@@ -347,8 +347,8 @@ public class RoomCreator : MonoBehaviour, IRoom
             if (roomObject != null)
             {
                 Vector3 size = roomObject.transform.localScale;
-                size.y *= obj.Sizeheight * scaling;
-                size.x *= obj.Sizewidth * scaling;
+                size.y *= obj.Sizeheight * scaling * WallThickness;
+                size.x *= obj.Sizewidth * scaling * WallThickness;
                 roomObject.transform.localScale = size;
                 roomObject.transform.Rotate(0, 0, obj.Rotation);
                 roomObject.transform.parent = _furniture.transform;

@@ -210,10 +210,10 @@ namespace Assets.Scripts
                     newobject.Element = type;
 
                     XmlNode pos = element.SelectSingleNode(PATHHEIGHT);
-                    newobject.PosY = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newobject.PosX = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHWIDTH);
-                    newobject.PosX = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newobject.PosY = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHROTATION);
                     newobject.Rotation = float.Parse(pos.InnerText);
