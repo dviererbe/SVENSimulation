@@ -16,10 +16,10 @@ using UnityEngine;
 public class RoomCreator : MonoBehaviour, IRoom
 {
     [SerializeField]
-    private int _roomWidth = Mathf.RoundToInt(OptionsManager.RoomWidth);
+    private int _roomWidth;
 
     [SerializeField] 
-    private int _roomHeight = Mathf.RoundToInt(OptionsManager.RoomHeight);
+    private int _roomHeight;
 
     [SerializeField]
     private float _wallThickness = 1f;
@@ -185,8 +185,8 @@ public class RoomCreator : MonoBehaviour, IRoom
             z: _roomThermalManager.ThermalPixelSize);
 
         _airObjects = new GameObject[
-            (_roomWidth - 1),
-            (_roomHeight - 1)];
+            (_roomWidth - 2),
+            (_roomHeight - 2)];
 
         for (int i = 0; i < _airObjects.GetLength(0); i++)
         {
@@ -196,10 +196,18 @@ public class RoomCreator : MonoBehaviour, IRoom
                 GameObject airObject = Instantiate(
                         AirPrefab, //the GameObject that will be instantiated
                         position: new Vector3(
-                            x: _wallThickness + i * AirPrefab.transform.localScale.x,
-                            y: _wallThickness + j * AirPrefab.transform.localScale.y),
+                            x: WallThickness * i + WallThickness,
+                            y: WallThickness * j + WallThickness),
                         rotation: AirPrefab.transform.rotation) ;
 
+                Vector3 tempscale = airObject.transform.localScale;
+
+                tempscale.x *= WallThickness;
+                tempscale.y *= WallThickness;
+
+                airObject.transform.localScale = tempscale;
+
+                airObject.name = "Air_" + i + "." + j;
                 airObject.transform.parent = gameObject.transform;
                 airObject.GetComponent<AirTemperatureController>().Position = new Vector2Int(i, j);
 
