@@ -444,10 +444,10 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         float colorSection;
 
-        if (OptionsManager.DynamicSkalar)
-        {
+        SetTemperaturesAndGetHighestAndLowest(out highestTemperature, out lowestTemperature);
 
-            SetTemperaturesAndGetHighestAndLowest(out highestTemperature, out lowestTemperature);
+        if (OptionsManager.DynamicSkalar)
+        { 
             OptionsManager.MinTemperatur = lowestTemperature;
             OptionsManager.MaxTemperatur = highestTemperature;
         }
