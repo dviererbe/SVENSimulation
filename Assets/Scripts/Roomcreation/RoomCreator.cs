@@ -196,16 +196,10 @@ public class RoomCreator : MonoBehaviour, IRoom
                 GameObject airObject = Instantiate(
                         AirPrefab, //the GameObject that will be instantiated
                         position: new Vector3(
-                            x: WallThickness * i + WallThickness,
-                            y: WallThickness * j + WallThickness),
+                            x: (WallThickness - (WallThickness - 1) * 0.5f) + i * AirPrefab.transform.lossyScale.x,
+                            y: (WallThickness - (WallThickness - 1) * 0.5f) + j * AirPrefab.transform.lossyScale.y),
                         rotation: AirPrefab.transform.rotation) ;
 
-                Vector3 tempscale = airObject.transform.localScale;
-
-                tempscale.x *= WallThickness;
-                tempscale.y *= WallThickness;
-
-                airObject.transform.localScale = tempscale;
 
                 airObject.name = "Air_" + i + "." + j;
                 airObject.transform.parent = gameObject.transform;
