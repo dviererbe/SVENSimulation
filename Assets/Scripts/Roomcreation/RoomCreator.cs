@@ -185,19 +185,18 @@ public class RoomCreator : MonoBehaviour, IRoom
             z: _roomThermalManager.ThermalPixelSize);
 
         _airObjects = new GameObject[
-            (_roomWidth - 2),
-            (_roomHeight - 2)];
+            (_roomWidth - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(ThermalPixelSize),
+            (_roomHeight - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(ThermalPixelSize)];
 
         for (int i = 0; i < _airObjects.GetLength(0); i++)
         {
             for (int j = 0; j < _airObjects.GetLength(1); j++)
             {
-
                 GameObject airObject = Instantiate(
                         AirPrefab, //the GameObject that will be instantiated
                         position: new Vector3(
-                            x: (WallThickness - (WallThickness - 1) * 0.5f) + i * AirPrefab.transform.lossyScale.x,
-                            y: (WallThickness - (WallThickness - 1) * 0.5f) + j * AirPrefab.transform.lossyScale.y),
+                            x: (WallThickness/2 + 0.5f) + i * AirPrefab.transform.lossyScale.x, //WallThickness - (WallThickness - 1) * 0.5f = w/2 + 0.5
+                            y: (WallThickness/2 + 0.5f) + j * AirPrefab.transform.lossyScale.y),
                         rotation: AirPrefab.transform.rotation) ;
 
 
