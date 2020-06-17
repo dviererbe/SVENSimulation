@@ -89,7 +89,9 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// <remarks>
     /// This value is not allowed to change.
     /// </remarks>
-    public Vector3 RoomSize => new Vector3(_roomWidth - 1, _roomHeight - 1); //TODO: replace by constant;
+    public Vector3 RoomSize => new Vector3(
+        x: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + ((_roomWidth - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(OptionsManager.ThermalPixelSize)-1) * OptionsManager.ThermalPixelSize, 
+        y: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + ((_roomHeight - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(OptionsManager.ThermalPixelSize)-1) * OptionsManager.ThermalPixelSize); //TODO: replace by constant;
 
     /// <summary>
     /// Gets the global position of the <see cref="IRoom"/>.
@@ -97,7 +99,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// <remarks>
     /// This value is not allowed to change.
     /// </remarks>
-    public Vector3 RoomPosition => new Vector3(1, 1, 0); //TODO: replace by constant;
+    public Vector3 RoomPosition => new Vector3(WallThickness / 2, WallThickness / 2, 0); //TODO: replace by constant;
 
     /// <summary>
     /// Gets the thickness of the walls of the <see cref="IRoom"/>.
@@ -167,9 +169,6 @@ public class RoomCreator : MonoBehaviour, IRoom
         #endregion
 
         
-
-        
-
         GameObject thermometerObject = Instantiate(_thermometerPrefab);
         thermometerObject.transform.parent = gameObject.transform;
         ThermometerController thermometerController = thermometerObject.GetComponent<ThermometerController>();
@@ -195,8 +194,8 @@ public class RoomCreator : MonoBehaviour, IRoom
                 GameObject airObject = Instantiate(
                         AirPrefab, //the GameObject that will be instantiated
                         position: new Vector3(
-                            x: (WallThickness/2 + 0.5f) + i * AirPrefab.transform.lossyScale.x, //WallThickness - (WallThickness - 1) * 0.5f = w/2 + 0.5
-                            y: (WallThickness/2 + 0.5f) + j * AirPrefab.transform.lossyScale.y),
+                            x: (WallThickness + ThermalPixelSize) / 2 + i * AirPrefab.transform.lossyScale.x, //WallThickness - (WallThickness - 1) * 0.5f = w/2 + 0.5
+                            y: (WallThickness + ThermalPixelSize) / 2 + j * AirPrefab.transform.lossyScale.y),
                         rotation: AirPrefab.transform.rotation) ;
 
 
@@ -211,6 +210,10 @@ public class RoomCreator : MonoBehaviour, IRoom
         #endregion
 
         #region Wall Creator
+
+        //_windowPrefab.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+        _wallPrefab.transform.localScale = _doorPrefab.transform.localScale = new Vector3(WallThickness, WallThickness, WallThickness);
 
         _wallObjects = new GameObject[_roomWidth, _roomHeight];
 
@@ -243,13 +246,6 @@ public class RoomCreator : MonoBehaviour, IRoom
                         }
                     }
 
-                    Vector3 tempscale = windowObject.transform.localScale;
-
-                    tempscale.x *= WallThickness;
-                    tempscale.y *= WallThickness;
-
-                    windowObject.transform.localScale = tempscale;
-
                     WindowController windowController = windowObject.GetComponent<WindowController>();
                     windowController.RemoteWindow = new RemoteWindow(serverConnection, "window");
                     thermalManagerBuilder.AddThermalObject(windowController);
@@ -278,12 +274,6 @@ public class RoomCreator : MonoBehaviour, IRoom
                         }
                     }
 
-                    Vector3 tempscale = doorObject.transform.localScale;
-
-                    tempscale.x *= WallThickness;
-                    tempscale.y *= WallThickness;
-
-                    doorObject.transform.localScale = tempscale;
 
                     _wallObjects[i, j] = doorObject;
                 }
@@ -366,12 +356,6 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         SetWallSprite(walls, i, j, wallObject);
 
-        Vector3 tempscale = wallObject.transform.localScale;
-
-        tempscale.x *= WallThickness;
-        tempscale.y *= WallThickness;
-
-        wallObject.transform.localScale = tempscale;
 
         return wallObject;
     }
