@@ -1264,7 +1264,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: MinUserSpeed_Slider
+        m_MethodName: MinUserSpeed_SliderChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 160121738}
@@ -3123,7 +3123,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: LowerMaxOKUserTemperatur
+        m_MethodName: UpperMinOKUserTemperatur_EditFinish
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 505980664}
@@ -3737,7 +3737,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -97.899994, y: 84.59996}
+  m_AnchoredPosition: {x: 552.1, y: -227.2}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &565685401
@@ -4634,7 +4634,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: UpperMaxOKUserTemperatur
+        m_MethodName: UpperMaxOKUserTemperatur_EditFinish
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 735293724}
@@ -5261,7 +5261,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: ProbabilityOfUserStandingUpInPause_Slider
+        m_MethodName: ProbabilityOfUserStandingUpInPause_SliderChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 802561015}
@@ -6834,7 +6834,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: MaxUserSpeed_Slider
+        m_MethodName: MaxUserSpeed_SliderChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 985741258}
@@ -6878,7 +6878,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -643, y: 425}
+  m_AnchoredPosition: {x: 7.8612, y: 118.92}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &989720265
@@ -7755,7 +7755,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: UpperMinOKUserTemperatur
+        m_MethodName: LowerMinOKUserTemperatur_EditFinish
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1154173624}
@@ -8299,6 +8299,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1256702516}
+  - component: {fileID: 1256702518}
+  - component: {fileID: 1256702517}
   m_Layer: 5
   m_Name: Farbescaler
   m_TagString: Untagged
@@ -8325,9 +8327,46 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 124, y: -107}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -667.1, y: 264}
+  m_SizeDelta: {x: 184.27768, y: 287.83405}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1256702517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256702515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.1882353}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: c3e4c063e0b997a449c5e20f289e8280, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1256702518
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256702515}
+  m_CullTransparentMesh: 0
 --- !u!1 &1271372588
 GameObject:
   m_ObjectHideFlags: 0
@@ -9280,7 +9319,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -97.899994, y: 82.59996}
+  m_AnchoredPosition: {x: 552.1, y: -227.20003}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1505328409
@@ -11029,10 +11068,17 @@ MonoBehaviour:
   _lecture: 0
   _minTemperature: 10
   _maxTemperature: 30
-  _dynamicSkalar: 0
+  _dynamicSkalar: 1
   _windowMode: 0
   _windowHeight: 0
   _windowWidth: 0
+  _maxUserSpeed: 0
+  _minUserSpeed: 0
+  _upperMaxOkUserTemperatur: 0
+  _upperMinOkUserTemperatur: 0
+  _lowerMaxOkUserTemperatur: 0
+  _lowerMinOkUserTemperatur: 0
+  _probailityOfUserStandingUpInPause: 0
 --- !u!4 &1754030835
 Transform:
   m_ObjectHideFlags: 0
