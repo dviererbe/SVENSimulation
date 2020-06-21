@@ -634,7 +634,7 @@ namespace Assets.Scripts
             }
         }
 
-        public static bool DynamicSkalar
+        public static bool DynamicTemperatureScaling
         {
             get => Instance._dynamicSkalar;
             set

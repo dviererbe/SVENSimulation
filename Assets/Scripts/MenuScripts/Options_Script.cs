@@ -81,8 +81,8 @@ public class Options_Script: MonoBehaviour
 
         _resolutioDropdown.AddOptions(options);
 
-        _maxTemperatur.interactable = !OptionsManager.DynamicSkalar;
-        _minTemperatur.interactable = !OptionsManager.DynamicSkalar;
+        _maxTemperatur.interactable = !OptionsManager.DynamicTemperatureScaling;
+        _minTemperatur.interactable = !OptionsManager.DynamicTemperatureScaling;
         _maxTemperatur.text = OptionsManager.MaxTemperatur.ToString();
         _minTemperatur.text = OptionsManager.MinTemperatur.ToString();
     }
@@ -116,12 +116,12 @@ public class Options_Script: MonoBehaviour
 
     public void DynamicSkalar_toggel(Toggle toggle)
     {
-        OptionsManager.DynamicSkalar = toggle.isOn;
+        OptionsManager.DynamicTemperatureScaling = toggle.isOn;
 
-        _maxTemperatur.interactable = !OptionsManager.DynamicSkalar;
-        _minTemperatur.interactable = !OptionsManager.DynamicSkalar;
+        _maxTemperatur.interactable = !OptionsManager.DynamicTemperatureScaling;
+        _minTemperatur.interactable = !OptionsManager.DynamicTemperatureScaling;
 
-        if(!OptionsManager.DynamicSkalar)
+        if(!OptionsManager.DynamicTemperatureScaling)
         {
             OptionsManager.MaxTemperatur = float.Parse(_maxTemperatur.text);
             OptionsManager.MinTemperatur = float.Parse(_minTemperatur.text);

@@ -12,6 +12,7 @@ using Assets.Scripts.Roomcreation;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class RoomCreator : MonoBehaviour, IRoom
 {
@@ -59,7 +60,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private GameObject[,] _airObjects;
 
-    private GameObject[,] _wallObjects;
+    private (GameObject gameObject, bool isWall)[,] _wallObjects;
 
     private IRoomThermalManager _roomThermalManager;
 
@@ -201,7 +202,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                 airObject.name = "Air_" + i + "." + j;
                 airObject.transform.parent = gameObject.transform;
-                airObject.GetComponent<AirTemperatureController>().Position = new Vector2Int(i, j);
+                airObject.GetComponent<TemperatureController>().Position = new Vector2Int(i, j);
 
                 _airObjects[i,j] = airObject;
             }
@@ -215,7 +216,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         _wallPrefab.transform.localScale = _doorPrefab.transform.localScale = new Vector3(WallThickness, WallThickness, WallThickness);
 
-        _wallObjects = new GameObject[_roomWidth, _roomHeight];
+        _wallObjects = new (GameObject, bool)[_roomWidth, _roomHeight];
 
         for (int i = 0; i < _roomWidth; i++)
         {
@@ -223,7 +224,7 @@ public class RoomCreator : MonoBehaviour, IRoom
             {
                 if (walls[i, j] == RoomObjects.RoomElement.WALL)
                 {
-                    _wallObjects[i, j] = InstantiateWallObject(i, j, walls);
+                    _wallObjects[i, j] = (InstantiateWallObject(i, j, walls), isWall: true);
                 }
                 else if(walls[i, j] == RoomObjects.RoomElement.WINDOW)
                 {
@@ -251,7 +252,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                     thermalManagerBuilder.AddThermalObject(windowController);
                     windowController.RoomThermalManager = _roomThermalManager;
 
-                    _wallObjects[i, j] = windowObject;
+                    _wallObjects[i, j] = (windowObject, isWall: false);
                 }
                 else if(walls[i, j] == RoomObjects.RoomElement.DOOR)
                 {
@@ -275,7 +276,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                     }
 
 
-                    _wallObjects[i, j] = doorObject;
+                    _wallObjects[i, j] = (doorObject, isWall: false);
                 }
             }
         }
@@ -410,26 +411,32 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #region Air Creator
 
-        SetTemperatureColors();
-
+        SetAirTemperatureColors();
+        SetWallTemperatureColors();
+        
         #endregion
+    }
+
+    private void SetWallTemperatureColors()
+    {
+
     }
 
     /// <summary>
     /// Sets the color of all air game-objects relative to the temperature of a air game-object
     /// to the lowest and highest temperature of all air game-objects.
     /// </summary>
-    private void SetTemperatureColors()
+    private void SetAirTemperatureColors()
     {
         float lowestTemperature;
         float highestTemperature;
         float temperatureStep;
 
-        float colorSection;
+        SetTemperatures();
+        lowestTemperature = _roomThermalManager.CurrentTemperatureStatistics.Minimum;
+        highestTemperature = _roomThermalManager.CurrentTemperatureStatistics.Maximum;
 
-        SetTemperaturesAndGetHighestAndLowest(out highestTemperature, out lowestTemperature);
-
-        if (OptionsManager.DynamicSkalar)
+        if (OptionsManager.DynamicTemperatureScaling)
         { 
             OptionsManager.MinTemperatur = lowestTemperature;
             OptionsManager.MaxTemperatur = highestTemperature;
@@ -441,21 +448,37 @@ public class RoomCreator : MonoBehaviour, IRoom
         }
 
         //Length -1, cuz otherwise we'd get values between 0 and 16
-        temperatureStep = (highestTemperature - lowestTemperature) / (AirColors.ColorArray.GetLength(0) - 1);
+        float temperatureDifference = highestTemperature - lowestTemperature;
+        temperatureStep = temperatureDifference / (AirColors.ColorArray.GetLength(0) - 1);
 
         for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
             for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
-                colorSection = _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature - lowestTemperature;
-                colorSection = colorSection / temperatureStep;
-                int colorindex = (int)Math.Round(colorSection, 0);
-                colorindex = colorindex < 0 ? 0 : colorindex;
-                colorindex = colorindex > AirColors.ColorArray.GetLength(0) - 1 ? AirColors.ColorArray.GetLength(0) - 1 : colorindex;
-                // With "(TileTemp - lowestTemp) / temperatureStep", we create a transformation from [0, (highestTemp-lowestTemp)] -> [0, AmounOfColorsWeHave-1]
-                _airObjects[x, y].GetComponent<AirTemperatureController>().SetColor(ref AirColors.ColorArray[colorindex]);
+                float localColorDiff = _airObjects[x, y].GetComponent<TemperatureController>().Temperature - lowestTemperature;
+                
+                _airObjects[x, y].GetComponent<TemperatureController>().SetColor(interpolateColor(localColorDiff, temperatureStep));
             }
         }
+    }
+
+    private Color32 interpolateColor(float localColorDiff, float temperatureStep)
+    {
+        float colorSection = localColorDiff / temperatureStep;
+        int currentColorIndex = (int)Math.Round(colorSection, 0);
+        float minimumTemperatureValueForNextColorindex = (currentColorIndex + 1) * temperatureStep;
+
+        if (currentColorIndex < AirColors.ColorArray.GetLength(0) - 1)
+        {
+            byte r = (byte)Mathf.Lerp(AirColors.ColorArray[currentColorIndex].r, AirColors.ColorArray[currentColorIndex + 1].r, minimumTemperatureValueForNextColorindex - localColorDiff);
+            byte g = (byte)Mathf.Lerp(AirColors.ColorArray[currentColorIndex].g, AirColors.ColorArray[currentColorIndex + 1].g, minimumTemperatureValueForNextColorindex - localColorDiff);
+            byte b = (byte)Mathf.Lerp(AirColors.ColorArray[currentColorIndex].b, AirColors.ColorArray[currentColorIndex + 1].b, minimumTemperatureValueForNextColorindex - localColorDiff);
+            return new Color32(r, g, b, 255);
+        }
+        else
+            return AirColors.ColorArray[AirColors.ColorArray.GetLength(0) - 1];
+
+        
     }
 
     /// <summary>
@@ -478,27 +501,15 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// temperatureStep is highestTemperature-lowestTemperature / amounts of colors we use
     /// that's an easy possibility in order to specify the color
     /// </param>
-    private void SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature)
+    private void SetTemperatures()
     {
-        highestTemperature = float.MinValue;
-        lowestTemperature = float.MaxValue;
-
         for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
             for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
                 float temperature = _roomThermalManager.GetTemperature(_airObjects[x,y].transform.position).ToCelsius().Value;
 
-                _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature = temperature;
-
-                if (highestTemperature < temperature)
-                {
-                    highestTemperature = temperature;
-                }
-                else if (temperature < lowestTemperature)
-                {
-                    lowestTemperature = temperature;
-                }
+                _airObjects[x, y].GetComponent<TemperatureController>().Temperature = temperature;
             }
         }
     }

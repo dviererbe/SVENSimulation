@@ -24,7 +24,7 @@ public class TemperatureController : MonoBehaviour
         _airSprite = GetComponent<SpriteRenderer>();
     }
 
-    public void SetColor(ref Color32 col)
+    public void SetColor(Color32 col)
     {
         _airSprite.color = col;
     }
