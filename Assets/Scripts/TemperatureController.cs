@@ -5,7 +5,7 @@ using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
 
-public class AirTemperatureController : MonoBehaviour
+public class TemperatureController : MonoBehaviour
 {
     private float _temperature = 0f;
     private SpriteRenderer _airSprite;
