@@ -59,7 +59,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private GameObject[,] _airObjects;
 
-    private GameObject[,] _wallObjects;
+    private (GameObject gameObject, bool isWall)[,] _wallObjects;
 
     private IRoomThermalManager _roomThermalManager;
 
@@ -215,7 +215,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         _wallPrefab.transform.localScale = _doorPrefab.transform.localScale = new Vector3(WallThickness, WallThickness, WallThickness);
 
-        _wallObjects = new GameObject[_roomWidth, _roomHeight];
+        _wallObjects = new (GameObject, bool)[_roomWidth, _roomHeight];
 
         for (int i = 0; i < _roomWidth; i++)
         {
@@ -223,7 +223,7 @@ public class RoomCreator : MonoBehaviour, IRoom
             {
                 if (walls[i, j] == RoomObjects.RoomElement.WALL)
                 {
-                    _wallObjects[i, j] = InstantiateWallObject(i, j, walls);
+                    _wallObjects[i, j] = (InstantiateWallObject(i, j, walls), isWall: true);
                 }
                 else if(walls[i, j] == RoomObjects.RoomElement.WINDOW)
                 {
@@ -251,7 +251,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                     thermalManagerBuilder.AddThermalObject(windowController);
                     windowController.RoomThermalManager = _roomThermalManager;
 
-                    _wallObjects[i, j] = windowObject;
+                    _wallObjects[i, j] = (windowObject, isWall: false);
                 }
                 else if(walls[i, j] == RoomObjects.RoomElement.DOOR)
                 {
@@ -275,7 +275,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                     }
 
 
-                    _wallObjects[i, j] = doorObject;
+                    _wallObjects[i, j] = (doorObject, isWall: false);
                 }
             }
         }
@@ -410,16 +410,21 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #region Air Creator
 
-        SetTemperatureColors();
-
+        SetAirTemperatureColors();
+        SetWallTemperatureColors();
         #endregion
+    }
+
+    private void SetWallTemperatureColors()
+    {
+
     }
 
     /// <summary>
     /// Sets the color of all air game-objects relative to the temperature of a air game-object
     /// to the lowest and highest temperature of all air game-objects.
     /// </summary>
-    private void SetTemperatureColors()
+    private void SetAirTemperatureColors()
     {
         float lowestTemperature;
         float highestTemperature;
@@ -427,9 +432,11 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         float colorSection;
 
-        SetTemperaturesAndGetHighestAndLowest(out highestTemperature, out lowestTemperature);
+        //SetTemperaturesAndGetHighestAndLowest(out highestTemperature, out lowestTemperature);
+        lowestTemperature = _roomThermalManager.CurrentTemperatureStatistics.Minimum;
+        highestTemperature = _roomThermalManager.CurrentTemperatureStatistics.Maximum;
 
-        if (OptionsManager.DynamicSkalar)
+        if (OptionsManager.DynamicTemperatureScaling)
         { 
             OptionsManager.MinTemperatur = lowestTemperature;
             OptionsManager.MaxTemperatur = highestTemperature;
