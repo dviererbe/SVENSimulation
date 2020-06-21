@@ -12,6 +12,7 @@ using Assets.Scripts.Roomcreation;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class RoomCreator : MonoBehaviour, IRoom
 {
@@ -431,9 +432,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         float highestTemperature;
         float temperatureStep;
 
-        float colorSection;
-
-        //SetTemperaturesAndGetHighestAndLowest(out highestTemperature, out lowestTemperature);
+        SetTemperatures();
         lowestTemperature = _roomThermalManager.CurrentTemperatureStatistics.Minimum;
         highestTemperature = _roomThermalManager.CurrentTemperatureStatistics.Maximum;
 
@@ -449,21 +448,37 @@ public class RoomCreator : MonoBehaviour, IRoom
         }
 
         //Length -1, cuz otherwise we'd get values between 0 and 16
-        temperatureStep = (highestTemperature - lowestTemperature) / (AirColors.ColorArray.GetLength(0) - 1);
+        float temperatureDifference = highestTemperature - lowestTemperature;
+        temperatureStep = temperatureDifference / (AirColors.ColorArray.GetLength(0) - 1);
 
         for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
             for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
-                colorSection = _airObjects[x, y].GetComponent<TemperatureController>().Temperature - lowestTemperature;
-                colorSection = colorSection / temperatureStep;
-                int colorindex = (int)Math.Round(colorSection, 0);
-                colorindex = colorindex < 0 ? 0 : colorindex;
-                colorindex = colorindex > AirColors.ColorArray.GetLength(0) - 1 ? AirColors.ColorArray.GetLength(0) - 1 : colorindex;
-                // With "(TileTemp - lowestTemp) / temperatureStep", we create a transformation from [0, (highestTemp-lowestTemp)] -> [0, AmounOfColorsWeHave-1]
-                _airObjects[x, y].GetComponent<TemperatureController>().SetColor(ref AirColors.ColorArray[colorindex]);
+                float localColorDiff = _airObjects[x, y].GetComponent<TemperatureController>().Temperature - lowestTemperature;
+                
+                _airObjects[x, y].GetComponent<TemperatureController>().SetColor(interpolateColor(localColorDiff, temperatureStep));
             }
         }
+    }
+
+    private Color32 interpolateColor(float localColorDiff, float temperatureStep)
+    {
+        float colorSection = localColorDiff / temperatureStep;
+        int currentColorIndex = (int)Math.Round(colorSection, 0);
+        float minimumTemperatureValueForNextColorindex = (currentColorIndex + 1) * temperatureStep;
+
+        if (currentColorIndex < AirColors.ColorArray.GetLength(0) - 1)
+        {
+            byte r = (byte)Mathf.Lerp(AirColors.ColorArray[currentColorIndex].r, AirColors.ColorArray[currentColorIndex + 1].r, minimumTemperatureValueForNextColorindex - localColorDiff);
+            byte g = (byte)Mathf.Lerp(AirColors.ColorArray[currentColorIndex].g, AirColors.ColorArray[currentColorIndex + 1].g, minimumTemperatureValueForNextColorindex - localColorDiff);
+            byte b = (byte)Mathf.Lerp(AirColors.ColorArray[currentColorIndex].b, AirColors.ColorArray[currentColorIndex + 1].b, minimumTemperatureValueForNextColorindex - localColorDiff);
+            return new Color32(r, g, b, 255);
+        }
+        else
+            return AirColors.ColorArray[AirColors.ColorArray.GetLength(0) - 1];
+
+        
     }
 
     /// <summary>
@@ -486,11 +501,8 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// temperatureStep is highestTemperature-lowestTemperature / amounts of colors we use
     /// that's an easy possibility in order to specify the color
     /// </param>
-    private void SetTemperaturesAndGetHighestAndLowest(out float highestTemperature, out float lowestTemperature)
+    private void SetTemperatures()
     {
-        highestTemperature = float.MinValue;
-        lowestTemperature = float.MaxValue;
-
         for (int x = 0; x < _airObjects.GetLength(0); x++)
         {
             for (int y = 0; y < _airObjects.GetLength(1); y++)
@@ -498,15 +510,6 @@ public class RoomCreator : MonoBehaviour, IRoom
                 float temperature = _roomThermalManager.GetTemperature(_airObjects[x,y].transform.position).ToCelsius().Value;
 
                 _airObjects[x, y].GetComponent<TemperatureController>().Temperature = temperature;
-
-                if (highestTemperature < temperature)
-                {
-                    highestTemperature = temperature;
-                }
-                else if (temperature < lowestTemperature)
-                {
-                    lowestTemperature = temperature;
-                }
             }
         }
     }
