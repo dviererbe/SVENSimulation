@@ -201,7 +201,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
                 airObject.name = "Air_" + i + "." + j;
                 airObject.transform.parent = gameObject.transform;
-                airObject.GetComponent<AirTemperatureController>().Position = new Vector2Int(i, j);
+                airObject.GetComponent<TemperatureController>().Position = new Vector2Int(i, j);
 
                 _airObjects[i,j] = airObject;
             }
@@ -447,13 +447,13 @@ public class RoomCreator : MonoBehaviour, IRoom
         {
             for (int y = 0; y < _airObjects.GetLength(1); y++)
             {
-                colorSection = _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature - lowestTemperature;
+                colorSection = _airObjects[x, y].GetComponent<TemperatureController>().Temperature - lowestTemperature;
                 colorSection = colorSection / temperatureStep;
                 int colorindex = (int)Math.Round(colorSection, 0);
                 colorindex = colorindex < 0 ? 0 : colorindex;
                 colorindex = colorindex > AirColors.ColorArray.GetLength(0) - 1 ? AirColors.ColorArray.GetLength(0) - 1 : colorindex;
                 // With "(TileTemp - lowestTemp) / temperatureStep", we create a transformation from [0, (highestTemp-lowestTemp)] -> [0, AmounOfColorsWeHave-1]
-                _airObjects[x, y].GetComponent<AirTemperatureController>().SetColor(ref AirColors.ColorArray[colorindex]);
+                _airObjects[x, y].GetComponent<TemperatureController>().SetColor(ref AirColors.ColorArray[colorindex]);
             }
         }
     }
@@ -489,7 +489,7 @@ public class RoomCreator : MonoBehaviour, IRoom
             {
                 float temperature = _roomThermalManager.GetTemperature(_airObjects[x,y].transform.position).ToCelsius().Value;
 
-                _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature = temperature;
+                _airObjects[x, y].GetComponent<TemperatureController>().Temperature = temperature;
 
                 if (highestTemperature < temperature)
                 {
