@@ -412,6 +412,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         SetAirTemperatureColors();
         SetWallTemperatureColors();
+        
         #endregion
     }
 
