@@ -57,9 +57,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     [SerializeField]
     private GameObject _closetPrefab;
 
-    private GameObject[,] _airObjects;
-
-    private GameObject[,] _wallObjects;
+    private (GameObject gameObject, bool isWall)[,] _roomObjects;
 
     private IRoomThermalManager _roomThermalManager;
 
@@ -125,9 +123,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     {
 
         RoomReader roomreader = new RoomReader(Application.dataPath + "/Roomdefinition/9.428.xml");
-        RoomObjects.RoomElement[,] walls;
-        float scaling = 0;
-        RoomObjects[] roomObjects = roomreader.ReadRoom( out walls, out scaling);
+        RoomObjects[] roomObjects = roomreader.ReadRoom();
 
         #region Load Options
 
@@ -144,12 +140,6 @@ public class RoomCreator : MonoBehaviour, IRoom
         GameObject userGroupControllerObject = Instantiate(_userGroupControllerPrefab);
         UserGroupController userGroupController = userGroupControllerObject.GetComponent<UserGroupController>();
 
-        //GameObject windowObject = Instantiate(_windowPrefab);
-        //windowObject.transform.position = new Vector3(5, 0);
-        //WindowController windowController = windowObject.GetComponent<WindowController>();
-        //windowController.RemoteWindow = new RemoteWindow(serverConnection, "window");
-
-
         RoomThermalManagerBuilder thermalManagerBuilder = new RoomThermalManagerBuilder();
         thermalManagerBuilder.Room = this;
         thermalManagerBuilder.ThermalPixelSize = new Temperature(OptionsManager.InitialRoomTemperature, TemperatureUnit.Celsius);
@@ -163,6 +153,14 @@ public class RoomCreator : MonoBehaviour, IRoom
         _roomThermalManager = thermalManagerBuilder.Build();
         _roomThermalManager.Start();
 
+
+        //Calculate Room Size
+        int wallThermalPixelCount = Mathf.RoundToInt(_wallThickness / _roomThermalManager.ThermalPixelSize);
+
+        Vector2Int roomThermalPixelCount = new Vector2Int(
+            x: Mathf.RoundToInt(_roomWidth / _roomThermalManager.ThermalPixelSize),
+            y: Mathf.RoundToInt(_roomHeight / _roomThermalManager.ThermalPixelSize));
+
         userGroupController.AddRoomThermalManagerToUsers(_roomThermalManager);
         //windowController.RoomThermalManager = _roomThermalManager;
 
@@ -175,111 +173,64 @@ public class RoomCreator : MonoBehaviour, IRoom
         thermometerController.RoomThermalManager = _roomThermalManager;
         thermometerController.RemoteThermometer = new RemoteThermometer(serverConnection, "thermometer");
         thermometerController.Position = new Vector3(1, 1);
-        
-        #region Air Creator
+
+        #region Room Creator
+
+        WallPrefab.transform.localScale = new Vector3(
+            x: _roomThermalManager.ThermalPixelSize,
+            y: _roomThermalManager.ThermalPixelSize,
+            z: _roomThermalManager.ThermalPixelSize);
 
         AirPrefab.transform.localScale = new Vector3(
             x: _roomThermalManager.ThermalPixelSize,
             y: _roomThermalManager.ThermalPixelSize,
             z: _roomThermalManager.ThermalPixelSize);
 
-        _airObjects = new GameObject[
-            (_roomWidth - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(ThermalPixelSize),
-            (_roomHeight - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(ThermalPixelSize)];
+        _roomObjects = new (GameObject, bool)[
+                    roomThermalPixelCount.x + 2 * wallThermalPixelCount,
+                    roomThermalPixelCount.y + 2 * wallThermalPixelCount];
 
-        for (int i = 0; i < _airObjects.GetLength(0); i++)
+        for (int i = 0; i < _roomObjects.GetLength(0); i++)
         {
-            for (int j = 0; j < _airObjects.GetLength(1); j++)
+            for (int j = 0; j < _roomObjects.GetLength(1); j++)
             {
-                GameObject airObject = Instantiate(
-                        AirPrefab, //the GameObject that will be instantiated
-                        position: new Vector3(
-                            x: (WallThickness + ThermalPixelSize) / 2 + i * AirPrefab.transform.lossyScale.x, //WallThickness - (WallThickness - 1) * 0.5f = w/2 + 0.5
-                            y: (WallThickness + ThermalPixelSize) / 2 + j * AirPrefab.transform.lossyScale.y),
-                        rotation: AirPrefab.transform.rotation) ;
+                if (i < wallThermalPixelCount || j < wallThermalPixelCount || 
+                    j > _roomObjects.GetLength(1) - wallThermalPixelCount - 1 || i > _roomObjects.GetLength(0) - wallThermalPixelCount - 1)
+                {
+                    _roomObjects[i, j] = (InstantiateWallObject(i, j), true);
+                }
+                else
+                {
+                    GameObject airObject = Instantiate(
+                            AirPrefab, //the GameObject that will be instantiated
+                            position: new Vector3(
+                                x: (WallThickness + ThermalPixelSize) / 2 + i * AirPrefab.transform.lossyScale.x, //WallThickness - (WallThickness - 1) * 0.5f = w/2 + 0.5
+                                y: (WallThickness + ThermalPixelSize) / 2 + j * AirPrefab.transform.lossyScale.y),
+                            rotation: AirPrefab.transform.rotation);
 
 
-                airObject.name = "Air_" + i + "." + j;
-                airObject.transform.parent = gameObject.transform;
-                airObject.GetComponent<AirTemperatureController>().Position = new Vector2Int(i, j);
+                    airObject.name = "Air_" + i + "." + j;
+                    airObject.transform.parent = gameObject.transform;
+                    airObject.GetComponent<AirTemperatureController>().Position = new Vector2Int(i, j);
 
-                _airObjects[i,j] = airObject;
+                    _roomObjects[i, j] = (airObject, false);
+                }
             }
         }
 
         #endregion
 
-        #region Wall Creator
-
-        //_windowPrefab.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-
-        _wallPrefab.transform.localScale = _doorPrefab.transform.localScale = new Vector3(WallThickness, WallThickness, WallThickness);
-
-        _wallObjects = new GameObject[_roomWidth, _roomHeight];
-
-        for (int i = 0; i < _roomWidth; i++)
+        #region Wall Sprites
+        for (int i = 0; i < _roomObjects.GetLength(0); i++)
         {
-            for (int j = 0; j < _roomHeight; j++)
+            for (int j = 0; j < _roomObjects.GetLength(1); j++)
             {
-                if (walls[i, j] == RoomObjects.RoomElement.WALL)
+                if(_roomObjects[i, j].isWall)
                 {
-                    _wallObjects[i, j] = InstantiateWallObject(i, j, walls);
-                }
-                else if(walls[i, j] == RoomObjects.RoomElement.WINDOW)
-                {
-                    GameObject windowObject = Instantiate(
-                               _windowPrefab, //the GameObject that will be instantiated
-                               position: new Vector3(
-                                   x: WallThickness * i,
-                                   y: WallThickness * j),
-                               rotation: _windowPrefab.transform.rotation);
-
-                    windowObject.transform.parent = gameObject.transform;
-
-                    windowObject.name = "Window_" + i + ":" + j;
-
-                    if(i != 0)
-                    {
-                        if(walls[i - 1, j] == RoomObjects.RoomElement.WALL || walls[i - 1, j] == RoomObjects.RoomElement.WINDOW)
-                        {
-                            windowObject.transform.Rotate(0, 0, 90);
-                        }
-                    }
-
-                    WindowController windowController = windowObject.GetComponent<WindowController>();
-                    windowController.RemoteWindow = new RemoteWindow(serverConnection, "window");
-                    thermalManagerBuilder.AddThermalObject(windowController);
-                    windowController.RoomThermalManager = _roomThermalManager;
-
-                    _wallObjects[i, j] = windowObject;
-                }
-                else if(walls[i, j] == RoomObjects.RoomElement.DOOR)
-                {
-                    GameObject doorObject = Instantiate(
-                                _doorPrefab, //the GameObject that will be instantiated
-                                position: new Vector3(
-                                    x: WallThickness * i,
-                                    y: WallThickness * j),
-                                rotation: _windowPrefab.transform.rotation);
-
-                    doorObject.transform.parent = gameObject.transform;
-
-                    doorObject.name = "Door_" + i + ":" + j;
-
-                    if (j != 0)
-                    {
-                        if (walls[i, j - 1] == RoomObjects.RoomElement.WALL || walls[i, j - 1] == RoomObjects.RoomElement.DOOR)
-                        {
-                            doorObject.transform.Rotate(0, 0, 90);
-                        }
-                    }
-
-
-                    _wallObjects[i, j] = doorObject;
+                    SetWallSprite(i, j, _roomObjects[i, j].gameObject);
                 }
             }
         }
-
 
         #endregion
 
@@ -292,108 +243,109 @@ public class RoomCreator : MonoBehaviour, IRoom
             if(obj.Element == RoomObjects.RoomElement.CHAIR)
             {
                 roomObject = Instantiate(
-                               _chairPrefab, //the GameObject that will be instantiated
-                               position: new Vector3(
-                                   x: (WallThickness * obj.PosY) + 0.5f,
-                                   y: (WallThickness * obj.PosX) + 0.5f),
-                               rotation: _chairPrefab.transform.rotation);
+                                _chairPrefab, //the GameObject that will be instantiated
+                                position: new Vector3(
+                                    x: (WallThickness + obj.PosY) + 0.5f,
+                                    y: (WallThickness + obj.PosX) + 0.5f),
+                                rotation: _chairPrefab.transform.rotation);
                 //roomObject.GetComponent<>().setSprite(obj.Type);
             }
             else if(obj.Element == RoomObjects.RoomElement.TABLE)
             {
                 roomObject = Instantiate(
-                               _tablePrefab, //the GameObject that will be instantiated
-                               position: new Vector3(
-                                   x: (WallThickness * obj.PosY) + 0.5f,
-                                   y: (WallThickness * obj.PosX) + 0.5f),
-                               rotation: _tablePrefab.transform.rotation);
+                                _tablePrefab, //the GameObject that will be instantiated
+                                position: new Vector3(
+                                    x: (WallThickness + obj.PosY) + 0.5f,
+                                    y: (WallThickness + obj.PosX) + 0.5f),
+                                rotation: _tablePrefab.transform.rotation);
                 roomObject.GetComponent<TableController>().setSprite(obj.Type);
             }else  if (obj.Element == RoomObjects.RoomElement.HEATER)
             {
                 roomObject = Instantiate(
-                               _heaterPrefab, //the GameObject that will be instantiated
-                               position: new Vector3(
-                                   x: (WallThickness * obj.PosY) + 0.5f,
-                                   y: (WallThickness * obj.PosX) + 0.5f),
-                               rotation: _tablePrefab.transform.rotation);
+                                _heaterPrefab, //the GameObject that will be instantiated
+                                position: new Vector3(
+                                    x: (WallThickness + obj.PosY) + 0.5f,
+                                    y: (WallThickness + obj.PosX) + 0.5f),
+                                rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
             }else if (obj.Element == RoomObjects.RoomElement.CLOSET)
             {
                 roomObject = Instantiate(
-                               _closetPrefab, //the GameObject that will be instantiated
-                               position: new Vector3(
-                                   x: (WallThickness * obj.PosY) + 0.5f,
-                                   y: (WallThickness * obj.PosX) + 0.5f),
-                               rotation: _tablePrefab.transform.rotation);
+                                _closetPrefab, //the GameObject that will be instantiated
+                                position: new Vector3(
+                                    x: (WallThickness + obj.PosY) + 0.5f,
+                                    y: (WallThickness + obj.PosX) + 0.5f),
+                                rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
             }
+
+            //TODO: Roomobjects Door und Window
+
             if (roomObject != null)
             {
-                Vector3 size = roomObject.transform.localScale;
-                size.y *= obj.Sizeheight * scaling * WallThickness;
-                size.x *= obj.Sizewidth * scaling * WallThickness;
-                roomObject.transform.localScale = size;
                 roomObject.transform.Rotate(0, 0, obj.Rotation);
                 roomObject.transform.parent = _furniture.transform;
+                Vector3 objectsize = roomObject.transform.localScale;
+                objectsize.x *= obj.Sizewidth;
+                objectsize.y *= obj.Sizeheight;
+                roomObject.transform.localScale = objectsize;
+
             }
-            
+
         }
         #endregion
     }
 
-    private GameObject InstantiateWallObject(int i, int j, RoomObjects.RoomElement[,] walls)
+    private GameObject InstantiateWallObject(int i, int j)
     {
         GameObject wallObject = Instantiate(
                                 WallPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: WallThickness * i,
-                                    y: WallThickness * j),
+                                    x: (WallThickness + ThermalPixelSize) / 2 + i * _wallPrefab.transform.lossyScale.x,
+                                    y: (WallThickness + ThermalPixelSize) / 2 + j * _wallPrefab.transform.lossyScale.x),
                                 rotation: WallPrefab.transform.rotation);
 
         wallObject.transform.parent = gameObject.transform;
 
         wallObject.name = "Wall_" + i + ":" + j;
 
-        SetWallSprite(walls, i, j, wallObject);
-
-
         return wallObject;
     }
 
-    private void SetWallSprite(RoomObjects.RoomElement[,] walls, int i, int j, GameObject wallObject)
+    private void SetWallSprite(int i, int j, GameObject wallObject)
     {
         bool[] neightbours = new bool[4];
 
         if (i == 0)
         {
-            neightbours[1] = walls[i + 1, j] == RoomObjects.RoomElement.WALL;
+            neightbours[1] = _roomObjects[i + 1, j].isWall;
             neightbours[3] = false;
         }
-        else if (i == _roomWidth - 1)
+        else if (i == _roomObjects.GetLength(0) - 1)
         {
             neightbours[1] = false;
-            neightbours[3] = walls[i - 1, j] == RoomObjects.RoomElement.WALL;
+            neightbours[3] = _roomObjects[i - 1, j].isWall;
         }
         else
         {
-            neightbours[1] = walls[i + 1, j] == RoomObjects.RoomElement.WALL;
-            neightbours[3] = walls[i - 1, j] == RoomObjects.RoomElement.WALL;
+            neightbours[1] = _roomObjects[i + 1, j].isWall;
+            neightbours[3] = _roomObjects[i - 1, j].isWall;
         }
 
         if (j == 0)
         {
-            neightbours[0] = walls[i, j + 1] == RoomObjects.RoomElement.WALL;
+            neightbours[0] = _roomObjects[i, j + 1].isWall;
             neightbours[2] = false;
         }
-        else if (j == _roomHeight - 1)
+        else if (j == _roomObjects.GetLength(1) - 1)
         {
             neightbours[0] = false;
-            neightbours[2] = walls[i, j - 1] == RoomObjects.RoomElement.WALL;
+            neightbours[2] = _roomObjects[i, j - 1].isWall;
         }
         else
         {
-            neightbours[0] = walls[i, j + 1] == RoomObjects.RoomElement.WALL;
-            neightbours[2] = walls[i, j - 1] == RoomObjects.RoomElement.WALL;
+            neightbours[0] = _roomObjects[i, j + 1].isWall;
+            neightbours[2] = _roomObjects[i, j - 1].isWall;
         }
 
         wallObject.GetComponent<WallController>().SetWalls(neightbours);
@@ -443,17 +395,17 @@ public class RoomCreator : MonoBehaviour, IRoom
         //Length -1, cuz otherwise we'd get values between 0 and 16
         temperatureStep = (highestTemperature - lowestTemperature) / (AirColors.ColorArray.GetLength(0) - 1);
 
-        for (int x = 0; x < _airObjects.GetLength(0); x++)
+        for (int x = 0; x < _roomObjects.GetLength(0); x++)
         {
-            for (int y = 0; y < _airObjects.GetLength(1); y++)
+            for (int y = 0; y < _roomObjects.GetLength(1); y++)
             {
-                colorSection = _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature - lowestTemperature;
+                colorSection = _roomObjects[x, y].gameObject.GetComponent<AirTemperatureController>().Temperature - lowestTemperature;
                 colorSection = colorSection / temperatureStep;
                 int colorindex = (int)Math.Round(colorSection, 0);
                 colorindex = colorindex < 0 ? 0 : colorindex;
                 colorindex = colorindex > AirColors.ColorArray.GetLength(0) - 1 ? AirColors.ColorArray.GetLength(0) - 1 : colorindex;
                 // With "(TileTemp - lowestTemp) / temperatureStep", we create a transformation from [0, (highestTemp-lowestTemp)] -> [0, AmounOfColorsWeHave-1]
-                _airObjects[x, y].GetComponent<AirTemperatureController>().SetColor(ref AirColors.ColorArray[colorindex]);
+                _roomObjects[x, y].gameObject.GetComponent<AirTemperatureController>().SetColor(ref AirColors.ColorArray[colorindex]);
             }
         }
     }
@@ -483,13 +435,13 @@ public class RoomCreator : MonoBehaviour, IRoom
         highestTemperature = float.MinValue;
         lowestTemperature = float.MaxValue;
 
-        for (int x = 0; x < _airObjects.GetLength(0); x++)
+        for (int x = 0; x < _roomObjects.GetLength(0); x++)
         {
-            for (int y = 0; y < _airObjects.GetLength(1); y++)
+            for (int y = 0; y < _roomObjects.GetLength(1); y++)
             {
-                float temperature = _roomThermalManager.GetTemperature(_airObjects[x,y].transform.position).ToCelsius().Value;
+                float temperature = _roomThermalManager.GetTemperature(_roomObjects[x,y].gameObject.transform.position).ToCelsius().Value;
 
-                _airObjects[x, y].GetComponent<AirTemperatureController>().Temperature = temperature;
+                _roomObjects[x, y].gameObject.GetComponent<AirTemperatureController>().Temperature = temperature;
 
                 if (highestTemperature < temperature)
                 {

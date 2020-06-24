@@ -1264,7 +1264,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: MinUserSpeed_SliderChange
+        m_MethodName: MinUserSpeedSliderChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 160121738}
@@ -1642,7 +1642,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: maximzeRegulators_OnClick
+        m_MethodName: MaximzeRegulatorsOnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3123,7 +3123,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: UpperMinOKUserTemperatur_EditFinish
+        m_MethodName: LowerMaxOKUserTemperaturEditFinish
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 505980664}
@@ -3560,7 +3560,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: LowerMinOKUserTemperatur
+        m_MethodName: LowerMinOKUserTemperaturEditFinish
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 530594065}
@@ -4634,7 +4634,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: UpperMaxOKUserTemperatur_EditFinish
+        m_MethodName: UpperMaxOKUserTemperaturEditFinish
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 735293724}
@@ -5261,7 +5261,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: ProbabilityOfUserStandingUpInPause_SliderChange
+        m_MethodName: ProbabilityOfUserStandingUpInPauseSliderChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 802561015}
@@ -6149,7 +6149,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: minimzeRegulators_OnClick
+        m_MethodName: MinimzeRegulatorsOnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6834,7 +6834,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: MaxUserSpeed_SliderChange
+        m_MethodName: MaxUserSpeedSliderChange
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 985741258}
@@ -7534,7 +7534,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: onVorlesung_Toggle
+        m_MethodName: VorlesungOnToggle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7755,7 +7755,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 848391357}
-        m_MethodName: LowerMinOKUserTemperatur_EditFinish
+        m_MethodName: UpperMinOKUserTemperaturEditFinish
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 1154173624}
@@ -11064,7 +11064,7 @@ MonoBehaviour:
   _requiresAuthentication: 0
   _userCount: 1
   _movementSpeed: 20
-  _cameraZoomSpeed: 4
+  _cameraZoomSpeed: 20
   _lecture: 0
   _minTemperature: 10
   _maxTemperature: 30

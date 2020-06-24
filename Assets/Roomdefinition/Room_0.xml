@@ -5,48 +5,5 @@
 		<Width>31</Width>
 		<ThermalPixelSize>1</ThermalPixelSize>
 		<WallThickness>2</WallThickness>
-		<Masseinheit>Dezimeter</Masseinheit>
 	</Room>
-	<Walls>
-		<Wall>
-			<StartPosition>
-				<Height>0</Height>
-				<Width>0</Width>
-			</StartPosition>
-			<EndPosition>
-				<Height>30</Height>
-				<Width>0</Width>
-			</EndPosition>
-		</Wall>
-		<Wall>
-			<StartPosition>
-				<Height>0</Height>
-				<Width>30</Width>
-			</StartPosition>
-			<EndPosition>
-				<Height>30</Height>
-				<Width>30</Width>
-			</EndPosition>
-		</Wall>
-		<Wall>
-			<StartPosition>
-				<Height>30</Height>
-				<Width>0</Width>
-			</StartPosition>
-			<EndPosition>
-				<Height>30</Height>
-				<Width>30</Width>
-			</EndPosition>
-		</Wall>
-		<Wall>
-			<StartPosition>
-				<Height>0</Height>
-				<Width>0</Width>
-			</StartPosition>
-			<EndPosition>
-				<Height>0</Height>
-				<Width>30</Width>
-			</EndPosition>
-		</Wall>
-</Walls>
 </Roomplan>

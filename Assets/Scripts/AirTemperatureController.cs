@@ -8,6 +8,7 @@ using UnityEngine;
 public class AirTemperatureController : MonoBehaviour
 {
     private float _temperature = 0f;
+    [SerializeField]
     private SpriteRenderer _airSprite;
 
     public Vector2 Position { get; set; }
@@ -16,12 +17,6 @@ public class AirTemperatureController : MonoBehaviour
     {
         get => _temperature;
         set => _temperature = value;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        _airSprite = GetComponent<SpriteRenderer>();
     }
 
     public void SetColor(ref Color32 col)

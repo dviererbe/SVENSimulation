@@ -8,12 +8,12 @@
 						<xs:sequence>
 							<xs:element name="Height">
 								<xs:simpleType>
-									<xs:restriction base="xs:integer"/>
+									<xs:restriction base="xs:decimal"/>
 								</xs:simpleType>
 							</xs:element>
 							<xs:element name="Width">
 								<xs:simpleType>
-									<xs:restriction base="xs:integer"/>
+									<xs:restriction base="xs:decimal"/>
 								</xs:simpleType>
 							</xs:element>
 							<xs:element name="ThermalPixelSize">
@@ -26,53 +26,50 @@
 									<xs:restriction base="xs:decimal"/>
 								</xs:simpleType>
 							</xs:element>
-							<xs:element name="Masseinheit">
-								<xs:simpleType>
-									<xs:restriction base="xs:string">
-										<xs:enumeration value="Millimeter"/>
-										<xs:enumeration value="Centimeter"/>
-										<xs:enumeration value="Dezimeter"/>
-										<xs:enumeration value="Meter"/>
-									</xs:restriction>
-								</xs:simpleType>
-							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="Walls">
+				<xs:element name="Walls" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="Window" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="StartPosition" type="Pos"/>
-										<xs:element name="EndPosition" type="Pos"/>
-									</xs:sequence>
-								</xs:complexType>
-							</xs:element>
-							<xs:element name="Door" minOccurs="0" maxOccurs="unbounded">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="StartPosition" type="Pos"/>
-										<xs:element name="EndPosition" type="Pos"/>
-										<xs:element name="OpenDirecktion">
+										<xs:element name="Position" type="Pos"/>
+										<xs:element name="Size" type="Pos"/>
+										<xs:element name="Rotation">
 											<xs:simpleType>
-												<xs:restriction  base="xs:string">
-													<xs:enumeration value="north"/>
-													<xs:enumeration value="east"/>
-													<xs:enumeration value="south"/>
-													<xs:enumeration value="vest"/>
+												<xs:restriction base="xs:decimal"/>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="Type">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Open"/>
+													<xs:enumeration value="closed"/>
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-							<xs:element name="Wall" minOccurs="4" maxOccurs="unbounded">
+							<xs:element name="Door" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="StartPosition" type="Pos"/>
-										<xs:element name="EndPosition" type="Pos"/>
+										<xs:element name="Position" type="Pos"/>
+										<xs:element name="Size" type="Pos"/>
+										<xs:element name="Rotation">
+											<xs:simpleType>
+												<xs:restriction base="xs:decimal"/>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="Type">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Normal"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
@@ -86,7 +83,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="Position" type="Pos"/>
-										<xs:element name="Size" type="Size"/>
+										<xs:element name="Size" type="Pos"/>
 										<xs:element name="Rotation">
 											<xs:simpleType>
 												<xs:restriction base="xs:decimal"/>
@@ -106,7 +103,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="Position" type="Pos"/> <!-- Defiens the Position of the right Part of the Tabel -->
-										<xs:element name="Size" type="Size"/>
+										<xs:element name="Size" type="Pos"/>
 										<xs:element name="Rotation"> <!-- Positive Value = rotation counter clockwies-->
 											<xs:simpleType>
 												<xs:restriction base="xs:decimal"/>
@@ -128,7 +125,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="Position" type="Pos"/>
-										<xs:element name="Size" type="Size"/>
+										<xs:element name="Size" type="Pos"/>
 										<xs:element name="Rotation"> <!-- Positive Value = rotation counter clockwies-->
 											<xs:simpleType>
 												<xs:restriction base="xs:decimal"/>
@@ -147,7 +144,7 @@
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="Position" type="Pos"/>
-										<xs:element name="Size" type="Size"/>
+										<xs:element name="Size" type="Pos"/>
 										<xs:element name="Rotation"> <!-- Positive Value = rotation counter clockwies-->
 											<xs:simpleType>
 												<xs:restriction base="xs:decimal"/>
@@ -169,20 +166,6 @@
 		</xs:complexType>
 	</xs:element>
 	<xs:complexType name="Pos"> 
-		<xs:sequence>
-			<xs:element name="Height">
-				<xs:simpleType>
-					<xs:restriction base="xs:decimal"/>
-				</xs:simpleType>
-			</xs:element>
-			<xs:element name="Width">
-				<xs:simpleType>
-					<xs:restriction base="xs:decimal"/>
-				</xs:simpleType>
-			</xs:element>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="Size"> 
 		<xs:sequence>
 			<xs:element name="Height">
 				<xs:simpleType>
