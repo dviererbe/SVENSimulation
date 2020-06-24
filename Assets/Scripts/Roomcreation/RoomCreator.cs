@@ -90,8 +90,8 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// This value is not allowed to change.
     /// </remarks>
     public Vector3 RoomSize => new Vector3(
-        x: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + ((_roomWidth - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(OptionsManager.ThermalPixelSize)-1) * OptionsManager.ThermalPixelSize, 
-        y: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + ((_roomHeight - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(OptionsManager.ThermalPixelSize)-1) * OptionsManager.ThermalPixelSize); //TODO: replace by constant;
+        x: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + (((_roomWidth - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(OptionsManager.ThermalPixelSize)) - 1) * OptionsManager.ThermalPixelSize, 
+        y: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + (((_roomHeight - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(OptionsManager.ThermalPixelSize)) - 1) * OptionsManager.ThermalPixelSize); //TODO: replace by constant;
 
     /// <summary>
     /// Gets the global position of the <see cref="IRoom"/>.
