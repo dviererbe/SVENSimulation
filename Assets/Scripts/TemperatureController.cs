@@ -5,9 +5,10 @@ using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
 
-public class AirTemperatureController : MonoBehaviour
+public class TemperatureController : MonoBehaviour
 {
     private float _temperature = 0f;
+
     [SerializeField]
     private SpriteRenderer _airSprite;
 
@@ -19,7 +20,7 @@ public class AirTemperatureController : MonoBehaviour
         set => _temperature = value;
     }
 
-    public void SetColor(ref Color32 col)
+    public void SetColor(Color32 col)
     {
         _airSprite.color = col;
     }
