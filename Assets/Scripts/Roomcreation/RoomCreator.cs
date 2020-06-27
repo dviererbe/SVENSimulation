@@ -419,6 +419,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private Color32 InterpolateColor(float localColorDiff, float temperatureStep)
     {
+        // Just for static scaling possible
         if (localColorDiff < 0f)
         {
             return AirColors.ColorArray[0];
