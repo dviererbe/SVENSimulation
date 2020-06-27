@@ -89,8 +89,8 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// This value is not allowed to change.
     /// </remarks>
     public Vector3 RoomSize => new Vector3(
-        x: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + ((_roomWidth - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(OptionsManager.ThermalPixelSize)-1) * OptionsManager.ThermalPixelSize, 
-        y: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + ((_roomHeight - 2) * Convert.ToInt32(WallThickness) / Convert.ToInt32(OptionsManager.ThermalPixelSize)-1) * OptionsManager.ThermalPixelSize); //TODO: replace by constant;
+        x: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + (((_roomWidth / OptionsManager.ThermalPixelSize) + 2 * (_wallThickness / OptionsManager.ThermalPixelSize)) - 1) * OptionsManager.ThermalPixelSize, 
+        y: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + (((_roomHeight / OptionsManager.ThermalPixelSize) + 2 * (_wallThickness / OptionsManager.ThermalPixelSize)) - 1) * OptionsManager.ThermalPixelSize); //TODO: replace by constant;
 
     /// <summary>
     /// Gets the global position of the <see cref="IRoom"/>.
@@ -123,7 +123,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     void Start()
     {
 
-        RoomReader roomreader = new RoomReader(Application.dataPath + "/Roomdefinition/9.428.xml");
+        RoomReader roomreader = new RoomReader(Application.dataPath + "/Roomdefinition/Room_0.xml");
         RoomObjects[] roomObjects = roomreader.ReadRoom();
 
         #region Load Options
@@ -450,15 +450,18 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         //Length -1, cuz otherwise we'd get values between 0 and 16
         float temperatureDifference = highestTemperature - lowestTemperature;
-        temperatureStep = temperatureDifference / (AirColors.ColorArray.GetLength(0) - 1);
-
-        for (int x = 0; x < _roomObjects.GetLength(0); x++)
+        if (temperatureDifference != 0)
         {
-            for (int y = 0; y < _roomObjects.GetLength(1); y++)
+            temperatureStep = temperatureDifference / (AirColors.ColorArray.GetLength(0) - 1);
+
+            for (int x = 0; x < _roomObjects.GetLength(0); x++)
             {
-                float localColorDiff = _roomObjects[x, y].gameObject.GetComponent<TemperatureController>().Temperature - lowestTemperature;
-                
-                _roomObjects[x, y].gameObject.GetComponent<TemperatureController>().SetColor(interpolateColor(localColorDiff, temperatureStep));
+                for (int y = 0; y < _roomObjects.GetLength(1); y++)
+                {
+                    float localColorDiff = _roomObjects[x, y].gameObject.GetComponent<TemperatureController>().Temperature - lowestTemperature;
+
+                    _roomObjects[x, y].gameObject.GetComponent<TemperatureController>().SetColor(interpolateColor(localColorDiff, temperatureStep));
+                }
             }
         }
     }
