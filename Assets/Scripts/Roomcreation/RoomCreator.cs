@@ -87,6 +87,19 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// </summary>
     /// <remarks>
     /// This value is not allowed to change.
+    /// It's calculated by this formula: (WallThickness + ThermalPixelSize) / 2 + i * AirPrefab.transform.lossyScale.x
+    /// Unfortunately, the variable i is unknown at this point. But 'i' represents: _roomObjects.GetLength(0) - 1,
+    /// _roomObjects.GetLength(0) is calculated via: roomThermalPixelCount.x + 2 * wallThermalPixelCount
+    /// 
+    /// 
+    /// roomThermalPixelCount:
+    /// we get the roomThermalPixelCount with: _roomWidth / _roomThermalManager.ThermalPixelSize (_roomHeight respectively)
+    /// We can't use the ThermalPixelSize from _roomThermalManager, but we can use the OptionsManager one (thermalManagerBuilder.ThermalPixelSize = OptionsManager.ThermalPixelSize)
+    /// 
+    /// wallThermalPixelCount:
+    /// is calculated with the formula: _wallThickness / _roomThermalManager.ThermalPixelSize
+    /// 
+    /// Putting it all together, we get the formula below
     /// </remarks>
     public Vector3 RoomSize => new Vector3(
         x: (WallThickness + OptionsManager.ThermalPixelSize) / 2 + (((_roomWidth / OptionsManager.ThermalPixelSize) + 2 * (_wallThickness / OptionsManager.ThermalPixelSize)) - 1) * OptionsManager.ThermalPixelSize, 
