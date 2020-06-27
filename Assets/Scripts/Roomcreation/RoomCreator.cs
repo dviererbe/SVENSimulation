@@ -411,19 +411,24 @@ public class RoomCreator : MonoBehaviour, IRoom
                 {
                     float localColorDiff = _roomObjects[x, y].gameObject.GetComponent<TemperatureController>().Temperature - lowestTemperature;
 
-                    _roomObjects[x, y].gameObject.GetComponent<TemperatureController>().SetColor(interpolateColor(localColorDiff, temperatureStep));
+                    _roomObjects[x, y].gameObject.GetComponent<TemperatureController>().SetColor(InterpolateColor(localColorDiff, temperatureStep));
                 }
             }
         }
     }
 
-    private Color32 interpolateColor(float localColorDiff, float temperatureStep)
+    private Color32 InterpolateColor(float localColorDiff, float temperatureStep)
     {
+        if (localColorDiff < 0f)
+        {
+            return AirColors.ColorArray[0];
+        }
+
         float colorSection = localColorDiff / temperatureStep;
         int currentColorIndex = (int)Math.Round(colorSection, 0);
         float minimumTemperatureValueForNextColorindex = (currentColorIndex + 1) * temperatureStep;
 
-        if (currentColorIndex < AirColors.ColorArray.GetLength(0) - 1)
+        if (-1 < currentColorIndex && currentColorIndex < AirColors.ColorArray.GetLength(0) - 1)
         {
             byte r = (byte)Mathf.Lerp(AirColors.ColorArray[currentColorIndex].r, AirColors.ColorArray[currentColorIndex + 1].r, minimumTemperatureValueForNextColorindex - localColorDiff);
             byte g = (byte)Mathf.Lerp(AirColors.ColorArray[currentColorIndex].g, AirColors.ColorArray[currentColorIndex + 1].g, minimumTemperatureValueForNextColorindex - localColorDiff);
@@ -431,9 +436,9 @@ public class RoomCreator : MonoBehaviour, IRoom
             return new Color32(r, g, b, 255);
         }
         else
+        {
             return AirColors.ColorArray[AirColors.ColorArray.GetLength(0) - 1];
-
-        
+        }
     }
 
     /// <summary>
