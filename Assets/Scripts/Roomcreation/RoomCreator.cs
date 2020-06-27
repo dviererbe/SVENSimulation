@@ -308,6 +308,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         wallObject.transform.parent = gameObject.transform;
 
         wallObject.name = "Wall_" + i + ":" + j;
+        SetWallSprite(i, j, wallObject);
 
         return wallObject;
     }
