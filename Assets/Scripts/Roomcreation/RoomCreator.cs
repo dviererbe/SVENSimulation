@@ -234,69 +234,6 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #endregion
 
-        #region Wall Sprites
-        for (int i = 0; i < _roomObjects.GetLength(0); i++)
-        {
-            for (int j = 0; j < _roomObjects.GetLength(1); j++)
-            {
-                /*
-                if(walls[i, j] == RoomObjects.RoomElement.WINDOW)
-                {
-                    GameObject windowObject = Instantiate(
-                               _windowPrefab, //the GameObject that will be instantiated
-                               position: new Vector3(
-                                   x: WallThickness * i,
-                                   y: WallThickness * j),
-                               rotation: _windowPrefab.transform.rotation);
-
-                    windowObject.transform.parent = gameObject.transform;
-
-                    windowObject.name = "Window_" + i + ":" + j;
-
-                    if(i != 0)
-                    {
-                        if(walls[i - 1, j] == RoomObjects.RoomElement.WALL || walls[i - 1, j] == RoomObjects.RoomElement.WINDOW)
-                        {
-                            windowObject.transform.Rotate(0, 0, 90);
-                        }
-                    }
-
-                    WindowController windowController = windowObject.GetComponent<WindowController>();
-                    windowController.RemoteWindow = new RemoteWindow(serverConnection, "window");
-                    thermalManagerBuilder.AddThermalObject(windowController);
-                    windowController.RoomThermalManager = _roomThermalManager;
-
-                    _wallObjects[i, j] = (windowObject, isWall: false);
-                }
-                else if(walls[i, j] == RoomObjects.RoomElement.DOOR)
-                {
-                    GameObject doorObject = Instantiate(
-                                _doorPrefab, //the GameObject that will be instantiated
-                                position: new Vector3(
-                                    x: WallThickness * i,
-                                    y: WallThickness * j),
-                                rotation: _windowPrefab.transform.rotation);
-
-                    doorObject.transform.parent = gameObject.transform;
-
-                    doorObject.name = "Door_" + i + ":" + j;
-
-                    if (j != 0)
-                    {
-                        if (walls[i, j - 1] == RoomObjects.RoomElement.WALL || walls[i, j - 1] == RoomObjects.RoomElement.DOOR)
-                        {
-                            doorObject.transform.Rotate(0, 0, 90);
-                        }
-                    }
-
-
-                    _wallObjects[i, j] = (doorObject, isWall: false);
-                }*/
-            }
-        }
-
-        #endregion
-
         #region RoomObjects Creator
 
         foreach(RoomObjects obj in roomObjects)
