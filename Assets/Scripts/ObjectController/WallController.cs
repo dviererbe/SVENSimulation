@@ -61,7 +61,7 @@ public class WallController : MonoBehaviour
     public void SetWalls(bool[] neighbours)
     {
         //Alle Set
-        if(neighbours[0] && !neighbours[1] && !neighbours[2] && !neighbours[3])
+        if(!neighbours[0] && !neighbours[1] && !neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallNorthEastSouthVest;
         }
@@ -131,7 +131,7 @@ public class WallController : MonoBehaviour
             _wall.sprite = _wallSouth;
         }
         //Vest
-        else if (neighbours[0] && !neighbours[1] && !neighbours[2] && !neighbours[3])
+        else if (neighbours[0] && neighbours[1] && neighbours[2] && !neighbours[3])
         {
             _wall.sprite = _wallVest;
         }

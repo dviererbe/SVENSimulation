@@ -15,7 +15,6 @@ namespace Assets.Scripts.Roomcreation
             TABLE,
             WINDOW,
             DOOR,
-            WALL,
             HEATER,
             CLOSET
         };

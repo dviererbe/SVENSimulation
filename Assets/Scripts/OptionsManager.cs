@@ -84,6 +84,27 @@ namespace Assets.Scripts
         [SerializeField]
         private int _windowWidth = 0;
 
+        [SerializeField]
+        private float _maxUserSpeed = 0f;
+
+        [SerializeField]
+        private float _minUserSpeed = 0f;
+
+        [SerializeField]
+        private float _upperMaxOkUserTemperatur = 0f;
+
+        [SerializeField]
+        private float _upperMinOkUserTemperatur = 0f;
+
+        [SerializeField]
+        private float _lowerMaxOkUserTemperatur = 0f;
+
+        [SerializeField]
+        private float _lowerMinOkUserTemperatur = 0f;
+
+        [SerializeField]
+        private float _probailityOfUserStandingUpInPause = 0f;
+
         private static OptionsManager _instance;
         private static OptionsManager Instance { get; set; }
 
@@ -612,6 +633,222 @@ namespace Assets.Scripts
                 }
 
                 _instance._windowWidth = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the maximum user speed.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float MaxUserSpeed
+        {
+            get => Instance._maxUserSpeed;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(MaxUserSpeed), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._maxUserSpeed)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.ROOM_WIDTH,
+                        OldValue = Instance._maxUserSpeed
+                    };
+
+                    Instance._maxUserSpeed = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the minimum user speed.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float MinUserSpeed
+        {
+            get => Instance._minUserSpeed;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(MinUserSpeed), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._minUserSpeed)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.ROOM_WIDTH,
+                        OldValue = Instance._minUserSpeed
+                    };
+
+                    Instance._minUserSpeed = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the upper max OK user temperature
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float UpperMaxOkUserTemperature
+        {
+            get => Instance._upperMaxOkUserTemperatur;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(UpperMaxOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._upperMaxOkUserTemperatur)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.ROOM_WIDTH,
+                        OldValue = Instance._upperMaxOkUserTemperatur
+                    };
+
+                    Instance._upperMaxOkUserTemperatur = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the lower max OK user temperature
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float LowerMaxOkUserTemperature
+        {
+            get => Instance._lowerMaxOkUserTemperatur;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(LowerMaxOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._lowerMaxOkUserTemperatur)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.ROOM_WIDTH,
+                        OldValue = Instance._lowerMaxOkUserTemperatur
+                    };
+
+                    Instance._lowerMaxOkUserTemperatur = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the upper min OK user temperature
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float UpperMinOkUserTemperature
+        {
+            get => Instance._upperMinOkUserTemperatur;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(UpperMinOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._upperMinOkUserTemperatur)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.ROOM_WIDTH,
+                        OldValue = Instance._upperMinOkUserTemperatur
+                    };
+
+                    Instance._upperMinOkUserTemperatur = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the lower min OK user temperature
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float LowerMinOkUserTemperature
+        {
+            get => Instance._lowerMinOkUserTemperatur;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(LowerMinOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._lowerMinOkUserTemperatur)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.ROOM_WIDTH,
+                        OldValue = Instance._lowerMinOkUserTemperatur
+                    };
+
+                    Instance._lowerMinOkUserTemperatur = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Probability of a User to standing up in a pause.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float ProbabilityOfUserStandingUpInPause
+        {
+            get => Instance._probailityOfUserStandingUpInPause;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(ProbabilityOfUserStandingUpInPause), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._probailityOfUserStandingUpInPause)
+                {
+                    OnSettingChangedEventArgs eventArgs = new OnSettingChangedEventArgs()
+                    {
+                        SettingName = OptionsNames.ROOM_WIDTH,
+                        OldValue = Instance._probailityOfUserStandingUpInPause
+                    };
+
+                    Instance._probailityOfUserStandingUpInPause = value;
+                    Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
             }
         }
 

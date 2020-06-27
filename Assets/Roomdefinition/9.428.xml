@@ -5,91 +5,7 @@
         <Width>98</Width>
         <ThermalPixelSize>1</ThermalPixelSize>
         <WallThickness>2</WallThickness>
-        <Masseinheit>Dezimeter</Masseinheit>
     </Room>
-    <Walls>
-        <Window>
-            <StartPosition>
-                <Height>33</Height>
-                <Width>97</Width>
-            </StartPosition>
-            <EndPosition>
-                <Height>68</Height>
-                <Width>97</Width>
-            </EndPosition>
-        </Window>
-        <Door>
-            <StartPosition>
-                <Height>79</Height>
-                <Width>71</Width>
-            </StartPosition>
-            <EndPosition>
-                <Height>79</Height>
-                <Width>91</Width>
-            </EndPosition>
-            <OpenDirecktion>south</OpenDirecktion>
-        </Door>
-        <Wall>
-            <StartPosition>
-                <Height>0</Height>
-                <Width>0</Width>
-            </StartPosition>
-            <EndPosition>
-                <Height>0</Height>
-                <Width>97</Width>
-            </EndPosition>
-        </Wall>
-        <Wall>
-            <StartPosition>
-                <Height>0</Height>
-                <Width>0</Width>
-            </StartPosition>
-            <EndPosition>
-                <Height>79</Height>
-                <Width>0</Width>
-            </EndPosition>
-        </Wall>
-        <Wall>
-            <StartPosition>
-                <Height>79</Height>
-                <Width>0</Width>
-            </StartPosition>
-            <EndPosition>
-                <Height>79</Height>
-                <Width>70</Width>
-            </EndPosition>
-        </Wall>
-        <Wall>
-            <StartPosition>
-                <Height>79</Height>
-                <Width>92</Width>
-            </StartPosition>
-            <EndPosition>
-                <Height>79</Height>
-                <Width>97</Width>
-            </EndPosition>
-        </Wall>
-        <Wall>
-            <StartPosition>
-                <Height>0</Height>
-                <Width>97</Width>
-            </StartPosition>
-            <EndPosition>
-                <Height>33</Height>
-                <Width>97</Width>
-            </EndPosition>
-        </Wall>
-        <Wall>
-            <StartPosition>
-                <Height>69</Height>
-                <Width>97</Width>
-            </StartPosition>
-            <EndPosition>
-                <Height>79</Height>
-                <Width>97</Width>
-            </EndPosition>
-        </Wall>
-    </Walls>
     <Furniture>
         <Chair>
             <Position>
@@ -97,8 +13,8 @@
                 <Width>7.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -109,8 +25,8 @@
                 <Width>7.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -121,8 +37,8 @@
                 <Width>7.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -133,8 +49,8 @@
                 <Width>7.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -145,8 +61,8 @@
                 <Width>7.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -157,8 +73,8 @@
                 <Width>7.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -169,8 +85,8 @@
                 <Width>26.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -181,8 +97,8 @@
                 <Width>26.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -193,8 +109,8 @@
                 <Width>26.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -205,8 +121,8 @@
                 <Width>26.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -217,8 +133,8 @@
                 <Width>21</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
@@ -229,8 +145,8 @@
                 <Width>28</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
@@ -241,8 +157,8 @@
                 <Width>37</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
@@ -253,8 +169,8 @@
                 <Width>44</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
@@ -265,8 +181,8 @@
                 <Width>53</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
@@ -277,8 +193,8 @@
                 <Width>60</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
@@ -289,8 +205,8 @@
                 <Width>69</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
@@ -301,8 +217,8 @@
                 <Width>75</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
@@ -313,8 +229,8 @@
                 <Width>90.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -325,8 +241,8 @@
                 <Width>90.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -337,8 +253,8 @@
                 <Width>90.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -349,8 +265,8 @@
                 <Width>90.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -361,8 +277,8 @@
                 <Width>90.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -373,8 +289,8 @@
                 <Width>90.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -385,8 +301,8 @@
                 <Width>35.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -397,8 +313,8 @@
                 <Width>35.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -409,8 +325,8 @@
                 <Width>35.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -421,8 +337,8 @@
                 <Width>35.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
@@ -433,8 +349,8 @@
                 <Width>54.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -445,8 +361,8 @@
                 <Width>54.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -457,8 +373,8 @@
                 <Width>54.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -469,8 +385,8 @@
                 <Width>54.5</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
@@ -481,8 +397,8 @@
                 <Width>47</Width>
             </Position>
             <Size>
-                <Height>0.6</Height>
-                <Width>0.6</Width>
+                <Height>6</Height>
+                <Width>6</Width>
             </Size>
             <Rotation>180</Rotation>
             <Type>Normal</Type>
@@ -493,8 +409,8 @@
                 <Width>9</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
@@ -505,8 +421,8 @@
                 <Width>9</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
@@ -517,8 +433,8 @@
                 <Width>9</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
@@ -529,8 +445,8 @@
                 <Width>25</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
@@ -541,8 +457,8 @@
                 <Width>25</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
@@ -553,8 +469,8 @@
                 <Width>17</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
@@ -565,8 +481,8 @@
                 <Width>33</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
@@ -577,8 +493,8 @@
                 <Width>49</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
@@ -589,8 +505,8 @@
                 <Width>65</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
@@ -601,8 +517,8 @@
                 <Width>89</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
@@ -613,8 +529,8 @@
                 <Width>89</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
@@ -625,8 +541,8 @@
                 <Width>89</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
@@ -637,8 +553,8 @@
                 <Width>73</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Blank</Type>
@@ -649,8 +565,8 @@
                 <Width>73</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Blank</Type>
@@ -661,8 +577,8 @@
                 <Width>37</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
@@ -673,8 +589,8 @@
                 <Width>37</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
@@ -685,8 +601,8 @@
                 <Width>53</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
@@ -697,8 +613,8 @@
                 <Width>53</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
@@ -709,8 +625,8 @@
                 <Width>53</Width>
             </Position>
             <Size>
-                <Height>0.8</Height>
-                <Width>1.6</Width>
+                <Height>8</Height>
+                <Width>16</Width>
             </Size>
             <Rotation>180</Rotation>
             <Type>Dozent</Type>

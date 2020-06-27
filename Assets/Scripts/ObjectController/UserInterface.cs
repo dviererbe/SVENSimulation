@@ -58,7 +58,7 @@ public class UserInterface : MonoBehaviour
         }
     }
 
-    public void onVorlesung_Toggle ()
+    public void VorlesungOnToggle ()
     {
         if(OptionsManager.Lecture)
         {
@@ -72,52 +72,55 @@ public class UserInterface : MonoBehaviour
         }
     }
 
-    public void minimzeRegulators_OnClick()
+    public void MinimzeRegulatorsOnClick()
     {
         _minmizeRegulators_Button.interactable = false;
         _maximizeRegulators_Button.interactable = true;
         _regulators.SetActive(false);
     }
 
-    public void maximzeRegulators_OnClick()
+    public void MaximzeRegulatorsOnClick()
     {
         _minmizeRegulators_Button.interactable = true;
         _maximizeRegulators_Button.interactable = false;
         _regulators.SetActive(true);
     }
 
-    public void MaxUserSpeed_Slider(Slider slider)
+    public void MaxUserSpeedSliderChange(Slider slider)
     {
         slider.GetComponentInChildren<TextMeshProUGUI>().text = slider.value.ToString();
+        OptionsManager.MaxUserSpeed = slider.value;
     }
 
-    public void MinUserSpeed_Slider(Slider slider)
+    public void MinUserSpeedSliderChange(Slider slider)
     {
         slider.GetComponentInChildren<TextMeshProUGUI>().text = slider.value.ToString();
+        OptionsManager.MinUserSpeed = slider.value;
     }
 
-    public void UpperMaxOKUserTemperatur(TMP_InputField input)
+    public void UpperMaxOKUserTemperaturEditFinish(TMP_InputField input)
     {
-
+        OptionsManager.UpperMaxOkUserTemperature = float.Parse(input.text);
     }
-    public void UpperMinOKUserTemperatur(TMP_InputField input)
+
+    public void UpperMinOKUserTemperaturEditFinish(TMP_InputField input)
     {
-
+        OptionsManager.UpperMinOkUserTemperature = float.Parse(input.text);
     }
 
-    public void LowerMaxOKUserTemperatur(TMP_InputField input)
+    public void LowerMaxOKUserTemperaturEditFinish(TMP_InputField input)
     {
-
+        OptionsManager.LowerMaxOkUserTemperature = float.Parse(input.text);
     }
 
-    public void LowerMinOKUserTemperatur(TMP_InputField input)
+    public void LowerMinOKUserTemperaturEditFinish(TMP_InputField input)
     {
-
+        OptionsManager.LowerMinOkUserTemperature = float.Parse(input.text);
     }
 
-
-    public void ProbabilityOfUserStandingUpInPause_Slider(Slider slider)
+    public void ProbabilityOfUserStandingUpInPauseSliderChange(Slider slider)
     {
         slider.GetComponentInChildren<TextMeshProUGUI>().text = slider.value.ToString() + "%";
+        OptionsManager.ProbabilityOfUserStandingUpInPause = slider.value;
     }
 }
