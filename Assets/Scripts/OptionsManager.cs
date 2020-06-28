@@ -105,6 +105,9 @@ namespace Assets.Scripts
         [SerializeField]
         private float _probailityOfUserStandingUpInPause = 0f;
 
+        [SerializeField]
+        private String _roomFile = Application.dataPath + "/Roomdefinition/Room_0.xml";
+
         private static OptionsManager _instance;
         private static OptionsManager Instance { get; set; }
 
@@ -849,6 +852,18 @@ namespace Assets.Scripts
                     Instance._probailityOfUserStandingUpInPause = value;
                     Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the room file for the generation of the simulatat room.
+        /// </summary>
+        public static String RoomFile
+        {
+            get => Instance._roomFile;
+            set
+            {
+                Instance._roomFile = value;
             }
         }
 

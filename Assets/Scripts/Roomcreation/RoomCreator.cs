@@ -136,7 +136,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     void Start()
     {
 
-        RoomReader roomreader = new RoomReader(Application.dataPath + "/Roomdefinition/Room_0.xml");
+        RoomReader roomreader = new RoomReader(OptionsManager.RoomFile);
         RoomObjects[] roomObjects = roomreader.ReadRoom();
 
         #region Load Options
