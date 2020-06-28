@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Assets.Scripts.InputValidation;
 using Assets.Scripts.Simulation.Abstractions;
+using SimpleFileBrowser;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -29,22 +31,7 @@ namespace Assets.Scripts
         private GameObject _simulationMenu;
 
         [SerializeField]
-        private InputField _roomWidthInputField;
-
-        [SerializeField]
-        private InputField _roomHeightInputField;
-
-        [SerializeField]
-        private InputField _wallThicknessInputField;
-
-        [SerializeField]
-        private InputField _outsideTemperatureInputField;
-
-        [SerializeField]
-        private InputField _initialRoomTemperatureInputField;
-
-        [SerializeField]
-        private InputField _thermalPixelSizeInputField;
+        private InputField _roomFile;
 
         [SerializeField]
         private InputField _usernameInputField;
@@ -117,12 +104,7 @@ namespace Assets.Scripts
         {
             _inputChecker = new Dictionary<string, IInputChecker>()
             {
-                { OptionsNames.ROOM_WIDTH, CreateScaleInputChecker(_roomWidthInputField, OptionsManager.RoomWidth) },
-                { OptionsNames.ROOM_HEIGHT, CreateScaleInputChecker(_roomHeightInputField, OptionsManager.RoomHeight) },
-                { OptionsNames.WALL_THICKNESS, CreateScaleInputChecker(_wallThicknessInputField, OptionsManager.WallThickness) },
-                { OptionsNames.OUTSIDE_TEMPERATURE, CreateTemperatureInputChecker(_outsideTemperatureInputField, OptionsManager.OutsideTemperature) },
-                { OptionsNames.INITIAL_ROOM_TEMPERATURE, CreateTemperatureInputChecker(_initialRoomTemperatureInputField, OptionsManager.InitialRoomTemperature) },
-                { OptionsNames.THERMAL_PIXEL_SIZE, CreateScaleInputChecker(_thermalPixelSizeInputField, OptionsManager.ThermalPixelSize) },
+                { OptionsNames.ROOM_FILE, CreateAnyStringInputChecker(_roomFile, OptionsManager.RoomFile) },
                 { OptionsNames.USERNAME, CreateAnyStringInputChecker(_usernameInputField, OptionsManager.Username) },
                 { OptionsNames.PASSWORD, CreateAnyStringInputChecker(_passwordInputField, OptionsManager.Password) },
                 { OptionsNames.SERVER_ADDRESS, CreateAnyStringInputChecker(_serverAddressInputField, OptionsManager.ServerAddress) },
@@ -142,14 +124,8 @@ namespace Assets.Scripts
                     return false;
             }
 
-            OptionsManager.RoomWidth = _inputChecker[OptionsNames.ROOM_WIDTH].GetValueAs<float>();
-            OptionsManager.RoomHeight = _inputChecker[OptionsNames.ROOM_HEIGHT].GetValueAs<float>();
-            OptionsManager.WallThickness = _inputChecker[OptionsNames.WALL_THICKNESS].GetValueAs<float>();
-            
-            OptionsManager.OutsideTemperature = _inputChecker[OptionsNames.OUTSIDE_TEMPERATURE].GetValueAs<float>();
-            OptionsManager.InitialRoomTemperature = _inputChecker[OptionsNames.INITIAL_ROOM_TEMPERATURE].GetValueAs<float>();
-            OptionsManager.ThermalPixelSize = _inputChecker[OptionsNames.THERMAL_PIXEL_SIZE].GetValueAs<float>();
-            
+            OptionsManager.RoomFile = _inputChecker[OptionsNames.ROOM_FILE].GetValueAs<string>();
+
             OptionsManager.Username = _inputChecker[OptionsNames.USERNAME].GetValueAs<string>();
             OptionsManager.Password = _inputChecker[OptionsNames.PASSWORD].GetValueAs<string>();
             OptionsManager.ServerAddress = _inputChecker[OptionsNames.SERVER_ADDRESS].GetValueAs<string>();
@@ -209,5 +185,22 @@ namespace Assets.Scripts
         {
             OptionsManager.CameraZoomSpeed = slider.value;
         }
+
+        public void OpenFileDialogOnClick()
+        {
+            FileBrowser.SetFilters(false, new FileBrowser.Filter("XML-Schema", ".xml"));
+            FileBrowser.OnSuccess onSuccess = new FileBrowser.OnSuccess(SavePath);
+            FileBrowser.ShowLoadDialog(onSuccess, null);
+        }
+
+        private void SavePath(string[] paths)
+        {
+            if(paths.GetLength(0) > 0)
+            {
+                OptionsManager.RoomFile = paths[0];
+                _roomFile.text = paths[0];
+            }
+        }
+
     }
 }
