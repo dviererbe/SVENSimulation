@@ -11,5 +11,7 @@ namespace Assets.Scripts.InputValidation
         object GetValue();
 
         TReturnType GetValueAs<TReturnType>();
+
+        void ForceUpdate();
     }
 }
