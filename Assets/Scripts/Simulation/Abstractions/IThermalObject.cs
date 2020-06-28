@@ -52,6 +52,9 @@ namespace Assets.Scripts.Simulation.Abstractions
         /// <param name="transferredHeat">
         /// The heat that was transferred to the <see cref="IThermalObject"/> during the thermal update in J (Joule).
         /// </param>
-        void ThermalUpdate(float transferredHeat);
+        /// <param name="roomThermalManager">
+        /// The <see cref="IRoomThermalManager"/> that does the thermal update.
+        /// </param>
+        void ThermalUpdate(float transferredHeat, IRoomThermalManager roomThermalManager);
     }
 }

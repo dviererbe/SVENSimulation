@@ -6700,8 +6700,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1404804900}
   m_HandleRect: {fileID: 1404804899}
   m_Direction: 2
-  m_Value: 0.96462935
-  m_Size: 0.43888405
+  m_Value: 0.9646289
+  m_Size: 0.438884
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -11079,7 +11079,7 @@ MonoBehaviour:
   _lowerMaxOkUserTemperatur: 0
   _lowerMinOkUserTemperatur: 0
   _probailityOfUserStandingUpInPause: 0
-  _roomFile: C:\Users\admin\Desktop\Room_0.xml
+  _roomFile: .\Assets\Roomdefinition\Room_0.xml
 --- !u!4 &1754030835
 Transform:
   m_ObjectHideFlags: 0

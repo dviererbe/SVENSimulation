@@ -570,7 +570,9 @@ namespace Assets.Scripts.Simulation
                             //Key = Thermal object.
                             //Value = Heat that was transferred to the thermal object during the thermal update.
 
-                            heatFlowToThermalObject.Key.ThermalUpdate(heatFlowToThermalObject.Value * ThermalTickDuration);    
+                            heatFlowToThermalObject.Key.ThermalUpdate(
+                                transferredHeat: heatFlowToThermalObject.Value * ThermalTickDuration,
+                                roomThermalManager: this);    
                         }
 
                         _thermalPixels = thermalPixels;

@@ -113,7 +113,10 @@ namespace Assets.Scripts.ObjectController
         /// <param name="transferredHeat">
         /// The heat that was transferred to the <see cref="IThermalObject"/> during the thermal update in J (Joule).
         /// </param>
-        public void ThermalUpdate(float transferredHeat)
+        /// <param name="roomThermalManager">
+        /// The <see cref="IRoomThermalManager"/> that does the thermal update.
+        /// </param>
+        public void ThermalUpdate(float transferredHeat, IRoomThermalManager roomThermalManager)
         {
             //TODO
         }
