@@ -80,6 +80,11 @@ namespace Assets.Scripts.InputValidation
             throw new NotSupportedException();
         }
 
+        public void ForceUpdate()
+        {
+            Value = _parser(_inputField.text);
+        }
+
         private void SetColor(Color color)
         {
             ColorBlock colorBlock = _inputField.colors;
