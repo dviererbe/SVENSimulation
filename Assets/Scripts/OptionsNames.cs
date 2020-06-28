@@ -15,6 +15,7 @@ namespace Assets.Scripts
         public const string INITIAL_ROOM_TEMPERATURE = "Initial Room Temperature";
         public const string THERMAL_PIXEL_SIZE = "Thermal Pixel Size";
         public const string THERMAL_TICK_DURATION = "Thermal Tick Duration";
+        public const string ROOM_FILE = "Room File";
         public const string USERNAME = "Username";
         public const string PASSWORD = "Password";
         public const string SERVER_ADDRESS = "Server Address";

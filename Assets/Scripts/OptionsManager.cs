@@ -106,7 +106,7 @@ namespace Assets.Scripts
         private float _probailityOfUserStandingUpInPause = 0f;
 
         [SerializeField]
-        private String _roomFile = Application.dataPath + "/Roomdefinition/Room_0.xml";
+        private String _roomFile;
 
         private static OptionsManager _instance;
         private static OptionsManager Instance { get; set; }
