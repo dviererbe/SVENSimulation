@@ -19,8 +19,8 @@ namespace Assets.Scripts.Remote.Abstractions
 
         protected IServerConnection RemoteConnection { get; }
 
-        public string GetAttribute(string attribute) => RemoteConnection.GetData(DeviceName, attribute);
+        public string GetAttribute(string attribute) => RemoteConnection.ExecuteCommand(DeviceName, attribute, null, IServerConnection.CommandList.Get);
 
-        public void SetAttribute(string attribute, string value) => RemoteConnection.SetData(DeviceName, attribute, value);
+        public void SetAttribute(string attribute, string value) => RemoteConnection.ExecuteCommand(DeviceName, attribute, value, IServerConnection.CommandList.Get);
     }
 }

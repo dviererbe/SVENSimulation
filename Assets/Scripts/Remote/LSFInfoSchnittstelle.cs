@@ -17,35 +17,35 @@ namespace Assets.Scripts.Remote
             "Attributes:" //Absicherung für nextBreak. (FHEM null!!)
         };
 
+        private static char[] _seperators = new char[]
+        {
+                ' ',
+                '\n',
+                '\r'
+        };
+
         public LSFInfoSchnittstelle(IServerConnection remoteConnection, string deviceName)
             : base(remoteConnection, deviceName)
         {
         }
 
         
-        public void getStates(out bool lecture, out bool isBreak, out DateTime? nextBreak)
+        public void GetStates(out bool lecture, out bool isBreak, out DateTime? nextBreak)
         {
-            string data = RemoteConnection.GetReadingList(DeviceName);
+            string data = RemoteConnection.ExecuteCommand(DeviceName, null, null, IServerConnection.CommandList.List);
 
             lecture = false;
             isBreak = false;
             nextBreak = null;
 
-            char[] seperators = new char[]
-            {
-                ' ',
-                '\n',
-                '\r'
-            };
-
             //Daten zerlegen und leer String entfernen.
-            string[] datasplit = data.Split(seperators, StringSplitOptions.RemoveEmptyEntries);
+            string[] dataSplit = data.Split(_seperators, StringSplitOptions.RemoveEmptyEntries);
 
-            for(int i = 0; i < datasplit.Length; i++)
+            for(int i = 0; i < dataSplit.Length; i++)
             {
-                if (_valueNames[0].Equals(datasplit[i]))
+                if (_valueNames[0].Equals(dataSplit[i]))
                 {
-                    if(datasplit[i+1].Equals("0"))
+                    if(dataSplit[i+1].Equals("0"))
                     {
                         isBreak = false;
                     }
@@ -54,10 +54,10 @@ namespace Assets.Scripts.Remote
                         isBreak = true;
                     }
                 }
-                else if (_valueNames[1].Equals(datasplit[i]))
+                else if (_valueNames[1].Equals(dataSplit[i]))
                 {
 
-                    if (datasplit[i + 1].Equals("0"))
+                    if (dataSplit[i + 1].Equals("0"))
                     {
                         lecture = false;
                     }
@@ -66,16 +66,16 @@ namespace Assets.Scripts.Remote
                         lecture = true;
                     }
                 }
-                else if (_valueNames[2].Equals(datasplit[i]))
+                else if (_valueNames[2].Equals(dataSplit[i]))
                 {
 
                     //letztes Attribut ausgelesen Suche beenden
-                    if(datasplit[i+1].Equals(_valueNames[3]))
+                    if(dataSplit[i+1].Equals(_valueNames[3]))
                     {
                         nextBreak = null;
                         break;
                     }
-                    nextBreak = DateTime.Parse(datasplit[i + 1]);
+                    nextBreak = DateTime.Parse(dataSplit[i + 1]);
                     break;
                 }
             }

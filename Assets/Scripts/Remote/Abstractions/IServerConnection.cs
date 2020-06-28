@@ -8,10 +8,13 @@ namespace Assets.Scripts.Remote.Abstractions
 {
     public interface IServerConnection
     {
-        string GetData(string device, string attribute);
+        public enum CommandList
+        {
+            Get,
+            Set,
+            List
+        };
 
-        string GetReadingList(string device);
-
-        void SetData(string device, string attribute, string value);
+        string ExecuteCommand(string device, string attribute, string value, CommandList command);
     }
 }

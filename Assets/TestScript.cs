@@ -40,7 +40,7 @@ public class TestScript : MonoBehaviour
         bool isbreak;
         DateTime? nextbreak;
 
-        lsfSchnittstelle.getStates(out lecture, out isbreak, out nextbreak);
+        lsfSchnittstelle.GetStates(out lecture, out isbreak, out nextbreak);
 
         Debug.Log(lecture);
         Debug.Log(isbreak);
