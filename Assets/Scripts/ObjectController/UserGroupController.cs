@@ -23,6 +23,8 @@ namespace Assets.Scripts.Simulation
 
         private UserGroupState _groupState = UserGroupState.Pause;
 
+        public IReadOnlyList<UserController> Users => _users;
+
         public UserGroupState GroupState => _groupState;
         
         public void CreateUsers(RoomThermalManagerBuilder builder)
@@ -41,14 +43,6 @@ namespace Assets.Scripts.Simulation
                 builder?.AddThermalObject(userController);
 
                 _users.Add(userController);
-            }
-        }
-
-        public void AddRoomThermalManagerToUsers(IRoomThermalManager roomThermalManager)
-        {
-            foreach (UserController userController in _users)
-            {
-                userController.RoomThermalManager = roomThermalManager;
             }
         }
 

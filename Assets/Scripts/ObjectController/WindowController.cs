@@ -25,7 +25,9 @@ namespace Assets.Scripts.ObjectController
         [SerializeField]
         private Sprite _closedWindowSprite;
 
-        public IRoomThermalManager RoomThermalManager { get; set; }
+        private bool _started = false;
+
+        private IRoomThermalManager RoomThermalManager { get; set; }
         public RemoteWindow RemoteWindow { get; set; }
 
         public bool IsOpen
@@ -94,6 +96,18 @@ namespace Assets.Scripts.ObjectController
         public Temperature Temperature => Temperature.FromCelsius(OptionsManager.OutsideTemperature);
 
         /// <summary>
+        /// A <see cref="IRoomThermalManager"/> signals the <see cref="IThermalObject"/> that the thermal simulation was started.
+        /// </summary>
+        /// <param name="roomThermalManager">
+        /// The <see cref="IRoomThermalManager"/> that starts the thermal simulation with this <see cref="IThermalObject"/>. 
+        /// </param>
+        public void ThermalStart(IRoomThermalManager roomThermalManager)
+        {
+            RoomThermalManager = roomThermalManager;
+            Start();
+        }
+
+        /// <summary>
         /// Is called from the <see cref="IThermalObject"/> once per thermal update.
         /// </summary>
         /// <param name="transferredHeat">
@@ -106,6 +120,13 @@ namespace Assets.Scripts.ObjectController
 
         void Start()
         {
+            if (_started)
+            {
+                return;
+            }
+
+            _started = true;
+
             ThermalMaterial = ThermalMaterial.WindowClosed;
 
             try

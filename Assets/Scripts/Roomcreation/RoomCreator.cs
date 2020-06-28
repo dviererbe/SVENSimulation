@@ -67,20 +67,12 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// <summary>
     /// TODO: Write me!
     /// </summary>
-    public GameObject AirPrefab
-    {
-        get => _airPrefab;
-        set => _airPrefab = value;
-    }
+    public GameObject AirPrefab => _airPrefab;
 
     /// <summary>
     /// TODO: Write me!
     /// </summary>
-    public GameObject WallPrefab
-    {
-        get => _wallPrefab;
-        set => throw new NotImplementedException(); //TODO: Implemet me!
-    }
+    public GameObject WallPrefab => _wallPrefab;
 
     /// <summary>
     /// Gets the dimensional extent of the <see cref="IRoom"/> in meter (without the wall).
@@ -126,8 +118,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     /// </summary>
     public float ThermalPixelSize
     {
-        get => _roomThermalManager.ThermalPixelSize;
-        set => _roomThermalManager.ThermalPixelSize = value;
+        get => _roomThermalManager?.ThermalPixelSize ?? OptionsManager.ThermalPixelSize;
     }
 
     #endregion
@@ -162,42 +153,26 @@ public class RoomCreator : MonoBehaviour, IRoom
         userGroupController.CreateUsers(thermalManagerBuilder);
         //thermalManagerBuilder.AddThermalObject(windowController);
 
-
-        _roomThermalManager = thermalManagerBuilder.Build();
-        _roomThermalManager.Start();
-
-
         //Calculate Room Size
-        int wallThermalPixelCount = Mathf.RoundToInt(_wallThickness / _roomThermalManager.ThermalPixelSize);
+        int wallThermalPixelCount = Mathf.RoundToInt(_wallThickness / thermalManagerBuilder.ThermalPixelSize);
 
         Vector2Int roomThermalPixelCount = new Vector2Int(
-            x: Mathf.RoundToInt(_roomWidth / _roomThermalManager.ThermalPixelSize),
-            y: Mathf.RoundToInt(_roomHeight / _roomThermalManager.ThermalPixelSize));
-
-        userGroupController.AddRoomThermalManagerToUsers(_roomThermalManager);
-        //windowController.RoomThermalManager = _roomThermalManager;
+            x: Mathf.RoundToInt(_roomWidth / thermalManagerBuilder.ThermalPixelSize),
+            y: Mathf.RoundToInt(_roomHeight / thermalManagerBuilder.ThermalPixelSize));
 
         #endregion
-
-        
-        GameObject thermometerObject = Instantiate(_thermometerPrefab);
-        thermometerObject.transform.parent = gameObject.transform;
-        ThermometerController thermometerController = thermometerObject.GetComponent<ThermometerController>();
-        thermometerController.RoomThermalManager = _roomThermalManager;
-        thermometerController.RemoteThermometer = new RemoteThermometer(serverConnection, "thermometer");
-        thermometerController.Position = new Vector3(1, 1);
 
         #region Room Creator
 
         WallPrefab.transform.localScale = new Vector3(
-            x: _roomThermalManager.ThermalPixelSize,
-            y: _roomThermalManager.ThermalPixelSize,
-            z: _roomThermalManager.ThermalPixelSize);
+            x: thermalManagerBuilder.ThermalPixelSize,
+            y: thermalManagerBuilder.ThermalPixelSize,
+            z: thermalManagerBuilder.ThermalPixelSize);
 
         AirPrefab.transform.localScale = new Vector3(
-            x: _roomThermalManager.ThermalPixelSize,
-            y: _roomThermalManager.ThermalPixelSize,
-            z: _roomThermalManager.ThermalPixelSize);
+            x: thermalManagerBuilder.ThermalPixelSize,
+            y: thermalManagerBuilder.ThermalPixelSize,
+            z: thermalManagerBuilder.ThermalPixelSize);
 
         _roomObjects = new (GameObject, bool)[
                     roomThermalPixelCount.x + 2 * wallThermalPixelCount,
@@ -292,6 +267,21 @@ public class RoomCreator : MonoBehaviour, IRoom
             }
 
         }
+        #endregion
+
+        //Build and start Thermal Manager
+        _roomThermalManager = thermalManagerBuilder.Build();
+        _roomThermalManager.Start();
+
+        #region Thermometer
+
+        GameObject thermometerObject = Instantiate(_thermometerPrefab);
+        thermometerObject.transform.parent = gameObject.transform;
+        ThermometerController thermometerController = thermometerObject.GetComponent<ThermometerController>();
+        thermometerController.RoomThermalManager = _roomThermalManager;
+        thermometerController.RemoteThermometer = new RemoteThermometer(serverConnection, "thermometer");
+        thermometerController.Position = new Vector3(1, 1);
+
         #endregion
     }
 

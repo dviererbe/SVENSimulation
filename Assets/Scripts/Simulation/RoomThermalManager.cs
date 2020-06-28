@@ -346,7 +346,15 @@ namespace Assets.Scripts.Simulation
             /// </summary>
             public void Start()
             {
-                //do nothing here
+                foreach (var stationaryThermalObject in _stationaryThermalObjects)
+                {
+                    stationaryThermalObject.ThermalStart(this);
+                }
+
+                foreach (var movableThermalObject in _movableThermalObjects)
+                {
+                    movableThermalObject.ThermalStart(this);
+                }
             }
 
             /// <summary>

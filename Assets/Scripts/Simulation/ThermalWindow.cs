@@ -71,6 +71,17 @@ namespace Assets.Scripts.Simulation
         public Temperature Temperature { get; private set; }
 
         /// <summary>
+        /// A <see cref="IRoomThermalManager"/> signals the <see cref="IThermalObject"/> that the thermal simulation was started.
+        /// </summary>
+        /// <param name="roomThermalManager">
+        /// The <see cref="IRoomThermalManager"/> that starts the thermal simulation with this <see cref="IThermalObject"/>. 
+        /// </param>
+        public void ThermalStart(IRoomThermalManager roomThermalManager)
+        {
+            //Do nothing
+        }
+
+        /// <summary>
         /// Is called from the <see cref="IThermalObject"/> once per thermal update.
         /// </summary>
         /// <param name="transferredHeat">

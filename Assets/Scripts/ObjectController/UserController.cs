@@ -36,8 +36,6 @@ public class UserController : MonoBehaviour, IThermalObject
 
     private UserGroupController _userGroupController = null;
 
-    private IRoomThermalManager _roomThermalManager = null;
-
     public Temperature MinOkTemperature { get; set; }
 
     public Temperature MaxOkTemperature { get; set; }
@@ -46,17 +44,7 @@ public class UserController : MonoBehaviour, IThermalObject
 
     public bool IsSweating { get; private set; } = false;
 
-    public IRoomThermalManager RoomThermalManager
-    {
-        get => _roomThermalManager;
-        set
-        {
-            if (_roomThermalManager == null)
-                _roomThermalManager = value;
-            else
-                throw new NotSupportedException("Can't reassign thermal manager.");
-        }
-    }
+    private IRoomThermalManager RoomThermalManager { get; set; }
 
     public UserGroupController UserGroupController
     {
@@ -219,6 +207,17 @@ public class UserController : MonoBehaviour, IThermalObject
     /// Gets the temperature of the <see cref="IThermalObject"/>.
     /// </summary>
     public Temperature Temperature => Temperature.FromCelsius(32f);
+
+    /// <summary>
+    /// A <see cref="IRoomThermalManager"/> signals the <see cref="IThermalObject"/> that the thermal simulation was started.
+    /// </summary>
+    /// <param name="roomThermalManager">
+    /// The <see cref="IRoomThermalManager"/> that starts the thermal simulation with this <see cref="IThermalObject"/>. 
+    /// </param>
+    public void ThermalStart(IRoomThermalManager roomThermalManager)
+    {
+        RoomThermalManager = roomThermalManager;
+    }
 
     /// <summary>
     /// Is called from the <see cref="IThermalObject"/> once per thermal update.
