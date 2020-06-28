@@ -851,7 +851,7 @@ namespace Assets.Scripts
         /// <summary>
         /// Gets or sets the room file for the generation of the simulatat room.
         /// </summary>
-        public static String RoomFile
+        public static string RoomFile
         {
             get => Instance._roomFile;
             set

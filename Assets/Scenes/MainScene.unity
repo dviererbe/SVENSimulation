@@ -1595,7 +1595,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 751.2, y: 435.2}
+  m_AnchoredPosition: {x: 753, y: 385.27}
   m_SizeDelta: {x: 186.6597, y: 24.711514}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &207414075
@@ -5908,7 +5908,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -55.258, y: -398.97394}
+  m_AnchoredPosition: {x: -55.258, y: -370.749}
   m_SizeDelta: {x: 1475.4443, y: 1422.0701}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &909565805
@@ -6102,7 +6102,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 594, y: 420.8997}
+  m_AnchoredPosition: {x: 594, y: 379}
   m_SizeDelta: {x: 188.31085, y: 24.918865}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &913017420
@@ -6700,7 +6700,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1404804900}
   m_HandleRect: {fileID: 1404804899}
   m_Direction: 2
-  m_Value: 1.0000011
+  m_Value: 0.96462935
   m_Size: 0.43888405
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -7487,7 +7487,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -641, y: -404}
+  m_AnchoredPosition: {x: -641, y: -376}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1082058140
@@ -8327,7 +8327,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -667.1, y: 264}
+  m_AnchoredPosition: {x: -667.1, y: 229}
   m_SizeDelta: {x: 184.27768, y: 287.83405}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1256702517
@@ -9707,7 +9707,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 630, y: 209}
+  m_AnchoredPosition: {x: 630, y: 179}
   m_SizeDelta: {x: 0, y: 5.7124634}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1611934698
@@ -11079,6 +11079,7 @@ MonoBehaviour:
   _lowerMaxOkUserTemperatur: 0
   _lowerMinOkUserTemperatur: 0
   _probailityOfUserStandingUpInPause: 0
+  _roomFile: C:\Users\admin\Desktop\Room_0.xml
 --- !u!4 &1754030835
 Transform:
   m_ObjectHideFlags: 0

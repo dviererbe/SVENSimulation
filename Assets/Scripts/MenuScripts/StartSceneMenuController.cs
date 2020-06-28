@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using Assets.Scripts.InputValidation;
-using Assets.Scripts.Simulation.Abstractions;
 using SimpleFileBrowser;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -197,8 +192,8 @@ namespace Assets.Scripts
         {
             if(paths.GetLength(0) > 0)
             {
-                OptionsManager.RoomFile = paths[0];
                 _roomFile.text = paths[0];
+                _inputChecker[OptionsNames.ROOM_FILE].ForceUpdate();
             }
         }
 
