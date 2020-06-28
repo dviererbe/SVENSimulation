@@ -39,6 +39,14 @@ namespace Assets.Scripts.Simulation.Abstractions
         Temperature Temperature { get; }
 
         /// <summary>
+        /// A <see cref="IRoomThermalManager"/> signals the <see cref="IThermalObject"/> that the thermal simulation was started.
+        /// </summary>
+        /// <param name="roomThermalManager">
+        /// The <see cref="IRoomThermalManager"/> that starts the thermal simulation with this <see cref="IThermalObject"/>. 
+        /// </param>
+        void ThermalStart(IRoomThermalManager roomThermalManager);
+
+        /// <summary>
         /// Is called from the <see cref="IThermalObject"/> once per thermal update.
         /// </summary>
         /// <param name="transferredHeat">
