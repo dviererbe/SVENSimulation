@@ -10,6 +10,8 @@ namespace Assets.Scripts.Remote.Abstractions
     {
         string GetData(string device, string attribute);
 
+        string GetReadingList(string device);
+
         void SetData(string device, string attribute, string value);
     }
 }

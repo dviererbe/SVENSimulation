@@ -236,6 +236,59 @@ namespace Assets.Scripts.Remote
                     throw new Exception("Error occured while requesting data.", webException);
                 }
             }
+
+            public string GetReadingList(string device)
+            {
+                if (_csrfToken == null)
+                {
+                    _csrfToken = GetCsrfToken();
+                }
+
+                //BUG: Possible Injection-Attack
+                Uri uri = new Uri($"http://{_serverAddress}/fhem?cmd=list%20{device}&fwcsrf={_csrfToken}&XHR=1");
+
+                Debug.Log(uri.OriginalString);
+
+                WebRequest request = WebRequest.CreateHttp(uri);
+
+                if (_requiersAuthentifiction)
+                {
+                    //Anmeldung bei dem Server
+                    NetworkCredential myNetworkCredential = new NetworkCredential(_username, _password);
+
+                    CredentialCache myCredentialCache = new CredentialCache();
+                    myCredentialCache.Add(uri, "Basic", myNetworkCredential);
+
+                    request.PreAuthenticate = true;
+                    request.Credentials = myCredentialCache;
+                }
+                else
+                {
+                    request.Credentials = CredentialCache.DefaultCredentials;
+                }
+
+                try
+                {
+                    using (WebResponse response = request.GetResponse())
+                    {
+                        using (Stream responseStream = response.GetResponseStream())
+                        {
+                            using (StreamReader reader = new StreamReader(responseStream))
+                            {
+                                return reader.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+                catch (WebException webException)
+                {
+                    Debug.Log(webException);
+
+                    _csrfToken = null;
+
+                    throw new Exception("Error occured while requesting data.", webException);
+                }
+            }
         }
     }
 }

@@ -57,6 +57,11 @@ namespace Assets.Scripts.Remote
                 throw new NotImplementedException();
             }
 
+            public string GetReadingList(string device)
+            {
+                throw new NotImplementedException();
+            }
+
             public void SetData(string device, string attribute, string value)
             {
                 if (attribute.Equals("state", StringComparison.OrdinalIgnoreCase))
