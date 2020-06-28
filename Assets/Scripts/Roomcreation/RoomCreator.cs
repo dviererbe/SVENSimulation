@@ -148,7 +148,9 @@ public class RoomCreator : MonoBehaviour, IRoom
         thermalManagerBuilder.Room = this;
         thermalManagerBuilder.ThermalPixelSize = new Temperature(OptionsManager.InitialRoomTemperature, TemperatureUnit.Celsius);
         thermalManagerBuilder.OutsideTemperature = OutsideTemperatureSource.Instance;
-        thermalManagerBuilder.InitialRoomTemperature = new ConstantTemperatureSource(Temperature.FromCelsius(OptionsManager.InitialRoomTemperature));
+        thermalManagerBuilder.InitialRoomTemperature = new NoisyTemperatureSource(
+                baseTemperatureValue: Temperature.FromCelsius(OptionsManager.InitialRoomTemperature), 
+                noiseOffset: Temperature.FromKelvin(2.5f)); //TODO: Read from options
         thermalManagerBuilder.ThermalPixelSize = OptionsManager.ThermalPixelSize;
         userGroupController.CreateUsers(thermalManagerBuilder);
         //thermalManagerBuilder.AddThermalObject(windowController);
