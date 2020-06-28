@@ -188,12 +188,12 @@ public class UserController : MonoBehaviour, IThermalObject
     /// <summary>
     /// Gets how large the <see cref="IThermalObject"/> is in m (meter).
     /// </summary>
-    public Vector3 Size => new Vector3(1f, 1f); //TODO !!!!
+    public Vector3 Size => new Vector3(1f, 1f);
 
     /// <summary>
     /// Gets the area of the surface of the <see cref="IThermalObject"/> in m² (square meter).
     /// </summary>
-    public float ThermalSurfaceArea => 3f; //TODO !!!!
+    public float ThermalSurfaceArea { get; private set; } = 2f;
 
     /// <summary>
     /// Gets the <see cref="ThermalMaterial"/> of the <see cref="IThermalObject"/>.
@@ -225,8 +225,13 @@ public class UserController : MonoBehaviour, IThermalObject
     /// <param name="transferredHeat">
     /// The heat that was transferred to the <see cref="IThermalObject"/> during the thermal update in J (Joule).
     /// </param>
-    public void ThermalUpdate(float transferredHeat)
+    /// <param name="roomThermalManager">
+    /// The <see cref="IRoomThermalManager"/> that does the thermal update.
+    /// </param>
+    public void ThermalUpdate(float transferredHeat, IRoomThermalManager roomThermalManager)
     {
-        //Todo
+        //((Skin Surface Area) / (Body Height)) * (Height of Thermal Pixel)
+        //((       1m³       ) /     1.8m     ) * (Height of Thermal Pixel) 
+        ThermalSurfaceArea = (2f / 1.8f) * roomThermalManager.ThermalPixelSize;
     }
 }
