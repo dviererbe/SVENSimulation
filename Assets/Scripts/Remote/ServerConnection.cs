@@ -133,107 +133,77 @@ namespace Assets.Scripts.Remote
                 return csrfToken ?? throw new Exception("CSRF-Token not found in server response.");
             }
 
-            public void SetData(string device, string attribute, string value)
+            public string ExecuteCommand(string device, string attribute, string value, IServerConnection.CommandList command)
             {
+
                 if (_csrfToken == null)
                 {
                     _csrfToken = GetCsrfToken();
                 }
 
+                Uri uri = null;
+
                 //BUG: Possible Injection-Attack
-                Uri uri = new Uri($"http://{_serverAddress}/fhem?cmd=set%20{device}%20{attribute}%20{value}&fwcsrf={_csrfToken}&XHR=1");
-
-                Debug.Log(uri.OriginalString);
-
-                WebRequest request = WebRequest.CreateHttp(uri);
-
-                if (_requiersAuthentifiction)
+                if (command == IServerConnection.CommandList.Get)
                 {
-                    //Anmeldung bei dem Server
-                    NetworkCredential myNetworkCredential = new NetworkCredential(_username, _password);
-
-                    CredentialCache myCredentialCache = new CredentialCache();
-                    myCredentialCache.Add(uri, "Basic", myNetworkCredential);
-
-                    request.PreAuthenticate = true;
-                    request.Credentials = myCredentialCache;
+                    uri = new Uri($"http://{_serverAddress}/fhem?cmd=get%20{device}%20{attribute}%20{value}&fwcsrf={_csrfToken}&XHR=1");
                 }
-                else
+                else if (command == IServerConnection.CommandList.Set)
                 {
-                    request.Credentials = CredentialCache.DefaultCredentials;
+                    uri = new Uri($"http://{_serverAddress}/fhem?cmd=set%20{device}%20{attribute}%20{value}&fwcsrf={_csrfToken}&XHR=1");
+                }
+                else if (command == IServerConnection.CommandList.List)
+                {
+                    uri = new Uri($"http://{_serverAddress}/fhem?cmd=list%20{device}&fwcsrf={_csrfToken}&XHR=1");
                 }
 
-                try
+                if (uri != null)
                 {
-                    using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                    Debug.Log(uri.OriginalString);
+
+                    WebRequest request = WebRequest.CreateHttp(uri);
+
+                    if (_requiersAuthentifiction)
                     {
-                        if (response.StatusCode.IsSuccess())
-                        {
-                            Debug.LogWarning(response.StatusCode.ToString());
-                            //throw new Exception("Request was not successful.");
-                        }
+                        //Anmeldung bei dem Server
+                        NetworkCredential myNetworkCredential = new NetworkCredential(_username, _password);
+
+                        CredentialCache myCredentialCache = new CredentialCache();
+                        myCredentialCache.Add(uri, "Basic", myNetworkCredential);
+
+                        request.PreAuthenticate = true;
+                        request.Credentials = myCredentialCache;
                     }
-                }
-                catch (WebException webException)
-                {
-                    Debug.Log(webException);
-
-                    _csrfToken = null;
-
-                    throw new Exception("Error occured while requesting to set data.", webException);
-                }
-            }
-
-            public string GetData(string device, string attribute)
-            {
-                if (_csrfToken == null)
-                {
-                    _csrfToken = GetCsrfToken();
-                }
-
-                //BUG: Possible Injection-Attack
-                Uri uri = new Uri($"http://{_serverAddress}/fhem?cmd=get%20{device}%20{attribute}&fwcsrf={_csrfToken}&XHR=1");
-
-                Debug.Log(uri.OriginalString);
-
-                WebRequest request = WebRequest.CreateHttp(uri);
-
-                if (_requiersAuthentifiction)
-                {
-                    //Anmeldung bei dem Server
-                    NetworkCredential myNetworkCredential = new NetworkCredential(_username, _password);
-
-                    CredentialCache myCredentialCache = new CredentialCache();
-                    myCredentialCache.Add(uri, "Basic", myNetworkCredential);
-
-                    request.PreAuthenticate = true;
-                    request.Credentials = myCredentialCache;
-                }
-                else
-                {
-                    request.Credentials = CredentialCache.DefaultCredentials;
-                }
-
-                try
-                {
-                    using (WebResponse response = request.GetResponse())
+                    else
                     {
-                        using (Stream responseStream = response.GetResponseStream())
+                        request.Credentials = CredentialCache.DefaultCredentials;
+                    }
+
+                    try
+                    {
+                        using (WebResponse response = request.GetResponse())
                         {
-                            using (StreamReader reader = new StreamReader(responseStream))
+                            using (Stream responseStream = response.GetResponseStream())
                             {
-                                return reader.ReadToEnd();
+                                using (StreamReader reader = new StreamReader(responseStream))
+                                {
+                                    return reader.ReadToEnd();
+                                }
                             }
                         }
                     }
+                    catch (WebException webException)
+                    {
+                        Debug.Log(webException);
+
+                        _csrfToken = null;
+
+                        throw new Exception("Error occured while requesting to set data.", webException);
+                    }
                 }
-                catch (WebException webException)
+                else
                 {
-                    Debug.Log(webException);
-
-                    _csrfToken = null;
-
-                    throw new Exception("Error occured while requesting data.", webException);
+                    throw new Exception("Command not found: " + command);
                 }
             }
         }

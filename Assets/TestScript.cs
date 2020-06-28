@@ -1,27 +1,56 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using Assets.Scripts.Remote;
+using Assets.Scripts.Remote.Abstractions;
+using System;
 using UnityEngine;
 
 public class TestScript : MonoBehaviour
 {
+
     [SerializeField]
-    private GameObject _image;
+    private string Username;
+
+    [SerializeField]
+    private string Password;
+
+    [SerializeField]
+    private string ServerAddress;
+
+    [SerializeField]
+    private bool RequiresAuthentication;
+
+    [SerializeField]
+    private string Device;
 
     // Start is called before the first frame update
     void Start()
     {
-        string imagePath = Application.dataPath + "/Textures/Wall_Models/Wall_NorthEastSouthVest.png";
+        Debug.Log($"Username: {Username}");
+        Debug.Log($"Password: {Password}");
+        Debug.Log($"ServerAddress: {ServerAddress}");
+        Debug.Log($"RequiresAuthentication: {RequiresAuthentication}");
 
-        //Bildladen
-        byte[] image = File.ReadAllBytes(imagePath.ToString());
+        Debug.Log("Tests erfolgen");
 
-        //Bild setzen
-        Sprite sprite = _image.GetComponent<SpriteRenderer>().sprite;
+        IServerConnection connection = ServerConnectionFactory.CreateServerConnection(Username, Password, ServerAddress,
+                RequiresAuthentication);
 
-        sprite.texture.LoadImage(image);
+        LSFInfoSchnittstelle lsfSchnittstelle = new LSFInfoSchnittstelle(connection, Device);
 
-        _image.GetComponent<SpriteRenderer>().sprite = sprite;
+        bool lecture;
+        bool isbreak;
+        DateTime? nextbreak;
 
+        lsfSchnittstelle.GetStates(out lecture, out isbreak, out nextbreak);
+
+        Debug.Log(lecture);
+        Debug.Log(isbreak);
+        if (nextbreak != null)
+        {
+            Debug.Log(nextbreak.ToString());
+        }
+        else
+        {
+            Debug.Log("Time: null");
+        }
     }
 }

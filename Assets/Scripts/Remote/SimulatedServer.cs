@@ -36,49 +36,57 @@ namespace Assets.Scripts.Remote
                 _simulatedServer = simulatedServer;
             }
 
-            public string GetData(string device, string attribute)
+            public string ExecuteCommand(string device, string attribute, string value, IServerConnection.CommandList command)
             {
-                if (attribute.Equals("state", StringComparison.OrdinalIgnoreCase))
+                if (command == IServerConnection.CommandList.Get)
                 {
-                    if (device.Equals("window", StringComparison.OrdinalIgnoreCase))
+                    if (attribute.Equals("state", StringComparison.OrdinalIgnoreCase))
                     {
-                        return _simulatedServer._windowState.ToString();
+                        if (device.Equals("window", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return _simulatedServer._windowState.ToString();
+                        }
+                        else if (device.Equals("heater", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return _simulatedServer._heaterState.ToString(CultureInfo.InvariantCulture);
+                        }
+                        else if (device.Equals("thermometer", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return _simulatedServer._thermometerState.ToString(CultureInfo.InvariantCulture);
+                        }
                     }
-                    else if (device.Equals("heater", StringComparison.OrdinalIgnoreCase))
+
+                    throw new NotImplementedException();
+                }
+                else if (command == IServerConnection.CommandList.Set)
+                {
+                    if (attribute.Equals("state", StringComparison.OrdinalIgnoreCase))
                     {
-                        return _simulatedServer._heaterState.ToString(CultureInfo.InvariantCulture);
+                        if (device.Equals("window", StringComparison.OrdinalIgnoreCase))
+                        {
+                            _simulatedServer._windowState = bool.Parse(value);
+                            return null;
+                        }
+                        else if (device.Equals("heater", StringComparison.OrdinalIgnoreCase))
+                        {
+                            _simulatedServer._heaterState = float.Parse(value);
+                            return null;
+                        }
+                        else if (device.Equals("thermometer", StringComparison.OrdinalIgnoreCase))
+                        {
+                            _simulatedServer._thermometerState = float.Parse(value);
+                            return null;
+                        }
                     }
-                    else if (device.Equals("thermometer", StringComparison.OrdinalIgnoreCase))
-                    {
-                        return _simulatedServer._thermometerState.ToString(CultureInfo.InvariantCulture);
-                    }
+
+                    throw new NotImplementedException();
+                }
+                else if (command == IServerConnection.CommandList.List)
+                {
+                    throw new NotImplementedException();
                 }
 
-                throw new NotImplementedException();
-            }
-
-            public void SetData(string device, string attribute, string value)
-            {
-                if (attribute.Equals("state", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (device.Equals("window", StringComparison.OrdinalIgnoreCase))
-                    {
-                        _simulatedServer._windowState = bool.Parse(value);
-                        return;
-                    }
-                    else if (device.Equals("heater", StringComparison.OrdinalIgnoreCase))
-                    {
-                        _simulatedServer._heaterState = float.Parse(value);
-                        return;
-                    }
-                    else if (device.Equals("thermometer", StringComparison.OrdinalIgnoreCase))
-                    {
-                        _simulatedServer._thermometerState = float.Parse(value);
-                        return;
-                    }
-                }
-
-                throw new NotImplementedException();
+                throw new Exception("Command not found: " + command);
             }
         }
     }
