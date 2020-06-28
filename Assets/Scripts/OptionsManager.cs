@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Assets.Scripts.Simulation.Abstractions;
-using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -104,6 +97,9 @@ namespace Assets.Scripts
 
         [SerializeField]
         private float _probailityOfUserStandingUpInPause = 0f;
+
+        [SerializeField]
+        private String _roomFile;
 
         private static OptionsManager _instance;
         private static OptionsManager Instance { get; set; }
@@ -849,6 +845,18 @@ namespace Assets.Scripts
                     Instance._probailityOfUserStandingUpInPause = value;
                     Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the room file for the generation of the simulatat room.
+        /// </summary>
+        public static string RoomFile
+        {
+            get => Instance._roomFile;
+            set
+            {
+                Instance._roomFile = value;
             }
         }
 

@@ -135,8 +135,7 @@ public class RoomCreator : MonoBehaviour, IRoom
     // Start is called before the first frame update
     void Start()
     {
-
-        RoomReader roomreader = new RoomReader(Application.dataPath + "/Roomdefinition/Room_0.xml");
+        RoomReader roomreader = new RoomReader(OptionsManager.RoomFile);
         RoomObjects[] roomObjects = roomreader.ReadRoom();
 
         #region Load Options
