@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Remote.Abstractions
 {
+
+    public enum CommandList
+    {
+        Get,
+        Set,
+        List
+    };
+
     public interface IServerConnection
     {
-        public enum CommandList
-        {
-            Get,
-            Set,
-            List
-        };
-
         string ExecuteCommand(string device, string attribute, string value, CommandList command);
     }
 }

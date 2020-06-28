@@ -36,9 +36,9 @@ namespace Assets.Scripts.Remote
                 _simulatedServer = simulatedServer;
             }
 
-            public string ExecuteCommand(string device, string attribute, string value, IServerConnection.CommandList command)
+            public string ExecuteCommand(string device, string attribute, string value, CommandList command)
             {
-                if (command == IServerConnection.CommandList.Get)
+                if (command == CommandList.Get)
                 {
                     if (attribute.Equals("state", StringComparison.OrdinalIgnoreCase))
                     {
@@ -58,7 +58,7 @@ namespace Assets.Scripts.Remote
 
                     throw new NotImplementedException();
                 }
-                else if (command == IServerConnection.CommandList.Set)
+                else if (command == CommandList.Set)
                 {
                     if (attribute.Equals("state", StringComparison.OrdinalIgnoreCase))
                     {
@@ -81,7 +81,7 @@ namespace Assets.Scripts.Remote
 
                     throw new NotImplementedException();
                 }
-                else if (command == IServerConnection.CommandList.List)
+                else if (command == CommandList.List)
                 {
                     throw new NotImplementedException();
                 }

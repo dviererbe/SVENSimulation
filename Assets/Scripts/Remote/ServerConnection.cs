@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Assets.Scripts.Remote.Abstractions;
 using UnityEngine;
+using Assets.Scripts.Simulation.Abstractions;
 
 namespace Assets.Scripts.Remote
 {
@@ -133,7 +130,7 @@ namespace Assets.Scripts.Remote
                 return csrfToken ?? throw new Exception("CSRF-Token not found in server response.");
             }
 
-            public string ExecuteCommand(string device, string attribute, string value, IServerConnection.CommandList command)
+            public string ExecuteCommand(string device, string attribute, string value, CommandList command)
             {
 
                 if (_csrfToken == null)
@@ -144,15 +141,15 @@ namespace Assets.Scripts.Remote
                 Uri uri = null;
 
                 //BUG: Possible Injection-Attack
-                if (command == IServerConnection.CommandList.Get)
+                if (command == CommandList.Get)
                 {
                     uri = new Uri($"http://{_serverAddress}/fhem?cmd=get%20{device}%20{attribute}%20{value}&fwcsrf={_csrfToken}&XHR=1");
                 }
-                else if (command == IServerConnection.CommandList.Set)
+                else if (command == CommandList.Set)
                 {
                     uri = new Uri($"http://{_serverAddress}/fhem?cmd=set%20{device}%20{attribute}%20{value}&fwcsrf={_csrfToken}&XHR=1");
                 }
-                else if (command == IServerConnection.CommandList.List)
+                else if (command == CommandList.List)
                 {
                     uri = new Uri($"http://{_serverAddress}/fhem?cmd=list%20{device}&fwcsrf={_csrfToken}&XHR=1");
                 }

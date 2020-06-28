@@ -254,8 +254,10 @@ public class RoomCreator : MonoBehaviour, IRoom
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
             }
+            else if(obj.Element == RoomObjects.RoomElement.DOOR)
+            {
 
-            //TODO: Roomobjects Door und Window
+            }
 
             if (roomObject != null)
             {
