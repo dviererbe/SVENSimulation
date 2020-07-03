@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class RocketScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-
+    
     private float stepSize = -1f;
     float angle = 0;
 
+    // Start is called before the first frame update
     void Start()
     {
         
@@ -19,5 +19,6 @@ public class RocketScript : MonoBehaviour
     void Update()
     {
         transform.localEulerAngles = new Vector3(0, 0, angle += stepSize);
+        if (angle > 360) angle = 0;
     }
 }
