@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Roomcreation
 {
-    class RoomObjects
+    public class RoomObjects
     {
         public enum RoomElement
         {

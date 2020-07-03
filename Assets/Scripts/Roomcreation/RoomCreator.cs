@@ -60,6 +60,18 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private (GameObject gameObject, bool isWall)[,] _roomObjects;
 
+    private List<GameObject> _heaterList = new List<GameObject>();
+
+    private List<GameObject> _doorList = new List<GameObject>();
+
+    private List<GameObject> _windowList = new List<GameObject>();
+
+    private List<GameObject> _tableList = new List<GameObject>();
+
+    private List<GameObject> _chairList = new List<GameObject>();
+
+    private List<GameObject> _closetList = new List<GameObject>();
+
     private IRoomThermalManager _roomThermalManager;
 
     #region Properties
@@ -122,6 +134,29 @@ public class RoomCreator : MonoBehaviour, IRoom
     }
 
     #endregion
+
+
+    public List<GameObject> GetRoomObjects(RoomObjects.RoomElement type)
+    {
+        switch(type)
+        {
+            case RoomObjects.RoomElement.CHAIR:
+                return _chairList;
+            case RoomObjects.RoomElement.CLOSET:
+                return _closetList;
+            case RoomObjects.RoomElement.DOOR:
+                return _doorList;
+            case RoomObjects.RoomElement.HEATER:
+                return _heaterList;
+            case RoomObjects.RoomElement.TABLE:
+                return _tableList;
+            case RoomObjects.RoomElement.WINDOW:
+                return _windowList;
+            default:
+                return null;
+        }
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -225,6 +260,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                                     y: (WallThickness + obj.PosX) + 0.5f),
                                 rotation: _chairPrefab.transform.rotation);
                 //roomObject.GetComponent<>().setSprite(obj.Type);
+                _chairList.Add(roomObject);
             }
             else if(obj.Element == RoomObjects.RoomElement.TABLE)
             {
@@ -235,6 +271,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                                     y: (WallThickness + obj.PosX) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 roomObject.GetComponent<TableController>().setSprite(obj.Type);
+                _tableList.Add(roomObject);
             }else  if (obj.Element == RoomObjects.RoomElement.HEATER)
             {
                 roomObject = Instantiate(
@@ -244,7 +281,10 @@ public class RoomCreator : MonoBehaviour, IRoom
                                     y: (WallThickness + obj.PosX) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
-            }else if (obj.Element == RoomObjects.RoomElement.CLOSET)
+                _heaterList.Add(roomObject);
+                //thermalManagerBuilder.AddThermalObject(roomObject.GetComponent<HeaterController>());
+            }
+            else if (obj.Element == RoomObjects.RoomElement.CLOSET)
             {
                 roomObject = Instantiate(
                                 _closetPrefab, //the GameObject that will be instantiated
@@ -253,9 +293,31 @@ public class RoomCreator : MonoBehaviour, IRoom
                                     y: (WallThickness + obj.PosX) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
+                _closetList.Add(roomObject);
             }
-
-            //TODO: Roomobjects Door und Window
+            else if(obj.Element == RoomObjects.RoomElement.DOOR)
+            {
+                roomObject = Instantiate(
+                                _doorPrefab, //the GameObject that will be instantiated
+                                position: new Vector3(
+                                    x: (WallThickness + obj.PosY) + 0.5f,
+                                    y: (WallThickness + obj.PosX) + 0.5f),
+                                rotation: _tablePrefab.transform.rotation);
+                //roomObject.GetComponent<TableController>().setSprite(obj.Type);
+                _doorList.Add(roomObject);
+            }
+            else if (obj.Element == RoomObjects.RoomElement.WINDOW)
+            {
+                roomObject = Instantiate(
+                                _windowPrefab, //the GameObject that will be instantiated
+                                position: new Vector3(
+                                    x: (WallThickness + obj.PosY) + 0.5f,
+                                    y: (WallThickness + obj.PosX) + 0.5f),
+                                rotation: _tablePrefab.transform.rotation);
+                //roomObject.GetComponent<TableController>().setSprite(obj.Type);
+                _windowList.Add(roomObject);
+                thermalManagerBuilder.AddThermalObject(roomObject.GetComponent<WindowController>());
+            }
 
             if (roomObject != null)
             {
