@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.Pathfinding
@@ -279,9 +281,91 @@ namespace Assets.Scripts.Pathfinding
             throw new NotImplementedException();
         }
 
-        public Path GetPathTo(Vertex start, Vertex end)
+        public static WrapperClass FindLowestCost(List<WrapperClass> vertexList)
         {
-            throw new NotImplementedException();
+            float lowestCost = vertexList[0].Cost;
+            int indexOfLowestCost = 0;
+            for(int i = 1; i < vertexList.Count; i++)
+            {
+                if (vertexList[i].Cost < lowestCost)
+                {
+                    indexOfLowestCost = i;
+                    lowestCost = vertexList[i].Cost;
+                }
+            }
+
+            WrapperClass bestVertex = vertexList[indexOfLowestCost];
+            vertexList.RemoveAt(indexOfLowestCost);
+            return bestVertex;
+        }
+
+        public static bool TryToConfirm(Path p)
+        {
+            Vertex vertex;
+            p.TryHasNext(out vertex);
+            bool foundConnectedEdge = true;
+            while (foundConnectedEdge && p.HasNext())
+            {
+                foundConnectedEdge = false;
+                Vertex nextVertex;
+                p.TryHasNext(out nextVertex);
+                foreach(Edge g1 in vertex.Edges)
+                {
+                    if(g1.Target == nextVertex)
+                    {
+                        foundConnectedEdge = true;
+                        break;
+                    }
+                }
+            }
+
+            return foundConnectedEdge;
+        }
+
+        public static Path GetPathTo(Vertex start, Vertex end)
+        {
+            List<WrapperClass> vertexList = new List<WrapperClass>();
+            Path path = new Path();
+            bool endFound = false;
+            vertexList.Add(new WrapperClass(start, 0));
+            path.AddVertex(start);
+            Vertex lastVertex = null;
+            while (!endFound && vertexList.Count > 0) 
+            {
+                WrapperClass vertexWrapper = FindLowestCost(vertexList);
+
+                //confirm there's a connection between the lastVertex and the vertexWrapper.Vertex
+                //if not, delete the lastVertex from Path
+                bool connectionCheck = false;
+                foreach(Edge g in lastVertex.Edges)
+                {
+                    if (connectionCheck = (g.Target == vertexWrapper.Vertex))
+                        break;
+                }
+                if (!connectionCheck)
+                {
+                    path.RemoveLastVertex();
+                }
+
+                path.AddVertex(vertexWrapper.Vertex);
+                
+                // look for all connections
+                foreach(Edge g in vertexWrapper.Vertex.Edges) 
+                {
+                    vertexList.Add(new WrapperClass(g.Target, vertexWrapper.Cost + g.Cost));
+                    //look if the end was found
+                    if (g.Target == end)
+                    {
+                        endFound = true;
+                        break;
+                    }
+                }
+                //save the last vertex
+                lastVertex = vertexWrapper.Vertex;
+            }
+
+            return null;
+
         }
 
         public void PrintGraph()
