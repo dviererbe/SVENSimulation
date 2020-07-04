@@ -101,6 +101,12 @@ namespace Assets.Scripts
         [SerializeField]
         private String _roomFile;
 
+        [SerializeField]
+        private float _vertexObjectOffSet;
+
+        [SerializeField]
+        private float _wallVertexDistance;
+
         private static OptionsManager _instance;
         private static OptionsManager Instance { get; set; }
 
@@ -875,6 +881,52 @@ namespace Assets.Scripts
 
                     Instance._lecture = value;
                     Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Offset vor the vertex of Roomobjects
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float VertexObjectOffSet
+        {
+            get => Instance._vertexObjectOffSet;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(ProbabilityOfUserStandingUpInPause), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._probailityOfUserStandingUpInPause)
+                {
+                    Instance._vertexObjectOffSet = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the distance between tow vertex on the wall
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float WallVertexDistance
+        {
+            get => Instance._wallVertexDistance;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(ProbabilityOfUserStandingUpInPause), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._probailityOfUserStandingUpInPause)
+                {
+                    Instance._wallVertexDistance = value;
                 }
             }
         }

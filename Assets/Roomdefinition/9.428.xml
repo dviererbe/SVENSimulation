@@ -5,6 +5,8 @@
         <Width>98</Width>
         <ThermalPixelSize>1</ThermalPixelSize>
         <WallThickness>2</WallThickness>
+        <WallVertexDisatnce>5</WallVertexDisatnce>
+        <VertexObjectOffSet>0.05</VertexObjectOffSet>
     </Room>
     <Furniture>
         <Chair>
