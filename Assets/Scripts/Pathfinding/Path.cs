@@ -12,28 +12,30 @@ namespace Assets.Scripts.Pathfinding
 
         int listIndex = -1;
         List<Vertex> VertexPath = new List<Vertex>();
-
         public Path()
         {
-
         }
+
+        public void Next()
+        {
+            listIndex++;
+        }
+
+        public bool HasActVertex() => listIndex < VertexPath.Count;
 
         public void AddVertex(Vertex v)
         {
             VertexPath.Add(v);
         }
 
-        public bool HasNext()
+        public bool HasNextVertex => listIndex + 1 < VertexPath.Count;
+
+        public void First()
         {
-            return listIndex + 1 < VertexPath.Count;
+            listIndex = -1;
         }
 
-        public void RemoveLastVertex()
-        {
-            VertexPath.RemoveAt(VertexPath.Count - 1);
-        }
-
-        public bool TryHasNext(out Vertex nextVertex)
+        public bool TryGetNextVertex(out Vertex nextVertex)
         {
             if ((++listIndex) < VertexPath.Count)
             {
@@ -42,6 +44,25 @@ namespace Assets.Scripts.Pathfinding
             }
             nextVertex = null;
             return false;
+        }
+        public bool TryToConfirmPath()
+        {
+            Vertex vertex = VertexPath[0];
+            Vertex backup;
+            bool errorInside = false;
+            for (int i = 1; !errorInside && i < VertexPath.Count - 1; i++)
+            {
+                backup = vertex;
+                foreach (Edge edge in vertex.Edges)
+                {
+                    if (edge.Target == VertexPath[i])
+                    {
+                        vertex = edge.Target;
+                    }
+                }
+                errorInside = vertex.Equals(backup);
+            }
+            return !errorInside;
         }
 
     }

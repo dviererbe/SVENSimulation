@@ -20,7 +20,7 @@ namespace Assets.Scripts.Pathfinding
 
         public bool Equals(Vertex vertex)
         {
-            throw new NotImplementedException();
+            return Object.ReferenceEquals(this, vertex);
         }
     }
 }
