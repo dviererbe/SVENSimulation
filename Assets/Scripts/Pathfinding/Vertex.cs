@@ -14,7 +14,7 @@ namespace Assets.Scripts.Pathfinding
             Position = position;
         }
 
-        public UnityEngine.Vector2 Position { get; }
+        public Vector2 Position { get; }
 
         public int ID { get; }
 
