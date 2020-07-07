@@ -60,6 +60,7 @@ namespace Assets.Scripts.Pathfinding
                         vertex = edge.Target;
                     }
                 }
+                //if vertex would still equal to backup, then we would've an error as vertex did not move to the next vertex (as the next in "path" wasn't connected to any edge of "vertex")
                 errorInside = vertex.Equals(backup);
             }
             return !errorInside;
