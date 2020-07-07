@@ -67,5 +67,13 @@ namespace Assets.Scripts.Roomcreation
             get { return _sizewidth; }
             set { _sizewidth = value; }
         }
+
+        public double RotationRadians
+        {
+            get
+            {
+                return Rotation * Math.PI / 180;
+            }
+        }
     }
 }

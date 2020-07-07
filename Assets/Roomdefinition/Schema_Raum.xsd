@@ -26,6 +26,16 @@
 									<xs:restriction base="xs:decimal"/>
 								</xs:simpleType>
 							</xs:element>
+							<xs:element name="WallVertexDisatnce">
+								<xs:simpleType>
+									<xs:restriction base="xs:decimal"/>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="VertexObjectOffSet">
+								<xs:simpleType>
+									<xs:restriction base="xs:decimal"></xs:restriction>
+								</xs:simpleType>
+							</xs:element>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
