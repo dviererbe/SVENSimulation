@@ -27,25 +27,43 @@ namespace Assets.Scripts.Pathfinding
             }
         }
 
-        private List<Vertex> _vertices;
+        private const float CellLength = 1f;
+        private const int HashTableLength = 512;
+        private List<Vertex>[] _vertexHashTable;
 
         public Graph()
         {
-            _vertices = new List<Vertex>();
-        }
+            _vertexHashTable = new List<Vertex>[HashTableLength];
 
-        public IReadOnlyList<Vertex> Vertices => _vertices;
+            for (int i = 0; i < _vertexHashTable.Length; ++i)
+            {
+                _vertexHashTable[i] = new List<Vertex>();
+            }
+        }
 
         public Vertex AddVertex(Vector2 position)
         {
             MutableVertex vertex = new MutableVertex(position);
 
-            _vertices.Add(vertex);
-
+            _vertexHashTable[CalculateHashIndex(position)].Add(vertex);
+            
             return vertex;
         }
 
-        public void AddEdgeBetweenVertices(Vertex endpoint1, Vertex endpoint2, float cost)
+        private static uint CalculateHashIndex(Vector2 position)
+        {
+            const long Prime1 = 73856093L;
+            const long Prime2 = 19349663L;
+            
+            long factor1 = (long)Mathf.Floor(position.x / CellLength) + 2147483648L;
+            long factor2 = (long)Mathf.Floor(position.y / CellLength) + 2147483648L;
+
+            long hashIndex = (factor1 ^ factor2) % HashTableLength;
+
+            return (uint)hashIndex;
+        }
+
+        public void AddEdgeBetweenVertices(Vertex endpoint1, Vertex endpoint2)
         {
             if (endpoint1.Equals(endpoint2))
                 throw new NotSupportedException("Self-loops are not supported.");
@@ -56,6 +74,8 @@ namespace Assets.Scripts.Pathfinding
             if (endpoint1 is MutableVertex mutableEndpoint1 &&
                 endpoint2 is MutableVertex mutableEndpoint2)
             {
+                float cost = (endpoint1.Position - endpoint2.Position).sqrMagnitude;
+
                 mutableEndpoint1.AddEdge(new Edge(mutableEndpoint2, cost));
                 mutableEndpoint2.AddEdge(new Edge(mutableEndpoint1, cost));
             }
@@ -65,9 +85,66 @@ namespace Assets.Scripts.Pathfinding
             }
         }
 
-        public Vertex GetNearestVertex(Vector2 position)
+        public Vertex GetNearestVertex(Vector2 position, int maxDistance = 20)
         {
-            throw new NotImplementedException();
+            Vertex nearestVertex = null;
+
+            for (int distance = 0; nearestVertex == null && distance <= maxDistance; ++distance)
+            {
+                foreach (Vector2 offset in GetOffsets(distance))
+                {
+                    foreach (var vertex in _vertexHashTable[CalculateHashIndex(position + offset)])
+                    {
+                        if (nearestVertex == null ||
+                            position.GetDistanceTo(vertex.Position) < position.GetDistanceTo(nearestVertex.Position))
+                        {
+                            nearestVertex = vertex;
+                        }
+                    }
+                }
+            }
+
+            return nearestVertex;
+
+            IEnumerable<Vector2> GetOffsets(int distance)
+            {
+                if (distance == 0)
+                {
+                    yield return new Vector2(0, 0);
+                }
+                else
+                {
+                    Vector2 offset = new Vector2(distance * CellLength, distance * CellLength);
+
+                    for (int i = 0; i < distance; ++i)
+                    {
+                        offset += new Vector2(1, 0);
+
+                        yield return offset;
+                    }
+
+                    for (int i = 0; i < distance; ++i)
+                    {
+                        offset += new Vector2(0, -1);
+
+                        yield return offset;
+                    }
+
+                    for (int i = 0; i < distance; ++i)
+                    {
+                        offset += new Vector2(-1, 0);
+
+                        yield return offset;
+                    }
+
+                    for (int i = 0; i < distance; ++i)
+                    {
+                        offset += new Vector2(0, 1);
+
+                        yield return offset;
+                    }
+                }
+            }
         }
 
         public Path GetPathTo(Vertex start, Vertex end)
