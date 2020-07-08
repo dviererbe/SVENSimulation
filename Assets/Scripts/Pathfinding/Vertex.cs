@@ -16,11 +16,13 @@ namespace Assets.Scripts.Pathfinding
 
         public Vector2 Position { get; }
 
+        public int ID { get; }
+
         public abstract IReadOnlyList<Edge> Edges { get; }
 
         public bool Equals(Vertex vertex)
         {
-            throw new NotImplementedException();
+            return object.ReferenceEquals(this, vertex);
         }
     }
 }

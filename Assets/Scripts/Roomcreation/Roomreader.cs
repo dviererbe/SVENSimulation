@@ -20,6 +20,8 @@ namespace Assets.Scripts
         private const string PATHROOMWIDTH = "/Roomplan/Room/Width";
         private const string PATHROOMWALLTHICKNESS = "/Roomplan/Room/WallThickness";
         private const string PATHROOMTHERMALPIXELSIZE = "/Roomplan/Room/ThermalPixelSize";
+        private const string PATHROOMWALLVERTEXDISTANCE = "/Roomplan/Room/WallVertexDisatnce";
+        private const string PATHROOMVERTEXOBJECTOFFSET = "/Roomplan/Room/VertexObjectOffSet";
 
         private const string PATHHEIGHT = "./Position/Height";
         private const string PATHWIDTH = "./Position/Width";
@@ -66,6 +68,12 @@ namespace Assets.Scripts
 
                 XmlNode thermalPixelSize = xmlRootNode.SelectSingleNode(PATHROOMTHERMALPIXELSIZE);
                 OptionsManager.ThermalPixelSize = float.Parse(thermalPixelSize.InnerText, CultureInfo.InvariantCulture);
+
+                XmlNode vertexObjectOffSet = xmlRootNode.SelectSingleNode(PATHROOMVERTEXOBJECTOFFSET);
+                OptionsManager.VertexObjectOffSet = float.Parse(vertexObjectOffSet.InnerText, CultureInfo.InvariantCulture);
+
+                XmlNode wallVertexDistance = xmlRootNode.SelectSingleNode(PATHROOMWALLVERTEXDISTANCE);
+                OptionsManager.WallVertexDistance = float.Parse(wallVertexDistance.InnerText, CultureInfo.InvariantCulture);
             }
             #endregion
 
@@ -112,10 +120,10 @@ namespace Assets.Scripts
                     newobject.Element = type;
 
                     XmlNode pos = element.SelectSingleNode(PATHHEIGHT);
-                    newobject.PosX = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newobject.PosY = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHWIDTH);
-                    newobject.PosY = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newobject.PosX = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHROTATION);
                     newobject.Rotation = float.Parse(pos.InnerText);
