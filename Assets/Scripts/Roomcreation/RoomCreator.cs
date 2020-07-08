@@ -253,7 +253,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         }
         #endregion
 
-        #region WallVertexFüttern
+        #region InsertWallVertex
 
         for(float i = wallThermalPixelCount + OptionsManager.WallVertexDistance; i < _roomObjects.GetLength(0) - wallThermalPixelCount - OptionsManager.WallVertexDistance;
             i += OptionsManager.WallVertexDistance)
@@ -291,8 +291,8 @@ public class RoomCreator : MonoBehaviour, IRoom
                 roomObject = Instantiate(
                                 _chairPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + obj.PositionX) + 0.5f,
+                                    y: (WallThickness + obj.PositionY) + 0.5f),
                                 rotation: _chairPrefab.transform.rotation);
                 //roomObject.GetComponent<>().setSprite(obj.Type);
                 _chairList.Add(roomObject);
@@ -302,8 +302,8 @@ public class RoomCreator : MonoBehaviour, IRoom
                 roomObject = Instantiate(
                                 _tablePrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + obj.PositionX) + 0.5f,
+                                    y: (WallThickness + obj.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 _tableList.Add(roomObject);
@@ -313,8 +313,8 @@ public class RoomCreator : MonoBehaviour, IRoom
                 roomObject = Instantiate(
                                 _heaterPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + obj.PositionX) + 0.5f,
+                                    y: (WallThickness + obj.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 _heaterList.Add(roomObject);
@@ -326,8 +326,8 @@ public class RoomCreator : MonoBehaviour, IRoom
                 roomObject = Instantiate(
                                 _closetPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + obj.PositionX) + 0.5f,
+                                    y: (WallThickness + obj.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 _closetList.Add(roomObject);
@@ -337,8 +337,8 @@ public class RoomCreator : MonoBehaviour, IRoom
                 roomObject = Instantiate(
                                 _doorPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + obj.PositionX) + 0.5f,
+                                    y: (WallThickness + obj.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 _doorList.Add(roomObject);
@@ -348,8 +348,8 @@ public class RoomCreator : MonoBehaviour, IRoom
                 roomObject = Instantiate(
                                 _windowPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + obj.PositionX) + 0.5f,
+                                    y: (WallThickness + obj.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 _windowList.Add(roomObject);
@@ -371,7 +371,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         }
 
         _roomGraph.MeshGraph();
-        //_roomGraph.PrintGraph();
+        _roomGraph.PrintGraph();
         #endregion
 
         //Build and start Thermal Manager

@@ -99,12 +99,8 @@ namespace Assets.Scripts.Pathfinding
         {
             #region Offset zu den Node ermitteln
 
-            double cosinus = Math.Cos(obj.RotationRadians);
-            double sinus = Math.Sin(obj.RotationRadians);
-
-            //Minimalfehler bei der berechnug korrigieren
-            sinus = Math.Round(sinus, 10);
-            cosinus = Math.Round(cosinus, 10);
+            float cosinus = Mathf.Cos((float)obj.RotationRadians);
+            float sinus = Mathf.Sin((float)obj.RotationRadians);            
 
 #if SinCosDebugging
             Debug.Log("Sin: " + sinus.ToString());
@@ -115,48 +111,48 @@ namespace Assets.Scripts.Pathfinding
             //Ecke A
             MutableVertex[] squareVertexPositions = new MutableVertex[8];
             squareVertexPositions[0] = new MutableVertex(new Vector2(
-                x: obj.PosX,
-                y: obj.PosY));
+                x: obj.PositionX,
+                y: obj.PositionY));
 
             //Nächste Ecke B
             squareVertexPositions[1] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x + (float)cosinus * obj.Sizewidth,
-                y: squareVertexPositions[0].Position.y + (float)sinus * obj.Sizewidth));
+                x: squareVertexPositions[0].Position.x + cosinus * obj.Sizewidth,
+                y: squareVertexPositions[0].Position.y + sinus * obj.Sizewidth));
 
 
             //Nächste Ecke D
             squareVertexPositions[3] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x - (float)sinus * obj.Sizeheight,
-                y: squareVertexPositions[0].Position.y + (float)cosinus * obj.Sizeheight));
+                x: squareVertexPositions[0].Position.x - sinus * obj.Sizeheight,
+                y: squareVertexPositions[0].Position.y + cosinus * obj.Sizeheight));
 
 
             //Ecke C
             squareVertexPositions[2] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[3].Position.x + (float)cosinus * obj.Sizewidth,
-                y: squareVertexPositions[3].Position.y + (float)sinus * obj.Sizewidth));
+                x: squareVertexPositions[3].Position.x + cosinus * obj.Sizewidth,
+                y: squareVertexPositions[3].Position.y + sinus * obj.Sizewidth));
 
 
             //Mitte AB
             squareVertexPositions[4] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x + (float)cosinus * obj.Sizewidth / 2,
-                y: squareVertexPositions[0].Position.y + (float)sinus * obj.Sizewidth / 2));
+                x: squareVertexPositions[0].Position.x + cosinus * obj.Sizewidth / 2,
+                y: squareVertexPositions[0].Position.y + sinus * obj.Sizewidth / 2));
 
 
             //Mitte DA
             squareVertexPositions[7] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x - (float)sinus * obj.Sizeheight / 2,
-                y: squareVertexPositions[0].Position.y + (float)cosinus * obj.Sizeheight / 2));
+                x: squareVertexPositions[0].Position.x - sinus * obj.Sizeheight / 2,
+                y: squareVertexPositions[0].Position.y + cosinus * obj.Sizeheight / 2));
 
             //Mitte CD
             squareVertexPositions[6] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[3].Position.x + (float)cosinus * obj.Sizewidth / 2,
-                y: squareVertexPositions[3].Position.y + (float)sinus * obj.Sizewidth / 2));
+                x: squareVertexPositions[3].Position.x + cosinus * obj.Sizewidth / 2,
+                y: squareVertexPositions[3].Position.y + sinus * obj.Sizewidth / 2));
 
 
             //Mitte BC
             squareVertexPositions[5] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[1].Position.x - (float)sinus * obj.Sizeheight / 2,
-                y: squareVertexPositions[1].Position.y + (float)cosinus * obj.Sizeheight / 2));
+                x: squareVertexPositions[1].Position.x - sinus * obj.Sizeheight / 2,
+                y: squareVertexPositions[1].Position.y + cosinus * obj.Sizeheight / 2));
 
             //Kanten die nicht passiert werden dürfen anlegen
             _tabelEdges.Add(new Edge(squareVertexPositions[0], squareVertexPositions[2], 0));
@@ -178,46 +174,46 @@ namespace Assets.Scripts.Pathfinding
             float newHeigth = obj.Sizeheight + (2 * OptionsManager.VertexObjectOffSet);
 
             //Ecke A
-            squareVertexPositions[0] = new MutableVertex(squareVertexPositions[0].Position + offset * ((float)Math.Sqrt(2) * OptionsManager.VertexObjectOffSet));
+            squareVertexPositions[0] = new MutableVertex(squareVertexPositions[0].Position + offset * (Mathf.Sqrt(2) * OptionsManager.VertexObjectOffSet));
 
             //Ecke B
             squareVertexPositions[1] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x + (float)cosinus * newWidth,
-                y: squareVertexPositions[0].Position.y + (float)sinus * newWidth));
+                x: squareVertexPositions[0].Position.x + cosinus * newWidth,
+                y: squareVertexPositions[0].Position.y + sinus * newWidth));
 
 
             //Ecke D
             squareVertexPositions[3] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x - (float)sinus * newHeigth,
-                y: squareVertexPositions[0].Position.y + (float)cosinus * newHeigth));
+                x: squareVertexPositions[0].Position.x - sinus * newHeigth,
+                y: squareVertexPositions[0].Position.y + cosinus * newHeigth));
             
 
             //Ecke C
             squareVertexPositions[2] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[3].Position.x + (float)cosinus * newWidth,
-                y: squareVertexPositions[3].Position.y + (float)sinus * newWidth));
+                x: squareVertexPositions[3].Position.x + cosinus * newWidth,
+                y: squareVertexPositions[3].Position.y + sinus * newWidth));
 
             //Mitte AB
             squareVertexPositions[4] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x + (float)cosinus * newWidth / 2,
-                y: squareVertexPositions[0].Position.y + (float)sinus * newWidth / 2));
+                x: squareVertexPositions[0].Position.x + cosinus * newWidth / 2,
+                y: squareVertexPositions[0].Position.y + sinus * newWidth / 2));
 
 
             //Mitte DA
             squareVertexPositions[7] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x - (float)sinus * newHeigth / 2,
-                y: squareVertexPositions[0].Position.y + (float)cosinus * newHeigth / 2));
+                x: squareVertexPositions[0].Position.x - sinus * newHeigth / 2,
+                y: squareVertexPositions[0].Position.y + cosinus * newHeigth / 2));
 
             //Mitte CD
             squareVertexPositions[6] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[3].Position.x + (float)cosinus * newWidth / 2,
-                y: squareVertexPositions[3].Position.y + (float)sinus * newWidth / 2));
+                x: squareVertexPositions[3].Position.x + cosinus * newWidth / 2,
+                y: squareVertexPositions[3].Position.y + sinus * newWidth / 2));
 
 
             //Mitte BC
             squareVertexPositions[5] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[1].Position.x - (float)sinus * newHeigth / 2,
-                y: squareVertexPositions[1].Position.y + (float)cosinus * newHeigth / 2));
+                x: squareVertexPositions[1].Position.x - sinus * newHeigth / 2,
+                y: squareVertexPositions[1].Position.y + cosinus * newHeigth / 2));
 
             foreach (MutableVertex vertex in squareVertexPositions)
             {
@@ -245,7 +241,7 @@ namespace Assets.Scripts.Pathfinding
                         }
                         if (possible)
                         {
-                            AddEdgeBetweenVertices(_vertices[i], _vertices[j], ((Vector2)(_vertices[i].Position - _vertices[j].Position)).sqrMagnitude);
+                            AddEdgeBetweenVertices(_vertices[i], _vertices[j], ((Vector2)(_vertices[i].Position - _vertices[j].Position)).magnitude);
                         }
                     }
                 }

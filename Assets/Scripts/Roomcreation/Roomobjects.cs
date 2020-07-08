@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.Roomcreation
 {
@@ -20,8 +15,8 @@ namespace Assets.Scripts.Roomcreation
         };
 
         private string _type;
-        private float _posX;
-        private float _posY;
+        private float _positionX;
+        private float _positionY;
         private float _rotation;
         private RoomElement _roomElement;
         private float _sizeheight;
@@ -39,16 +34,16 @@ namespace Assets.Scripts.Roomcreation
             set { _roomElement = value; }
         }
 
-        public float PosX
+        public float PositionX
         {
-            get { return _posX; }
-            set { _posX = value; }
+            get { return _positionX; }
+            set { _positionX = value; }
         }
 
-        public float PosY
+        public float PositionY
         {
-            get { return _posY; }
-            set { _posY = value; }
+            get { return _positionY; }
+            set { _positionY = value; }
         }
 
         public float Rotation
@@ -72,7 +67,7 @@ namespace Assets.Scripts.Roomcreation
         {
             get
             {
-                return Rotation * Math.PI / 180;
+                return Rotation * Mathf.PI / 180;
             }
         }
     }
