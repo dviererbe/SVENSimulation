@@ -58,6 +58,7 @@ namespace Assets.Scripts.Pathfinding
         private const int HashTableLength = 512;
         private List<Vertex>[] _vertexHashTable;
 
+        private List<Vertex> _vertices;
         private List<Edge> _tabelEdges;
 
         public Graph()
@@ -73,6 +74,8 @@ namespace Assets.Scripts.Pathfinding
             _vertices = new List<Vertex>();
             _tabelEdges = new List<Edge>();
         }
+
+        public IReadOnlyList<Vertex> Vertices => _vertices;
 
         public Vertex AddVertex(Vector2 position)
         {
@@ -91,7 +94,7 @@ namespace Assets.Scripts.Pathfinding
             long factor1 = (long)Mathf.Floor(position.x / CellLength) + 2147483648L;
             long factor2 = (long)Mathf.Floor(position.y / CellLength) + 2147483648L;
 
-            long hashIndex = (factor1 ^ factor2) % HashTableLength;
+            long hashIndex = (factor1 * Prime1 ^ factor2 * Prime2) % HashTableLength;
 
             return (uint)hashIndex;
         }
@@ -268,7 +271,7 @@ namespace Assets.Scripts.Pathfinding
                         }
                         if (possible)
                         {
-                            AddEdgeBetweenVertices(_vertices[i], _vertices[j], ((Vector2)(_vertices[i].Position - _vertices[j].Position)).sqrMagnitude);
+                            AddEdgeBetweenVertices(_vertices[i], _vertices[j]);
                         }
                     }
                 }

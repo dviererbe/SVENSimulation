@@ -1587,7 +1587,9 @@ MonoBehaviour:
   _lowerMaxOkUserTemperatur: 0
   _lowerMinOkUserTemperatur: 0
   _probailityOfUserStandingUpInPause: 0
-  _roomFile: 
+  _roomFile: R:\SVENSimulation\Assets\Roomdefinition\9.428.xml
+  _vertexObjectOffSet: 0
+  _wallVertexDistance: 0
 --- !u!4 &749801850
 Transform:
   m_ObjectHideFlags: 0

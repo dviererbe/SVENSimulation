@@ -464,11 +464,16 @@ namespace Assets.Scripts.Simulation
                                 float partialHeatFlow;
                                 float temperatureDifference;
 
+                                ThermalPixel neighbourPixel;
                                 ThermalPixel thermalPixel = _thermalPixels[x, y];
-                                
+
+                                float maxTemperature = thermalPixel.Temperature;
+
                                 if (x > 0) //Thermal pixel has a left neighbour pixel.
                                 {
-                                    heatFlow += CalculateHeatFlow(thermalPixel, _thermalPixels[x - 1, y]);
+                                    neighbourPixel = _thermalPixels[x - 1, y];
+                                    heatFlow += CalculateHeatFlow(thermalPixel, neighbourPixel);
+                                    maxTemperature = Mathf.Max(maxTemperature, neighbourPixel.Temperature);
                                 }
                                 else 
                                 {
@@ -477,7 +482,9 @@ namespace Assets.Scripts.Simulation
 
                                 if (y > 0) //Thermal pixel has a bottom neighbour pixel.
                                 {
-                                    heatFlow += CalculateHeatFlow(thermalPixel, _thermalPixels[x, y - 1]);
+                                    neighbourPixel = _thermalPixels[x, y - 1];
+                                    heatFlow += CalculateHeatFlow(thermalPixel, neighbourPixel);
+                                    maxTemperature = Mathf.Max(maxTemperature, neighbourPixel.Temperature);
                                 }
                                 else 
                                 {
@@ -486,7 +493,9 @@ namespace Assets.Scripts.Simulation
 
                                 if (x < mostRightX) //Thermal pixel has a right neighbour pixel.
                                 {
-                                    heatFlow += CalculateHeatFlow(thermalPixel, _thermalPixels[x + 1, y]);
+                                    neighbourPixel = _thermalPixels[x + 1, y];
+                                    heatFlow += CalculateHeatFlow(thermalPixel, neighbourPixel);
+                                    maxTemperature = Mathf.Max(maxTemperature, neighbourPixel.Temperature);
                                 }
                                 else 
                                 {
@@ -495,7 +504,9 @@ namespace Assets.Scripts.Simulation
 
                                 if (y < mostUpY) //Thermal pixel has a bottom neighbour pixel.
                                 {
-                                    heatFlow += CalculateHeatFlow(thermalPixel, _thermalPixels[x, y + 1]);
+                                    neighbourPixel = _thermalPixels[x, y + 1];
+                                    heatFlow += CalculateHeatFlow(thermalPixel, neighbourPixel);
+                                    maxTemperature = Mathf.Max(maxTemperature, neighbourPixel.Temperature);
                                 }
                                 else 
                                 {
@@ -504,6 +515,8 @@ namespace Assets.Scripts.Simulation
 
                                 if (thermalPixel.Reference != null)
                                 {
+                                    maxTemperature = Mathf.Max(maxTemperature, thermalPixel.Reference.Temperature.ToKelvin());
+                                    
                                     partialHeatFlow = CalculateHeatFlow(thermalPixel, thermalPixel.Reference);
                                     heatFlow += partialHeatFlow;
 
@@ -523,6 +536,7 @@ namespace Assets.Scripts.Simulation
                                     {
                                         partialHeatFlow = CalculateHeatFlow(thermalPixel, movableThermalObject);
                                         heatFlow += partialHeatFlow;
+                                        maxTemperature = Mathf.Max(maxTemperature, movableThermalObject.Temperature.ToKelvin());
 
                                         if (heatFlowToThermalObjects.ContainsKey(movableThermalObject))
                                         {
@@ -544,6 +558,7 @@ namespace Assets.Scripts.Simulation
                                     heatFlow += _thermalPixelSizeSquared *
                                                        thermalPixel.ThermalMaterial.GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial.OutsideAir, temperatureDifference) *
                                                        temperatureDifference * outsidePixelNeighbours;
+                                    maxTemperature = Mathf.Max(maxTemperature, _outsideTemperature.ToKelvin());
                                 }
 
                                 float newTemperatureValue = thermalPixel.Temperature.ToKelvin().Value +
@@ -552,8 +567,10 @@ namespace Assets.Scripts.Simulation
                                                              _thermalPixelSizeCubed * thermalPixel.ThermalMaterial
                                                                  .SpecificHeatCapacity);
 
-                                if (float.IsNaN(newTemperatureValue) || float.IsInfinity(newTemperatureValue))
-                                    Debug.Log(newTemperatureValue);
+                                if (newTemperatureValue > maxTemperature)
+                                {
+                                    newTemperatureValue = maxTemperature;
+                                }
 
                                 Temperature newTemperature = Temperature.FromKelvin(newTemperatureValue);
                                 
