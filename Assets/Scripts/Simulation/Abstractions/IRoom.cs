@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Scripts.Pathfinding;
 using UnityEngine;
 
 namespace Assets.Scripts.Simulation.Abstractions
@@ -32,5 +33,7 @@ namespace Assets.Scripts.Simulation.Abstractions
         /// This value is not allowed to change.
         /// </remarks>
         float WallThickness { get; }
+
+        Graph RoomGraph { get; }
     }
 }

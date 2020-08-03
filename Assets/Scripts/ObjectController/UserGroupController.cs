@@ -38,8 +38,6 @@ namespace Assets.Scripts.Simulation
                 userObject.transform.parent = transform;
                 UserController userController = userObject.GetComponent<UserController>();
                 userController.UserGroupController = this;
-                userController.MaxOkTemperature = Temperature.FromCelsius(28);
-                userController.MinOkTemperature = Temperature.FromCelsius(18);
                 builder?.AddThermalObject(userController);
 
                 _users.Add(userController);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
@@ -32,13 +33,26 @@ public class UserController : MonoBehaviour, IThermalObject
 
     [SerializeField]
     private float _playerSpeed = 0.5f;
+    
     private Vector2 _direction;
+
+    private float _normalizedMaxOkTemperature;
+
+    private float _normalizedMinOkTemperature;
 
     private UserGroupController _userGroupController = null;
 
-    public Temperature MinOkTemperature { get; set; }
+    public UserController()
+    {
+        _normalizedMinOkTemperature = Random.value;
+        _normalizedMaxOkTemperature = Random.value;
+    }
 
-    public Temperature MaxOkTemperature { get; set; }
+    public Temperature MinOkTemperature => Temperature.FromCelsius(Mathf.Lerp(OptionsManager.LowerMinOkUserTemperature,
+        OptionsManager.UpperMinOkUserTemperature, _normalizedMinOkTemperature));
+
+    public Temperature MaxOkTemperature => Temperature.FromCelsius(Mathf.Lerp(OptionsManager.LowerMaxOkUserTemperature,
+        OptionsManager.UpperMaxOkUserTemperature, _normalizedMaxOkTemperature));
 
     public bool IsFreezing { get; private set; } = false;
 
@@ -93,7 +107,6 @@ public class UserController : MonoBehaviour, IThermalObject
         _direction = GetRandomDirection();
 
         MovePlayerToMiddleOfRoom();
-        InitializeMinAndMaxOkTemperatureWithRandomValues();
     }
 
     void Update()
@@ -167,11 +180,6 @@ public class UserController : MonoBehaviour, IThermalObject
         string freezingText = IsFreezing ? "[Freezing]" : string.Empty;
 
         _userStateTextMesh.text = $"{State} {sweatingText}{freezingText} ({temperature?.ToString() ?? "No Data"})";
-    }
-
-    public void InitializeMinAndMaxOkTemperatureWithRandomValues()
-    {
-
     }
 
     /// <summary>
