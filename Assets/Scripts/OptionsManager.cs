@@ -569,7 +569,7 @@ namespace Assets.Scripts
             get => Instance._maxTemperature;
             set
             {
-                if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
+                if (!IsValidSize())
                 {
                     throw new ArgumentOutOfRangeException(nameof(MaxTemperatur), value, "An attempt was made to set the value to zero or an negative value.");
                 }
@@ -712,9 +712,9 @@ namespace Assets.Scripts
             get => Instance._upperMaxOkUserTemperatur;
             set
             {
-                if (!IsValidSize(value))
+                if (!IsValidTemperature(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(UpperMaxOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(OutsideTemperature), value, "An attempt was made to set the value below absolute zero.");
                 }
 
                 if (value != Instance._upperMaxOkUserTemperatur)
@@ -743,9 +743,9 @@ namespace Assets.Scripts
             get => Instance._lowerMaxOkUserTemperatur;
             set
             {
-                if (!IsValidSize(value))
+                if (!IsValidTemperature(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(LowerMaxOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(OutsideTemperature), value, "An attempt was made to set the value below absolute zero.");
                 }
 
                 if (value != Instance._lowerMaxOkUserTemperatur)
@@ -774,9 +774,9 @@ namespace Assets.Scripts
             get => Instance._upperMinOkUserTemperatur;
             set
             {
-                if (!IsValidSize(value))
+                if (!IsValidTemperature(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(UpperMinOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(OutsideTemperature), value, "An attempt was made to set the value below absolute zero.");
                 }
 
                 if (value != Instance._upperMinOkUserTemperatur)
@@ -805,9 +805,9 @@ namespace Assets.Scripts
             get => Instance._lowerMinOkUserTemperatur;
             set
             {
-                if (!IsValidSize(value))
+                if (!IsValidTemperature(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(LowerMinOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(OutsideTemperature), value, "An attempt was made to set the value below absolute zero.");
                 }
 
                 if (value != Instance._lowerMinOkUserTemperatur)

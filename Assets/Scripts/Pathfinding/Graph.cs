@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.Pathfinding
@@ -54,8 +52,8 @@ namespace Assets.Scripts.Pathfinding
             }
         }
 
-        private const float CellLength = 1f;
-        private const int HashTableLength = 512;
+        private const float CellLength = 0.5f;
+        private const int HashTableLength = 1024;
         private List<Vertex>[] _vertexHashTable;
 
         private List<Vertex> _vertices;
@@ -63,7 +61,6 @@ namespace Assets.Scripts.Pathfinding
 
         public Graph()
         {
-
             _vertexHashTable = new List<Vertex>[HashTableLength];
 
 			for (int i = 0; i < _vertexHashTable.Length; ++i)
@@ -90,7 +87,8 @@ namespace Assets.Scripts.Pathfinding
         {
             const long Prime1 = 73856093L;
             const long Prime2 = 19349663L;
-            
+
+            // "+ 2147483648L" grantees that the factors are not negative
             long factor1 = (long)Mathf.Floor(position.x / CellLength) + 2147483648L;
             long factor2 = (long)Mathf.Floor(position.y / CellLength) + 2147483648L;
 
@@ -305,17 +303,26 @@ namespace Assets.Scripts.Pathfinding
 		public Vertex GetNearestVertex(Vector2 position, int maxDistance = 20)
         {
             Vertex nearestVertex = null;
+            float distanceToNearestVertex = float.MaxValue;
 
             for (int distance = 0; nearestVertex == null && distance <= maxDistance; ++distance)
             {
                 foreach (Vector2 offset in GetOffsets(distance))
                 {
-                    foreach (var vertex in _vertexHashTable[CalculateHashIndex(position + offset)])
+                    foreach (Vertex vertex in _vertexHashTable[CalculateHashIndex(position + offset)])
                     {
-                        if (nearestVertex == null ||
-                            position.GetDistanceTo(vertex.Position) < position.GetDistanceTo(nearestVertex.Position))
+                        if (nearestVertex == null)
                         {
                             nearestVertex = vertex;
+                            distanceToNearestVertex = position.GetDistanceTo(nearestVertex.Position);
+                        }
+
+                        float distanceToVertex = position.GetDistanceTo(vertex.Position);
+                        
+                        if (distanceToVertex < distanceToNearestVertex)
+                        {
+                            nearestVertex = vertex;
+                            distanceToNearestVertex = distanceToVertex;
                         }
                     }
                 }
@@ -333,30 +340,32 @@ namespace Assets.Scripts.Pathfinding
                 {
                     Vector2 offset = new Vector2(distance * CellLength, distance * CellLength);
 
-                    for (int i = 0; i < distance; ++i)
+                    int limit = 2 * distance;
+
+                    for (int i = 0; i < limit; ++i)
                     {
-                        offset += new Vector2(1, 0);
+                        offset += new Vector2(-CellLength, 0);
 
                         yield return offset;
                     }
 
-                    for (int i = 0; i < distance; ++i)
+                    for (int i = 0; i < limit; ++i)
                     {
-                        offset += new Vector2(0, -1);
+                        offset += new Vector2(0, CellLength);
 
                         yield return offset;
                     }
 
-                    for (int i = 0; i < distance; ++i)
+                    for (int i = 0; i < limit; ++i)
                     {
-                        offset += new Vector2(-1, 0);
+                        offset += new Vector2(CellLength, 0);
 
                         yield return offset;
                     }
 
-                    for (int i = 0; i < distance; ++i)
+                    for (int i = 0; i < limit; ++i)
                     {
-                        offset += new Vector2(0, 1);
+                        offset += new Vector2(0, -CellLength);
 
                         yield return offset;
                     }
@@ -502,6 +511,5 @@ namespace Assets.Scripts.Pathfinding
             Debug.Log(graphmatrix.ToString());
             Debug.Log(vertexPositions.ToString());
         }
-
     }
 }

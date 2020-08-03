@@ -192,11 +192,10 @@ public class RoomCreator : MonoBehaviour, IRoom
         thermalManagerBuilder.OutsideTemperature = OutsideTemperatureSource.Instance;
         thermalManagerBuilder.InitialRoomTemperature = new NoisyTemperatureSource(
                 baseTemperatureValue: Temperature.FromCelsius(OptionsManager.InitialRoomTemperature), 
-                noiseOffset: Temperature.FromKelvin(0.5f)); //TODO: Read from options
+                noiseOffset: Temperature.FromKelvin(0.5f));
         thermalManagerBuilder.ThermalPixelSize = OptionsManager.ThermalPixelSize;
         userGroupController.CreateUsers(thermalManagerBuilder);
-        //thermalManagerBuilder.AddThermalObject(windowController);
-
+        
         //Calculate Room Size
         int wallThermalPixelCount = Mathf.RoundToInt(_wallThickness / thermalManagerBuilder.ThermalPixelSize);
 
@@ -371,7 +370,6 @@ public class RoomCreator : MonoBehaviour, IRoom
         }
 
         _roomGraph.MeshGraph();
-        //_roomGraph.PrintGraph();
         #endregion
 
         //Build and start Thermal Manager
