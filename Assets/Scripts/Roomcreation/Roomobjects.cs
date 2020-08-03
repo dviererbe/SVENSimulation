@@ -11,7 +11,8 @@ namespace Assets.Scripts.Roomcreation
             WINDOW,
             DOOR,
             HEATER,
-            CLOSET
+            CLOSET,
+            TABLET
         };
 
         private string _type;

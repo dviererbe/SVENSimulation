@@ -296,6 +296,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                                 rotation: _chairPrefab.transform.rotation);
                 //roomObject.GetComponent<>().setSprite(obj.Type);
                 _chairList.Add(roomObject);
+                _roomGraph.AddVertex(roomObject.GetComponentInChildren<Transform>().position, 3);
             }
             else if(obj.Element == RoomObjects.RoomElement.TABLE)
             {
@@ -342,6 +343,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 _doorList.Add(roomObject);
+                _roomGraph.AddVertex(roomObject.transform.position, 0);
             }
             else if (obj.Element == RoomObjects.RoomElement.WINDOW)
             {
@@ -354,7 +356,13 @@ public class RoomCreator : MonoBehaviour, IRoom
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 _windowList.Add(roomObject);
                 thermalManagerBuilder.AddThermalObject(roomObject.GetComponent<WindowController>());
-                _roomGraph.AddVertex((Vector2)roomObject.transform.position);
+                _roomGraph.AddVertex((Vector2)roomObject.transform.position, 1);
+            }
+            else if (obj.Element == RoomObjects.RoomElement.TABLET)
+            {
+                _roomGraph.AddVertex(new Vector2(
+                    x: (WallThickness + obj.PositionX) + 0.5f,
+                    y: (WallThickness + obj.PositionY) + 0.5f), 2);
             }
 
             if (roomObject != null)
