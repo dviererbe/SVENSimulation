@@ -239,23 +239,23 @@ namespace Assets.Scripts.Pathfinding
 
             foreach (MutableVertex vertex in squareVertexPositions)
             {
-                _vertices.Add(vertex);
+                _vertexHashTable[0].Add(vertex);
             }
         }
 
         public void MeshGraph()
         {
-            for (int i = 0; i < _vertices.Count; i++)
+            for (int i = 0; i < _vertexHashTable[0].Count; i++)
             {
-                for (int j = i + 1; j < _vertices.Count; j++)
+                for (int j = i + 1; j < _vertexHashTable[0].Count; j++)
                 {
-                    MutableVertex vertex = (MutableVertex)_vertices[i];
-                    if (!vertex.Contains(_vertices[j]))
+                    MutableVertex vertex = (MutableVertex)_vertexHashTable[0][i];
+                    if (!vertex.Contains(_vertexHashTable[0][j]))
                     {
                         bool possible = true;
                         foreach (Edge edge in _tabelEdges)
                         {
-                            if (edge.CutEdge(_vertices[i].Position, _vertices[j].Position))
+                            if (edge.CutEdge(_vertexHashTable[0][i].Position, _vertexHashTable[0][j].Position))
                             {
                                 possible = false;
                                 break;
@@ -263,17 +263,17 @@ namespace Assets.Scripts.Pathfinding
                         }
                         if (possible)
                         {
-                            AddEdgeBetweenVertices(_vertices[i], _vertices[j], ((Vector2)(_vertices[i].Position - _vertices[j].Position)).magnitude);
+                            AddEdgeBetweenVertices(_vertexHashTable[0][i], _vertexHashTable[0][j]);
                         }
                     }
                 }
             }
             //Nicht genutzet Vertex aufräumen und letzte Fragmente entfernen
-            for (int i = 0; i < _vertices.Count; i++)
+            for (int i = 0; i < _vertexHashTable[0].Count; i++)
             {
-                if (_vertices[i].Edges.Count < 5)
+                if (_vertexHashTable[0][i].Edges.Count < 5)
                 {
-                    CleanGraph((MutableVertex)_vertices[i]);
+                    CleanGraph((MutableVertex)_vertexHashTable[0][i]);
                 }
             }
         }
@@ -291,7 +291,7 @@ namespace Assets.Scripts.Pathfinding
                     CleanGraph(nextVertex);
                 }
             }
-            _vertices.Remove(vertex);
+            _vertexHashTable[0].Remove(vertex);
         }
 		
 		public Vertex GetNearestVertex(Vector2 position, int maxDistance = 20)
@@ -460,19 +460,19 @@ namespace Assets.Scripts.Pathfinding
         }
         public void PrintGraph()
         {
-            int[,] adjazensmatrix = new int[Vertices.Count, Vertices.Count]; 
+            int[,] adjazensmatrix = new int[_vertexHashTable[0].Count, _vertexHashTable[0].Count]; 
             StringBuilder graphmatrix = new StringBuilder();
             StringBuilder vertexPositions = new StringBuilder();
 
-            for(int j = 0; j < Vertices.Count; j++)
+            for(int j = 0; j < _vertexHashTable[0].Count; j++)
             {
-                vertexPositions.Append(Vertices[j].Position.x.ToString(System.Globalization.CultureInfo.InvariantCulture)
-                    + " " + Vertices[j].Position.y.ToString(System.Globalization.CultureInfo.InvariantCulture) + "; ");
-                foreach(Edge edge in Vertices[j].Edges)
+                vertexPositions.Append(_vertexHashTable[0][j].Position.x.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                    + " " + _vertexHashTable[0][j].Position.y.ToString(System.Globalization.CultureInfo.InvariantCulture) + "; ");
+                foreach(Edge edge in _vertexHashTable[0][j].Edges)
                 {
-                    for(int i = 0; i < Vertices.Count; i++)
+                    for(int i = 0; i < _vertexHashTable[0].Count; i++)
                     {
-                        if(edge.Target.Equals(Vertices[i]))
+                        if(edge.Target.Equals(_vertexHashTable[0][i]))
                         {
                             adjazensmatrix[i, j] = 1;
                             adjazensmatrix[j, i] = 1;

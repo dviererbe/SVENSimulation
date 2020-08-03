@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using Assets.Scripts;
 using Assets.Scripts.ObjectController;
 using Assets.Scripts.Pathfinding;
@@ -69,11 +70,13 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private List<GameObject> _closetList = new List<GameObject>();
 
+    private List<Tuple<Vector2, RemoteThermometer>> _remoteThermometers = new List<Tuple<Vector2, RemoteThermometer>>();
+
     private Graph _roomGraph;
 
     private IRoomThermalManager _roomThermalManager;
 
-    private Vertex _tablePosition;
+    private LSFInfoSchnittstelle _lsfInfoSchnittstelle;
 
     #region Properties
 
@@ -155,9 +158,9 @@ public class RoomCreator : MonoBehaviour, IRoom
         get { return _doorList; }
     }
 
-    public Vertex TabletPosition
+    public IReadOnlyList<Tuple<Vector2, RemoteThermometer>> RemoteThermometers
     {
-        get { return _tablePosition; }
+        get { return _remoteThermometers; }
     }
 
     #endregion
@@ -183,7 +186,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #endregion
 
-        IServerConnection serverConnection = GameObject.Find("SimulatedServer").GetComponent<SimulatedServer>().SimulatedRemoteConnection;
+        IServerConnection serverConnection = ServerConnectionFactory.CreateServerConnection(OptionsManager.Username, OptionsManager.Password, OptionsManager.ServerAddress, OptionsManager.RequiresAuthentication);
 
         #region ThermalManager
 
@@ -330,8 +333,8 @@ public class RoomCreator : MonoBehaviour, IRoom
                                     y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
-                //TODO: Reamote Heater
-                _heaterList.Add(new Tuple<GameObject, Vertex, RemoteHeater>(gameObjektNewRoomObject, _roomGraph.AddVertex(gameObjektNewRoomObject.transform.position), null));
+                RemoteHeater remoteHeater = new RemoteHeater(serverConnection, roomObjektNewRoomObjekt.NameFHEM);
+                _heaterList.Add(new Tuple<GameObject, Vertex, RemoteHeater>(gameObjektNewRoomObject, _roomGraph.AddVertex(gameObjektNewRoomObject.transform.position), remoteHeater));
                 //thermalManagerBuilder.AddThermalObject(roomObject.GetComponent<HeaterController>());
                 _roomGraph.AddVertex((Vector2)gameObjektNewRoomObject.transform.position);
             }
@@ -367,14 +370,20 @@ public class RoomCreator : MonoBehaviour, IRoom
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 thermalManagerBuilder.AddThermalObject(gameObjektNewRoomObject.GetComponent<WindowController>());
+                RemoteWindow remoteWindow = new RemoteWindow(serverConnection, roomObjektNewRoomObjekt.NameFHEM);
                 _windowList.Add(new Tuple<GameObject, Vertex, RemoteWindow>(gameObjektNewRoomObject, 
-                    _roomGraph.AddVertex(gameObjektNewRoomObject.GetComponentInChildren<GameObject>().transform.position), null));
+                    _roomGraph.AddVertex(gameObjektNewRoomObject.GetComponentInChildren<GameObject>().transform.position), remoteWindow));
             }
             else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.TABLET)
             {
                 _roomGraph.AddVertex(new Vector2(
                     x: (WallThickness + roomObjektNewRoomObjekt.PositionX) + 0.5f,
                     y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f));
+                _lsfInfoSchnittstelle = new LSFInfoSchnittstelle(serverConnection, roomObjektNewRoomObjekt.NameFHEM);
+            }
+            else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.THERMOMETER)
+            {
+                _remoteThermometers.Add(new Tuple<Vector2, RemoteThermometer>(new Vector2(roomObjektNewRoomObjekt.PositionX, roomObjektNewRoomObjekt.PositionY), new RemoteThermometer(serverConnection, roomObjektNewRoomObjekt.NameFHEM)));
             }
 
             if (gameObjektNewRoomObject != null)

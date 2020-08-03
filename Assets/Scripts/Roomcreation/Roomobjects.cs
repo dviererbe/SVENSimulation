@@ -12,7 +12,8 @@ namespace Assets.Scripts.Roomcreation
             DOOR,
             HEATER,
             CLOSET,
-            TABLET
+            TABLET,
+            THERMOMETER
         };
 
         private string _type;
@@ -22,6 +23,7 @@ namespace Assets.Scripts.Roomcreation
         private RoomElement _roomElement;
         private float _sizeheight;
         private float _sizewidth;
+        private string _nameFHEM;
 
         public string Type
         {
@@ -70,6 +72,12 @@ namespace Assets.Scripts.Roomcreation
             {
                 return Rotation * Mathf.PI / 180;
             }
+        }
+
+        public string NameFHEM
+        {
+            get { return _nameFHEM; }
+            set { _nameFHEM = value; }
         }
     }
 }
