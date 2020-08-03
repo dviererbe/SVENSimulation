@@ -72,6 +72,8 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private List<Tuple<Vector2, RemoteThermometer>> _remoteThermometers = new List<Tuple<Vector2, RemoteThermometer>>();
 
+    private List<Tuple<Vertex, RemoteTablet>> _tabletList = new List<Tuple<Vertex, RemoteTablet>>();
+
     private Graph _roomGraph;
 
     private IRoomThermalManager _roomThermalManager;
@@ -163,6 +165,11 @@ public class RoomCreator : MonoBehaviour, IRoom
         get { return _remoteThermometers; }
     }
 
+    public LSFInfoSchnittstelle LSFInfoSchnittstelle
+    {
+        get { return _lsfInfoSchnittstelle; }
+    }
+
     #endregion
 
 
@@ -187,6 +194,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         #endregion
 
         IServerConnection serverConnection = ServerConnectionFactory.CreateServerConnection(OptionsManager.Username, OptionsManager.Password, OptionsManager.ServerAddress, OptionsManager.RequiresAuthentication);
+        _lsfInfoSchnittstelle = new LSFInfoSchnittstelle(serverConnection, "Der Name fehlt noch!!");
 
         #region ThermalManager
 
@@ -376,10 +384,8 @@ public class RoomCreator : MonoBehaviour, IRoom
             }
             else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.TABLET)
             {
-                _roomGraph.AddVertex(new Vector2(
-                    x: (WallThickness + roomObjektNewRoomObjekt.PositionX) + 0.5f,
-                    y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f));
-                _lsfInfoSchnittstelle = new LSFInfoSchnittstelle(serverConnection, roomObjektNewRoomObjekt.NameFHEM);
+                _tabletList.Add(new Tuple<Vertex, RemoteTablet>(_roomGraph.AddVertex(new Vector2(roomObjektNewRoomObjekt.PositionX, roomObjektNewRoomObjekt.PositionY)), 
+                    new RemoteTablet(serverConnection, roomObjektNewRoomObjekt.NameFHEM)));
             }
             else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.THERMOMETER)
             {
