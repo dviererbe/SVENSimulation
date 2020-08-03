@@ -63,7 +63,9 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private List<GameObject> _tableList = new List<GameObject>();
 
-    private List<Tuple<GameObject, Vertex>> _chairList = new List<Tuple<GameObject, Vertex>>();
+    private List<Tuple<GameObject, Vertex>> _chairStudentList = new List<Tuple<GameObject, Vertex>>();
+
+    private List<Tuple<GameObject, Vertex>> _chairLecturerList = new List<Tuple<GameObject, Vertex>>();
 
     private List<GameObject> _closetList = new List<GameObject>();
 
@@ -134,9 +136,13 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     public Graph RoomGraph => _roomGraph;
 
-    public IReadOnlyList<Tuple<GameObject, Vertex>> ChairPositions
+    public IReadOnlyList<Tuple<GameObject, Vertex>> ChairStudentPositions
     {
-        get { return _chairList; }
+        get { return _chairStudentList; }
+    }
+    public IReadOnlyList<Tuple<GameObject, Vertex>> ChairLecturerPositions
+    {
+        get { return _chairLecturerList; }
     }
 
     public IReadOnlyList<Tuple<GameObject, Vertex, RemoteWindow>> WindowPositions
@@ -292,9 +298,17 @@ public class RoomCreator : MonoBehaviour, IRoom
                                     x: (WallThickness + roomObjektNewRoomObjekt.PositionX) + 0.5f,
                                     y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f),
                                 rotation: _chairPrefab.transform.rotation);
-                //roomObject.GetComponent<>().setSprite(obj.Type);
-                _chairList.Add(new Tuple<GameObject, Vertex>(gameObjektNewRoomObject, 
-                    _roomGraph.AddVertex(getCenterOfChair(gameObjektNewRoomObject.transform.position, roomObjektNewRoomObjekt))));
+
+                if (roomObjektNewRoomObjekt.Type.Equals("Dozent"))
+                {
+                    _chairLecturerList.Add(new Tuple<GameObject, Vertex>(gameObjektNewRoomObject,
+                        _roomGraph.AddVertex(getCenterOfChair(gameObjektNewRoomObject.transform.position, roomObjektNewRoomObjekt))));
+                }
+                else
+                {
+                    _chairStudentList.Add(new Tuple<GameObject, Vertex>(gameObjektNewRoomObject,
+                        _roomGraph.AddVertex(getCenterOfChair(gameObjektNewRoomObject.transform.position, roomObjektNewRoomObjekt))));
+                }
             }
             else if(roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.TABLE)
             {

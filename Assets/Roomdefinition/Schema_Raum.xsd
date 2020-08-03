@@ -103,6 +103,7 @@
 											<xs:simpleType>
 												<xs:restriction base="xs:string">
 													<xs:enumeration value="Normal"/>
+													<xs:enumeration value="Dozent"/>
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
