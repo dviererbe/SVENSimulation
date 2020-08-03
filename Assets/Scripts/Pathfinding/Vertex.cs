@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Pathfinding
 {
     public abstract class Vertex : IEquatable<Vertex>
     {
-
         protected Vertex(Vector2 position)
         {
             Position = position;
@@ -20,11 +22,7 @@ namespace Assets.Scripts.Pathfinding
 
         public bool Equals(Vertex vertex)
         {
-            if(Position == vertex.Position)
-            {
-                return true;
-            }
-            return false;
+            return object.ReferenceEquals(this, vertex);
         }
     }
 }
