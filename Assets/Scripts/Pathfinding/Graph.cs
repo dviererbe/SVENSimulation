@@ -58,42 +58,10 @@ namespace Assets.Scripts.Pathfinding
 
         private List<Edge> _tabelEdges;
 
-        private List<Vertex> _chairPositions;
-
-        private Vertex _tablePosition;
-
-        private List<Vertex> _windowPositions;
-
-        private List<Vertex> _doorPositions;
-
-
-        public IReadOnlyList<Vertex> ChairPositions
-        {
-            get { return _chairPositions; }
-        }
-
-        public IReadOnlyList<Vertex> WindowPositions
-        {
-            get { return _windowPositions; } 
-        }
-
-        public IReadOnlyList<Vertex> DoorPositions
-        {
-            get { return _doorPositions; }
-        }
-
-        public Vertex TabletPosition
-        {
-            get { return _tablePosition; }
-        }
-
         public Graph()
         {
             _vertices = new List<Vertex>();
             _tabelEdges = new List<Edge>();
-            _doorPositions = new List<Vertex>();
-            _windowPositions = new List<Vertex>();
-            _chairPositions = new List<Vertex>();
         }
 
         public IReadOnlyList<Vertex> Vertices => _vertices;
@@ -103,33 +71,6 @@ namespace Assets.Scripts.Pathfinding
             MutableVertex vertex = new MutableVertex(position);
 
             _vertices.Add(vertex);
-
-            return vertex;
-        }
-
-        /// <summary>
-        /// Adds a new Vertex with an spezific type.
-        /// </summary>
-        /// <param name="position"> Position of the Vertex in the room</param>
-        /// <param name="type"> Type of the vertex. 0 = door, 1 = window, 2 = heater, 3 = chair</param>
-        /// <returns></returns>
-        public Vertex AddVertex(Vector2 position, int type)
-        {
-            MutableVertex vertex = new MutableVertex(position);
-
-            _vertices.Add(vertex);
-
-            switch(type)
-            {
-                case 0: _doorPositions.Add(vertex);
-                        break;
-                case 1: _windowPositions.Add(vertex);
-                    break;
-                case 2: _tablePosition = vertex;
-                    break;
-                case 3: _chairPositions.Add(vertex);
-                    break;
-            }
 
             return vertex;
         }
