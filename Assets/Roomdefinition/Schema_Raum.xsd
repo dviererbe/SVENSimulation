@@ -103,7 +103,13 @@
 											<xs:simpleType>
 												<xs:restriction base="xs:string">
 													<xs:enumeration value="Normal"/>
+													<xs:enumeration value="Dozent"/>
 												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="FHEM-Name">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
 											</xs:simpleType>
 										</xs:element>
 									</xs:sequence>
@@ -128,6 +134,11 @@
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
+										<xs:element name="FHEM-Name">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
+											</xs:simpleType>
+										</xs:element>
 									</xs:sequence>
 								</xs:complexType>							
 							</xs:element>
@@ -147,6 +158,11 @@
 												</xs:restriction>
 											</xs:simpleType>
 										</xs:element>
+										<xs:element name="FHEM-Name">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
+											</xs:simpleType>
+										</xs:element>
 									</xs:sequence>
 								</xs:complexType>							
 							</xs:element>
@@ -164,6 +180,59 @@
 												<xs:restriction base="xs:string">
 													<xs:enumeration value="Default"/>
 												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="FHEM-Name">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>							
+							</xs:element>
+							<xs:element name="Tablet" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Position" type="Pos"/>
+										<xs:element name="Size" type="Pos"/>
+										<xs:element name="Rotation"> <!-- Positive Value = rotation counter clockwies-->
+											<xs:simpleType>
+												<xs:restriction base="xs:decimal"/>
+											</xs:simpleType>
+										</xs:element><xs:element name="Type">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Default"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="FHEM-Name">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>							
+							</xs:element>
+							<xs:element name="Thermometer" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Position" type="Pos"/>
+										<xs:element name="Size" type="Pos"/>
+										<xs:element name="Rotation"> <!-- Positive Value = rotation counter clockwies-->
+											<xs:simpleType>
+												<xs:restriction base="xs:decimal"/>
+											</xs:simpleType>
+										</xs:element><xs:element name="Type">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Default"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="FHEM-Name">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
 											</xs:simpleType>
 										</xs:element>
 									</xs:sequence>

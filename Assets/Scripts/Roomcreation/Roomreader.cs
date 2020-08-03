@@ -29,6 +29,7 @@ namespace Assets.Scripts
         private const string PATHSIZEHEIGHT= "./Size/Height";
         private const string PATHSIZEWIDTH= "./Size/Width";
         private const string PATHTYPE= "./Type";
+        private const string PATHFEHMNAME = "./FHEM-Name";
 
         private string _xmlPath;
 
@@ -120,16 +121,19 @@ namespace Assets.Scripts
                     newobject.Element = type;
 
                     XmlNode pos = element.SelectSingleNode(PATHHEIGHT);
-                    newobject.PosY = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newobject.PositionY = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHWIDTH);
-                    newobject.PosX = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newobject.PositionX = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHROTATION);
                     newobject.Rotation = float.Parse(pos.InnerText);
 
                     pos = element.SelectSingleNode(PATHTYPE);
                     newobject.Type = pos.InnerText;
+
+                    pos = element.SelectSingleNode(PATHFEHMNAME);
+                    newobject.NameFHEM = pos.InnerText;
 
                     pos = element.SelectSingleNode(PATHSIZEHEIGHT);
                     newobject.Sizeheight = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);

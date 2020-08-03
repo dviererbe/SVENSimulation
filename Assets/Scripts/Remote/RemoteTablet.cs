@@ -1,20 +1,25 @@
 ﻿using Assets.Scripts.Remote.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Assets.Scripts.Remote
 {
-    public class RemoteThermometer : RemoteObject
+    class RemoteTablet : RemoteObject
     {
-        public RemoteThermometer(IServerConnection remoteConnection, string deviceName)
+        public RemoteTablet(IServerConnection remoteConnection, string deviceName)
             : base(remoteConnection, deviceName)
         {
         }
 
+        /// <summary>
+        /// Loads the state of the heater
+        /// </summary>
+        /// <returns>
+        /// float as % of opening of the heater
+        /// </returns>
         public float GetState()
         {
             string serverResult = GetAttribute("state");
@@ -27,9 +32,7 @@ namespace Assets.Scripts.Remote
                 }
             }
 
-            return 20.0f;
-
-            //throw new Exception("Retrieved invalid value from remote connection.");
+            throw new Exception("Retrieved invalid value from remote connection.");
         }
 
         public void SetState(float value)

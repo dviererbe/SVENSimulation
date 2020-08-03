@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Remote.Abstractions;
+﻿ using Assets.Scripts.Remote.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

@@ -1,9 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using UnityEditor.Experimental.GraphView;
-using UnityEngine;
-using UnityEngine.Windows;
+﻿using UnityEngine;
 
 public class WallController : MonoBehaviour
 {

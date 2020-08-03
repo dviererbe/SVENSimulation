@@ -16,13 +16,13 @@ namespace Assets.Scripts.Pathfinding
 
             if(start.Position.x - target.Position.x != 0)
             {
-                _anstieg = (start.Position.y - target.Position.y) / (start.Position.x - target.Position.x);
-                _offsetYAxes = target.Position.y - target.Position.x * _anstieg;
+                _increase = (start.Position.y - target.Position.y) / (start.Position.x - target.Position.x);
+                _offsetYAxes = target.Position.y - target.Position.x * _increase;
             }
             else
             {
                 //darstellen vor Linearen Funktionen der Form z.B. x = 1;
-                _anstieg = start.Position.x;
+                _increase = start.Position.x;
                 _offsetYAxes = float.PositiveInfinity;
             }
 
@@ -34,33 +34,33 @@ namespace Assets.Scripts.Pathfinding
 
         private Vector2 _directionVector;
 
-        private float _anstieg;
+        private float _increase;
 
         private float _offsetYAxes;
 
         public bool CutEdge(Vector2 startPoint, Vector2 endPoint)
         {
             //Vorbereitung Position
-            Vector2 directionVectorScondeEdge = endPoint - startPoint;
+            Vector2 directionVectorScondEdge = endPoint - startPoint;
 
 
-            float t1; // aus x = p0 + t * a (x p0 und a sind Vektoren)
+            float t1; // from x = p0 + t * a (x p0 and a are vectoren)
             float t2;
 
-            float anstiegScondeEdge;
+            float increaseScondEdge;
 
-            float offsetYAxesScondeEdge;
+            float offsetYAxesScondEdge;
 
             if (endPoint.x - startPoint.x != 0)
             {
-                anstiegScondeEdge = (endPoint.y - startPoint.y) / (endPoint.x - startPoint.x);
-                offsetYAxesScondeEdge = startPoint.y - startPoint.x * anstiegScondeEdge;
+                increaseScondEdge = (endPoint.y - startPoint.y) / (endPoint.x - startPoint.x);
+                offsetYAxesScondEdge = startPoint.y - startPoint.x * increaseScondEdge;
             }
             else
             {
                 //darstellen vor Linearen Funktionen der Form z.B. x = 1;
-                anstiegScondeEdge = startPoint.x;
-                offsetYAxesScondeEdge = float.PositiveInfinity;
+                increaseScondEdge = startPoint.x;
+                offsetYAxesScondEdge = float.PositiveInfinity;
             }
 
 
@@ -68,34 +68,34 @@ namespace Assets.Scripts.Pathfinding
 
             //IF Intersection bestimmen
             //kontrolle auf paralelität
-            if ( Math.Abs(anstiegScondeEdge) == Math.Abs(_anstieg))
+            if ( Mathf.Abs(increaseScondEdge) == Mathf.Abs(_increase))
             {
-                if(offsetYAxesScondeEdge == float.PositiveInfinity && _offsetYAxes == float.PositiveInfinity)
+                if(offsetYAxesScondEdge == float.PositiveInfinity && _offsetYAxes == float.PositiveInfinity)
                 {
-                    if(_anstieg != anstiegScondeEdge)
+                    if(_increase != increaseScondEdge)
                     {
                         return false;
                     }
                 }
-                if(startPoint.y != startPoint.x * _anstieg + _offsetYAxes)
+                if(startPoint.y != startPoint.x * _increase + _offsetYAxes)
                 {
                     return false;
                 }
                 return ControlCutOfParrallelCuts(startPoint, endPoint);
             }
-            else if(offsetYAxesScondeEdge != float.PositiveInfinity && _offsetYAxes == float.PositiveInfinity)
+            else if(offsetYAxesScondEdge != float.PositiveInfinity && _offsetYAxes == float.PositiveInfinity)
             {
-                intersection.x = _anstieg;
-                intersection.y = intersection.x * anstiegScondeEdge + offsetYAxesScondeEdge;
+                intersection.x = _increase;
+                intersection.y = intersection.x * increaseScondEdge + offsetYAxesScondEdge;
             }
-            else if(offsetYAxesScondeEdge == float.PositiveInfinity && _offsetYAxes != float.PositiveInfinity)
+            else if(offsetYAxesScondEdge == float.PositiveInfinity && _offsetYAxes != float.PositiveInfinity)
             {
-                intersection.x = anstiegScondeEdge;
-                intersection.y = intersection.x * _anstieg + _offsetYAxes;
+                intersection.x = increaseScondEdge;
+                intersection.y = intersection.x * _increase + _offsetYAxes;
             }
-            else if (offsetYAxesScondeEdge == float.PositiveInfinity && _offsetYAxes == float.PositiveInfinity)
+            else if (offsetYAxesScondEdge == float.PositiveInfinity && _offsetYAxes == float.PositiveInfinity)
             {
-                if (_anstieg != anstiegScondeEdge)
+                if (_increase != increaseScondEdge)
                 {
                     return false;
                 }
@@ -109,9 +109,9 @@ namespace Assets.Scripts.Pathfinding
                  * x * (m1 - m2) = n2 - n1  |/(m1 -m2)
                  * x = (n2 - n1)/(m1 - m2)
                  */
-                intersection.x = (offsetYAxesScondeEdge - _offsetYAxes) / (_anstieg - anstiegScondeEdge);
+                intersection.x = (offsetYAxesScondEdge - _offsetYAxes) / (_increase - increaseScondEdge);
 
-                intersection.y = intersection.x * _anstieg + _offsetYAxes;
+                intersection.y = intersection.x * _increase + _offsetYAxes;
             }//end if Intersectionberechnung
 
             if (_directionVector.x != 0)
@@ -127,17 +127,17 @@ namespace Assets.Scripts.Pathfinding
                 t1 = (intersection.y - Target.Position.y) / _directionVector.y;
             }
 
-            if (directionVectorScondeEdge.x != 0)
+            if (directionVectorScondEdge.x != 0)
             {
-                t2 = (intersection.x - startPoint.x) / directionVectorScondeEdge.x;
+                t2 = (intersection.x - startPoint.x) / directionVectorScondEdge.x;
             }
             else
             {
-                if (directionVectorScondeEdge.y == 0)
+                if (directionVectorScondEdge.y == 0)
                 {
                     throw new Exception("Direction Vektor is null Vektor!!");
                 }
-                t2 = (intersection.y - startPoint.y) / directionVectorScondeEdge.y;
+                t2 = (intersection.y - startPoint.y) / directionVectorScondEdge.y;
             }
 
             if (t1 > 1 || t1 < 0 || t2 > 1 || t2 < 0)
@@ -159,9 +159,9 @@ namespace Assets.Scripts.Pathfinding
             }
             else
             {
-                if (_directionVector.y == 0)
+                if (Mathf.Abs(_directionVector.y) < 0.01)
                 {
-                    throw new Exception("Direction Vektor is null Vektor!!");
+                    throw new Exception("Direction vector is null vevtor!!");
 }
                 t1 = (startPoint.y - Target.Position.y) / _directionVector.y;
                 t2 = (endPoint.y - Target.Position.y) / _directionVector.y;

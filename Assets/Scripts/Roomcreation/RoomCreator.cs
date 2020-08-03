@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Text;
+using System.ComponentModel.Design;
 using Assets.Scripts;
 using Assets.Scripts.ObjectController;
 using Assets.Scripts.Pathfinding;
@@ -13,8 +10,6 @@ using Assets.Scripts.Roomcreation;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
-
 public class RoomCreator : MonoBehaviour, IRoom
 {
     [SerializeField]
@@ -61,21 +56,29 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private (GameObject gameObject, bool isWall)[,] _roomObjects;
 
-    private List<GameObject> _heaterList = new List<GameObject>();
+    private List<Tuple<GameObject, Vertex, RemoteHeater>> _heaterList = new List<Tuple<GameObject, Vertex, RemoteHeater>>();
 
-    private List<GameObject> _doorList = new List<GameObject>();
+    private List<Tuple<GameObject, Vertex>> _doorList = new List<Tuple<GameObject, Vertex>>();
 
-    private List<GameObject> _windowList = new List<GameObject>();
+    private List<Tuple<GameObject, Vertex, RemoteWindow>> _windowList = new List<Tuple<GameObject, Vertex, RemoteWindow>>();
 
     private List<GameObject> _tableList = new List<GameObject>();
 
-    private List<GameObject> _chairList = new List<GameObject>();
+    private List<Tuple<GameObject, Vertex>> _chairStudentList = new List<Tuple<GameObject, Vertex>>();
+
+    private List<Tuple<GameObject, Vertex>> _chairLecturerList = new List<Tuple<GameObject, Vertex>>();
 
     private List<GameObject> _closetList = new List<GameObject>();
+
+    private List<Tuple<Vector2, RemoteThermometer>> _remoteThermometers = new List<Tuple<Vector2, RemoteThermometer>>();
+
+    private List<Tuple<Vertex, RemoteTablet>> _tabletList = new List<Tuple<Vertex, RemoteTablet>>();
 
     private Graph _roomGraph;
 
     private IRoomThermalManager _roomThermalManager;
+
+    private LSFInfoSchnittstelle _lsfInfoSchnittstelle;
 
     #region Properties
 
@@ -138,29 +141,36 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     public Graph RoomGraph => _roomGraph;
 
-    #endregion
-
-
-    public List<GameObject> GetRoomObjects(RoomObjects.RoomElement type)
+    public IReadOnlyList<Tuple<GameObject, Vertex>> ChairStudentPositions
     {
-        switch(type)
-        {
-            case RoomObjects.RoomElement.CHAIR:
-                return _chairList;
-            case RoomObjects.RoomElement.CLOSET:
-                return _closetList;
-            case RoomObjects.RoomElement.DOOR:
-                return _doorList;
-            case RoomObjects.RoomElement.HEATER:
-                return _heaterList;
-            case RoomObjects.RoomElement.TABLE:
-                return _tableList;
-            case RoomObjects.RoomElement.WINDOW:
-                return _windowList;
-            default:
-                return null;
-        }
+        get { return _chairStudentList; }
     }
+    public IReadOnlyList<Tuple<GameObject, Vertex>> ChairLecturerPositions
+    {
+        get { return _chairLecturerList; }
+    }
+
+    public IReadOnlyList<Tuple<GameObject, Vertex, RemoteWindow>> WindowPositions
+    {
+        get { return _windowList; }
+    }
+
+    public IReadOnlyList<Tuple<GameObject, Vertex>> DoorPositions
+    {
+        get { return _doorList; }
+    }
+
+    public IReadOnlyList<Tuple<Vector2, RemoteThermometer>> RemoteThermometers
+    {
+        get { return _remoteThermometers; }
+    }
+
+    public LSFInfoSchnittstelle LSFInfoSchnittstelle
+    {
+        get { return _lsfInfoSchnittstelle; }
+    }
+
+    #endregion
 
 
     // Start is called before the first frame update
@@ -169,7 +179,11 @@ public class RoomCreator : MonoBehaviour, IRoom
         RoomReader roomreader = new RoomReader(OptionsManager.RoomFile);
         RoomObjects[] roomObjects = roomreader.ReadRoom();
 
+        #region PreperationsGraph
+
         _roomGraph = new Graph();
+
+        #endregion
 
         #region Load Options
 
@@ -179,7 +193,8 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #endregion
 
-        IServerConnection serverConnection = GameObject.Find("SimulatedServer").GetComponent<SimulatedServer>().SimulatedRemoteConnection;
+        IServerConnection serverConnection = ServerConnectionFactory.CreateServerConnection(OptionsManager.Username, OptionsManager.Password, OptionsManager.ServerAddress, OptionsManager.RequiresAuthentication);
+        _lsfInfoSchnittstelle = new LSFInfoSchnittstelle(serverConnection, "Der Name fehlt noch!!");
 
         #region ThermalManager
 
@@ -252,7 +267,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         }
         #endregion
 
-        #region WallVertexFüttern
+        #region InsertWallVertex
 
         for(float i = wallThermalPixelCount + OptionsManager.WallVertexDistance; i < _roomObjects.GetLength(0) - wallThermalPixelCount - OptionsManager.WallVertexDistance;
             i += OptionsManager.WallVertexDistance)
@@ -281,89 +296,109 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #region RoomObjects Creator
 
-        foreach (RoomObjects obj in roomObjects)
+        foreach (RoomObjects roomObjektNewRoomObjekt in roomObjects)
         {
-            GameObject roomObject = null;
+            GameObject gameObjektNewRoomObject = null;
 
-            if(obj.Element == RoomObjects.RoomElement.CHAIR)
+            if(roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.CHAIR)
             {
-                roomObject = Instantiate(
+                gameObjektNewRoomObject = Instantiate(
                                 _chairPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + roomObjektNewRoomObjekt.PositionX) + 0.5f,
+                                    y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f),
                                 rotation: _chairPrefab.transform.rotation);
-                //roomObject.GetComponent<>().setSprite(obj.Type);
-                _chairList.Add(roomObject);
+
+                if (roomObjektNewRoomObjekt.Type.Equals("Dozent"))
+                {
+                    _chairLecturerList.Add(new Tuple<GameObject, Vertex>(gameObjektNewRoomObject,
+                        _roomGraph.AddVertex(getCenterOfChair(gameObjektNewRoomObject.transform.position, roomObjektNewRoomObjekt))));
+                }
+                else
+                {
+                    _chairStudentList.Add(new Tuple<GameObject, Vertex>(gameObjektNewRoomObject,
+                        _roomGraph.AddVertex(getCenterOfChair(gameObjektNewRoomObject.transform.position, roomObjektNewRoomObjekt))));
+                }
             }
-            else if(obj.Element == RoomObjects.RoomElement.TABLE)
+            else if(roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.TABLE)
             {
-                roomObject = Instantiate(
+                gameObjektNewRoomObject = Instantiate(
                                 _tablePrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + roomObjektNewRoomObjekt.PositionX) + 0.5f,
+                                    y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
-                roomObject.GetComponent<TableController>().setSprite(obj.Type);
-                _tableList.Add(roomObject);
-                _roomGraph.AddSqaureObject(obj);
-            }else  if (obj.Element == RoomObjects.RoomElement.HEATER)
+                gameObjektNewRoomObject.GetComponent<TableController>().setSprite(roomObjektNewRoomObjekt.Type);
+                _tableList.Add(gameObjektNewRoomObject);
+                _roomGraph.AddSqaureObject(roomObjektNewRoomObjekt);
+            }else  if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.HEATER)
             {
-                roomObject = Instantiate(
+                gameObjektNewRoomObject = Instantiate(
                                 _heaterPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + roomObjektNewRoomObjekt.PositionX) + 0.5f,
+                                    y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
-                _heaterList.Add(roomObject);
+                RemoteHeater remoteHeater = new RemoteHeater(serverConnection, roomObjektNewRoomObjekt.NameFHEM);
+                _heaterList.Add(new Tuple<GameObject, Vertex, RemoteHeater>(gameObjektNewRoomObject, _roomGraph.AddVertex(gameObjektNewRoomObject.transform.position), remoteHeater));
                 //thermalManagerBuilder.AddThermalObject(roomObject.GetComponent<HeaterController>());
-                _roomGraph.AddVertex((Vector2)roomObject.transform.position);
+                _roomGraph.AddVertex((Vector2)gameObjektNewRoomObject.transform.position);
             }
-            else if (obj.Element == RoomObjects.RoomElement.CLOSET)
+            else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.CLOSET)
             {
-                roomObject = Instantiate(
+                gameObjektNewRoomObject = Instantiate(
                                 _closetPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + roomObjektNewRoomObjekt.PositionX) + 0.5f,
+                                    y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
-                _closetList.Add(roomObject);
+                _closetList.Add(gameObjektNewRoomObject);
             }
-            else if(obj.Element == RoomObjects.RoomElement.DOOR)
+            else if(roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.DOOR)
             {
-                roomObject = Instantiate(
+                gameObjektNewRoomObject = Instantiate(
                                 _doorPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + roomObjektNewRoomObjekt.PositionX) + 0.5f,
+                                    y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
-                _doorList.Add(roomObject);
+                _doorList.Add(new Tuple<GameObject, Vertex>(gameObjektNewRoomObject, _roomGraph.AddVertex(gameObjektNewRoomObject.transform.position)));
             }
-            else if (obj.Element == RoomObjects.RoomElement.WINDOW)
+            else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.WINDOW)
             {
-                roomObject = Instantiate(
+                gameObjektNewRoomObject = Instantiate(
                                 _windowPrefab, //the GameObject that will be instantiated
                                 position: new Vector3(
-                                    x: (WallThickness + obj.PosX) + 0.5f,
-                                    y: (WallThickness + obj.PosY) + 0.5f),
+                                    x: (WallThickness + roomObjektNewRoomObjekt.PositionX) + 0.5f,
+                                    y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
-                _windowList.Add(roomObject);
-                thermalManagerBuilder.AddThermalObject(roomObject.GetComponent<WindowController>());
-                _roomGraph.AddVertex((Vector2)roomObject.transform.position);
+                thermalManagerBuilder.AddThermalObject(gameObjektNewRoomObject.GetComponent<WindowController>());
+                RemoteWindow remoteWindow = new RemoteWindow(serverConnection, roomObjektNewRoomObjekt.NameFHEM);
+                _windowList.Add(new Tuple<GameObject, Vertex, RemoteWindow>(gameObjektNewRoomObject, 
+                    _roomGraph.AddVertex(gameObjektNewRoomObject.GetComponentInChildren<GameObject>().transform.position), remoteWindow));
+            }
+            else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.TABLET)
+            {
+                _tabletList.Add(new Tuple<Vertex, RemoteTablet>(_roomGraph.AddVertex(new Vector2(roomObjektNewRoomObjekt.PositionX, roomObjektNewRoomObjekt.PositionY)), 
+                    new RemoteTablet(serverConnection, roomObjektNewRoomObjekt.NameFHEM)));
+            }
+            else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.THERMOMETER)
+            {
+                _remoteThermometers.Add(new Tuple<Vector2, RemoteThermometer>(new Vector2(roomObjektNewRoomObjekt.PositionX, roomObjektNewRoomObjekt.PositionY), new RemoteThermometer(serverConnection, roomObjektNewRoomObjekt.NameFHEM)));
             }
 
-            if (roomObject != null)
+            if (gameObjektNewRoomObject != null)
             {
-                roomObject.transform.Rotate(0, 0, obj.Rotation);
-                roomObject.transform.parent = _furniture.transform;
-                Vector3 objectsize = roomObject.transform.localScale;
-                objectsize.x *= obj.Sizewidth;
-                objectsize.y *= obj.Sizeheight;
-                roomObject.transform.localScale = objectsize;
+                gameObjektNewRoomObject.transform.Rotate(0, 0, roomObjektNewRoomObjekt.Rotation);
+                gameObjektNewRoomObject.transform.parent = _furniture.transform;
+                Vector3 objectsize = gameObjektNewRoomObject.transform.localScale;
+                objectsize.x *= roomObjektNewRoomObjekt.Sizewidth;
+                objectsize.y *= roomObjektNewRoomObjekt.Sizeheight;
+                gameObjektNewRoomObject.transform.localScale = objectsize;
 
             }
 
@@ -386,6 +421,18 @@ public class RoomCreator : MonoBehaviour, IRoom
         thermometerController.Position = new Vector3(1, 1);
 
         #endregion
+    }
+
+    private Vector2 getCenterOfChair(Vector2 position, RoomObjects roomObject)
+    {
+        float cosinus = Mathf.Cos((float)roomObject.RotationRadians);
+        float sinus = Mathf.Sin((float)roomObject.RotationRadians);
+
+        return new Vector2
+        (
+            x: position.x + (cosinus * roomObject.Sizewidth) - (sinus * roomObject.Sizeheight),
+            y: position.y + (sinus * roomObject.Sizewidth) + (cosinus * roomObject.Sizeheight)
+        );
     }
 
     private GameObject InstantiateWallObject(int i, int j)

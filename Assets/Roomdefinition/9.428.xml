@@ -20,6 +20,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -32,6 +33,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -44,6 +46,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -56,6 +59,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -68,6 +72,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -80,6 +85,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -92,6 +98,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -104,6 +111,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -116,6 +124,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -128,6 +137,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -140,6 +150,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -152,6 +163,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -164,6 +176,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -176,6 +189,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -188,6 +202,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -200,6 +215,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -212,6 +228,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -224,6 +241,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -236,6 +254,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -248,6 +267,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -260,6 +280,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -272,6 +293,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -284,6 +306,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -296,6 +319,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -308,6 +332,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -320,6 +345,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -332,6 +358,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -344,6 +371,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -356,6 +384,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -368,6 +397,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -380,6 +410,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -392,6 +423,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Chair>
             <Position>
@@ -403,7 +435,8 @@
                 <Width>6</Width>
             </Size>
             <Rotation>180</Rotation>
-            <Type>Normal</Type>
+            <Type>Dozent</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Chair>
         <Table>
             <Position>
@@ -416,6 +449,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -428,6 +462,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -440,6 +475,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -452,6 +488,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -464,6 +501,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -476,6 +514,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -488,6 +527,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -500,6 +540,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -512,6 +553,7 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -524,6 +566,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -536,6 +579,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -548,6 +592,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -560,6 +605,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Blank</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -572,6 +618,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Blank</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -584,6 +631,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -596,6 +644,7 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -608,6 +657,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -620,6 +670,7 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Table>
             <Position>
@@ -632,6 +683,7 @@
             </Size>
             <Rotation>180</Rotation>
             <Type>Dozent</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Table>
         <Heater>
             <Position>
@@ -644,6 +696,33 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Default</Type>
+            <FHEM-Name>null</FHEM-Name>
         </Heater>
+        <Tablet>
+            <Position>
+                <Height>58</Height>
+                <Width>53</Width>
+            </Position>
+            <Size>
+                <Height>0</Height>
+                <Width>0</Width>
+            </Size>
+            <Rotation>0</Rotation>
+            <Type>Default</Type>
+            <FHEM-Name>null</FHEM-Name>
+        </Tablet>
+        <Thermometer>
+            <Position>
+                <Height>25</Height>
+                <Width>25</Width>
+            </Position>
+            <Size>
+                <Height>0</Height>
+                <Width>0</Width>
+            </Size>
+            <Rotation>0</Rotation>
+            <Type>Default</Type>
+            <FHEM-Name>null</FHEM-Name>
+        </Thermometer>
     </Furniture>
 </Roomplan>

@@ -1587,7 +1587,7 @@ MonoBehaviour:
   _lowerMaxOkUserTemperatur: 0
   _lowerMinOkUserTemperatur: 0
   _probailityOfUserStandingUpInPause: 0
-  _roomFile: R:\SVENSimulation\Assets\Roomdefinition\9.428.xml
+  _roomFile: .\Assets\Roomdefinition\9.428.xml
   _vertexObjectOffSet: 0
   _wallVertexDistance: 0
 --- !u!4 &749801850
@@ -2259,7 +2259,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter text...
+  m_Text: Fhem-Serveradresse
 --- !u!222 &982825743
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3070,7 +3070,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter text...
+  m_Text: '
+
+'
 --- !u!222 &1156377856
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4874,7 +4876,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter text...
+  m_Text: Username
 --- !u!222 &1843995778
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6110,7 +6112,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter text...
+  m_Text: Please select a Room
 --- !u!222 &2078099849
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6188,7 +6190,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter text...
+  m_Text: Password
 --- !u!222 &2112854136
 CanvasRenderer:
   m_ObjectHideFlags: 0

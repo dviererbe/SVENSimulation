@@ -60,10 +60,10 @@ namespace Assets.Scripts
         private bool _lecture = false;
 
         [SerializeField]
-        private float _minTemperature = 0.0f;
+        private float _minTemperature = 10.0f;
 
         [SerializeField]
-        private float _maxTemperature = 0.0f;
+        private float _maxTemperature = 30.0f;
 
         [SerializeField]
         private bool _dynamicSkalar = false;
@@ -549,11 +549,6 @@ namespace Assets.Scripts
             get => Instance._minTemperature;
             set
             {
-                if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(MinTemperatur), value, "An attempt was made to set the value to zero or an negative value.");
-                }
-
                 Instance._minTemperature = value;
             }
         }
@@ -569,11 +564,6 @@ namespace Assets.Scripts
             get => Instance._maxTemperature;
             set
             {
-                if (!IsValidSize())
-                {
-                    throw new ArgumentOutOfRangeException(nameof(MaxTemperatur), value, "An attempt was made to set the value to zero or an negative value.");
-                }
-
                 Instance._maxTemperature = value;
             }
         }
