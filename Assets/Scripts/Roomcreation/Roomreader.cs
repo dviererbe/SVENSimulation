@@ -38,7 +38,7 @@ namespace Assets.Scripts
             _xmlPath = xmlPath;
         }
 
-        public RoomObjects[] ReadRoom()
+        public RoomObject[] ReadRoom()
         {
 
             #if DEBUG_FILEREADER
@@ -78,46 +78,46 @@ namespace Assets.Scripts
             }
             #endregion
 
-            List<RoomObjects> roomobjects = new List<RoomObjects>();
+            List<RoomObject> roomobjects = new List<RoomObject>();
 
             #region Windows and Doors
 
             XmlNodeList windows = xmlRootNode.SelectNodes(PATHWINDOW);
-            roomobjects = readRoomobjects(roomobjects, windows, RoomObjects.RoomElement.WINDOW);
+            roomobjects = readRoomobjects(roomobjects, windows, RoomObject.RoomElement.WINDOW);
 
             XmlNodeList doors = xmlRootNode.SelectNodes(PATHDOOR);
-            roomobjects = readRoomobjects(roomobjects, doors, RoomObjects.RoomElement.DOOR);
+            roomobjects = readRoomobjects(roomobjects, doors, RoomObject.RoomElement.DOOR);
 
             #endregion
 
             #region furniture
 
             XmlNodeList chairs = xmlRootNode.SelectNodes(PATHCHAIR);
-            roomobjects = readRoomobjects(roomobjects, chairs, RoomObjects.RoomElement.CHAIR);
+            roomobjects = readRoomobjects(roomobjects, chairs, RoomObject.RoomElement.CHAIR);
 
             XmlNodeList tables = xmlRootNode.SelectNodes(PATHTABLE);
-            roomobjects = readRoomobjects(roomobjects, tables, RoomObjects.RoomElement.TABLE);
+            roomobjects = readRoomobjects(roomobjects, tables, RoomObject.RoomElement.TABLE);
 
             XmlNodeList heater = xmlRootNode.SelectNodes(PATHHEATER);
-            roomobjects = readRoomobjects(roomobjects, heater, RoomObjects.RoomElement.HEATER);
+            roomobjects = readRoomobjects(roomobjects, heater, RoomObject.RoomElement.HEATER);
 
             XmlNodeList closet = xmlRootNode.SelectNodes(PATHCLOSET);
-            roomobjects = readRoomobjects(roomobjects, closet, RoomObjects.RoomElement.CLOSET);
+            roomobjects = readRoomobjects(roomobjects, closet, RoomObject.RoomElement.CLOSET);
 
             #endregion
 
-            return roomobjects.Count == 0 ? new RoomObjects[0] : roomobjects.ToArray();
+            return roomobjects.Count == 0 ? new RoomObject[0] : roomobjects.ToArray();
 
         }
 
         
-        private List<RoomObjects> readRoomobjects(List<RoomObjects> roomobjects, XmlNodeList elementList, RoomObjects.RoomElement type)
+        private List<RoomObject> readRoomobjects(List<RoomObject> roomobjects, XmlNodeList elementList, RoomObject.RoomElement type)
         {
             if(elementList != null)
             {
                 foreach(XmlNode element in elementList)
                 {
-                    RoomObjects newobject = new RoomObjects();
+                    RoomObject newobject = new RoomObject();
                     newobject.Element = type;
 
                     XmlNode pos = element.SelectSingleNode(PATHHEIGHT);
@@ -133,7 +133,7 @@ namespace Assets.Scripts
                     newobject.Type = pos.InnerText;
 
                     pos = element.SelectSingleNode(PATHFEHMNAME);
-                    newobject.NameFHEM = pos.InnerText;
+                    newobject.FhemName = pos.InnerText;
 
                     pos = element.SelectSingleNode(PATHSIZEHEIGHT);
                     newobject.Sizeheight = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);

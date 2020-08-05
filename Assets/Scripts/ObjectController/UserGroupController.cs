@@ -14,12 +14,12 @@ namespace Assets.Scripts.Simulation
     {
         Pause,
         Lecture,
-        Nothing
+        None
     }
 
     public interface ILectureStateProvider
     {
-        LectureState State { get; }
+        LectureState LectureState { get; }
     }
 
     public class LsfLectureStateProvider
@@ -35,9 +35,7 @@ namespace Assets.Scripts.Simulation
             _lsfInterface = lsfInterface;
         }
 
-
-
-        public LectureState State
+        public LectureState LectureState
         {
             get
             {
@@ -70,9 +68,11 @@ namespace Assets.Scripts.Simulation
 
         private List<UserController> _users;
 
+        private ILectureStateProvider lectureState;
+
         public IReadOnlyList<UserController> Users => _users;
 
-        public UserGroupState GroupState { get; private set; } = UserGroupState.Pause;
+        public LectureState LectureState { get; private set; } = LectureState.None;
 
         public void CreateUsers(RoomThermalManagerBuilder builder)
         {
@@ -102,6 +102,8 @@ namespace Assets.Scripts.Simulation
 
         void Update()
         {
+
+
             GroupState = !OptionsManager.Lecture ? UserGroupState.Lecture : UserGroupState.Pause;
         }
     }

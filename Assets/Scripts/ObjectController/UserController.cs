@@ -17,6 +17,7 @@ public class UserController : MonoBehaviour, IThermalObject
     public enum UserState
     {
         Unknown,
+        LeavingRoom,
         SearchingSeat,
         Listening,
         Lecturing,
@@ -24,8 +25,8 @@ public class UserController : MonoBehaviour, IThermalObject
         Moving,
         OpeningWindow,
         ClosingWindow,
-        TurningUpTheHeater,
-        TurningDownTheHeater,
+        TurningUpHeater,
+        TurningDownHeater,
     }
 
     private bool _initialized = false;
@@ -164,13 +165,50 @@ public class UserController : MonoBehaviour, IThermalObject
         _normalizedMaxOkTemperature = Random.value;
 
         _rigidbody = GetComponent<Rigidbody2D>();
+    }
 
-        _rigidbody
+    private void UpdateTemperatureFeeling(Temperature? temperature)
+    {
+        if (temperature.HasValue)
+        {
+            if (temperature > MaxOkTemperature)
+            {
+                IsSweating = true;
+                IsFreezing = false;
+            }
+            else if (temperature < MinOkTemperature)
+            {
+                IsSweating = false;
+                IsFreezing = true;
+            }
+            else
+            {
+                IsSweating = false;
+                IsFreezing = false;
+            }
+
+        }
+        else
+        {
+            IsFreezing = false;
+            IsSweating = false;
+        }
+    }
+
+    void FollowPath()
+    {
+
     }
 
     void Update()
     {
         Temperature? temperature = RoomThermalManager?.GetTemperature(_rigidbody.position).ToCelsius();
+
+        UpdateTemperatureFeeling(temperature);
+
+        if (UserGroupController)
+
+
 
         switch (UserGroupController.GroupState)
         {
@@ -222,30 +260,7 @@ public class UserController : MonoBehaviour, IThermalObject
             State = UserState.Unknown;
         }
 
-        if (temperature.HasValue)
-        {
-            if (temperature > MaxOkTemperature)
-            {
-                IsSweating = true;
-                IsFreezing = false;
-            }
-            else if (temperature < MinOkTemperature)
-            {
-                IsSweating = false;
-                IsFreezing = true;
-            }
-            else
-            {
-                IsSweating = false;
-                IsFreezing = false;
-            }
-
-        }
-        else
-        {
-            IsFreezing = false;
-            IsSweating = false;
-        }
+        
 
         string sweatingText = IsSweating ? "[Sweating]" : string.Empty;
         string freezingText = IsFreezing ? "[Freezing]" : string.Empty;

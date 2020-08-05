@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Remote
 {
-    class RemoteTablet : RemoteObject
+    public class RemoteTablet : RemoteObject
     {
         public RemoteTablet(IServerConnection remoteConnection, string deviceName)
             : base(remoteConnection, deviceName)

@@ -313,6 +313,38 @@ namespace Assets.Scripts.Simulation
             }
 
             /// <summary>
+            /// Removes a <see cref="IThermalObject"/> from the thermal simulation of the <see cref="Room"/>.
+            /// </summary>
+            /// <param name="thermalObject">
+            /// The <see cref="IThermalObject"/> that should be removed.
+            /// </param>
+            public void RemoveThermalObject(IThermalObject thermalObject)
+            {
+                if (thermalObject == null)
+                    return;
+
+                lock (_thermalUpdateLock)
+                {
+                    if (thermalObject.CanNotChangePosition)
+                    {
+                        if (!_stationaryThermalObjects.Contains(thermalObject))
+                            return;
+
+                        _stationaryThermalObjects.Remove(thermalObject);
+                        CalculateThermalPixels(_thermalPixelSize, this);
+                    }
+                    else
+                    {
+                        if (!_movableThermalObjects.Contains(thermalObject))
+                            return;
+
+                        _movableThermalObjects.Remove(thermalObject);
+                        _surfaceAreaPerThermalPixelOfThermalObject.Remove(thermalObject);
+                    }
+                }
+            }
+
+            /// <summary>
             /// Gets the <see cref="Temperature"/> at a certain <paramref name="position"/> in the room.
             /// </summary>
             /// <param name="position">

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Pathfinding
 {
-    public sealed class Graph
+    public class Graph
     {
         private sealed class MutableVertex : Vertex
         {
@@ -115,7 +115,7 @@ namespace Assets.Scripts.Pathfinding
             }
         }
 
-        public void AddSqaureObject( RoomObjects obj)
+        public void AddSqaureObject( RoomObject obj)
         {
             #region Offset zu den Node ermitteln
 

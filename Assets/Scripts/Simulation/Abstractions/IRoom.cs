@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Scripts.Pathfinding;
+﻿using Assets.Scripts.Roomcreation;
 using UnityEngine;
 
 namespace Assets.Scripts.Simulation.Abstractions
 {
-    public interface IRoom
+    public interface IRoom : ILectureStateProvider
     {
         /// <summary>
         /// Gets the dimensional extent of the <see cref="IRoom"/> in meter (without the wall).
@@ -34,6 +29,6 @@ namespace Assets.Scripts.Simulation.Abstractions
         /// </remarks>
         float WallThickness { get; }
 
-        Graph RoomGraph { get; }
+        RoomGraph RoomGraph { get; }
     }
 }
