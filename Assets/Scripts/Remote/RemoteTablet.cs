@@ -7,37 +7,36 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts.Remote
 {
-    public class RemoteTablet : RemoteObject
+    class RemoteTablet 
     {
-        public RemoteTablet(IServerConnection remoteConnection, string deviceName)
-            : base(remoteConnection, deviceName)
+        private RemoteTargetTemperature _remoteTargetTemperature;
+        private RemoteWindow _remoteWindow;
+
+        public RemoteTablet(RemoteTargetTemperature remoteTargetTemperature, RemoteWindow remoteWindow)
         {
+            _remoteTargetTemperature = remoteTargetTemperature;
+            _remoteWindow = remoteWindow;
         }
 
-        /// <summary>
-        /// Loads the state of the heater
-        /// </summary>
-        /// <returns>
-        /// float as % of opening of the heater
-        /// </returns>
-        public float GetState()
+        public float getTargetTemperature()
         {
-            string serverResult = GetAttribute("state");
-
-            if (float.TryParse(serverResult, out float value))
-            {
-                if (!float.IsNaN(value) && !float.IsInfinity(value))
-                {
-                    return value;
-                }
-            }
-
-            throw new Exception("Retrieved invalid value from remote connection.");
+            return _remoteTargetTemperature.GetState();
         }
 
-        public void SetState(float value)
+        public void setTargetTemperatur(float value)
         {
-            SetAttribute("state", value.ToString());
+            _remoteTargetTemperature.SetState(value);
         }
+
+        public bool getWindowPosition()
+        {
+            return _remoteWindow.GetState();
+        }
+
+        public void setWindowPosition(bool value)
+        {
+            _remoteWindow.SetState(value);
+        }
+
     }
 }

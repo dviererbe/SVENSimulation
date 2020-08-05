@@ -5,16 +5,24 @@ namespace Assets.Scripts.Remote.Abstractions
     {
         protected RemoteObject(IServerConnection remoteConnection, string deviceName)
         {
-            DeviceName = deviceName;
+            GetDeviceName = SetDeviceName = deviceName;
             RemoteConnection = remoteConnection;
         }
 
-        public string DeviceName { get; }
+        protected RemoteObject(IServerConnection remoteConnection, string getdeviceName, string setDeviceName)
+        {
+            GetDeviceName = getdeviceName;
+            SetDeviceName = setDeviceName;
+            RemoteConnection = remoteConnection;
+        }
+
+        public string GetDeviceName { get; }
+        public string SetDeviceName { get; }
 
         protected IServerConnection RemoteConnection { get; }
 
-        public string GetAttribute(string attribute) => RemoteConnection.ExecuteCommand(DeviceName, attribute, null, CommandList.Get);
+        public string GetAttribute(string attribute) => RemoteConnection.ExecuteCommand(GetDeviceName, attribute, null, CommandList.Get);
 
-        public void SetAttribute(string attribute, string value) => RemoteConnection.ExecuteCommand(DeviceName, attribute, value, CommandList.Get);
+        public void SetAttribute(string attribute, string value) => RemoteConnection.ExecuteCommand(SetDeviceName, attribute, value, CommandList.Get);
     }
 }

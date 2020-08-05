@@ -15,6 +15,8 @@ namespace Assets.Scripts
         private const string PATHTABLE = "/Roomplan/Furniture/Table";
         private const string PATHHEATER = "/Roomplan/Furniture/Heater";
         private const string PATHCLOSET = "/Roomplan/Furniture/Closet";
+        private const string PATHTABLET = "/Roomplan/Furniture/Tablet";
+        private const string PATHTHERMOMETER = "/Roomplan/Furniture/Thermometer";
 
         private const string PATHROOMHEIGTH = "/Roomplan/Room/Height";
         private const string PATHROOMWIDTH = "/Roomplan/Room/Width";
@@ -29,7 +31,8 @@ namespace Assets.Scripts
         private const string PATHSIZEHEIGHT= "./Size/Height";
         private const string PATHSIZEWIDTH= "./Size/Width";
         private const string PATHTYPE= "./Type";
-        private const string PATHFEHMNAME = "./FHEM-Name";
+        private const string PATHGETFEHMNAME = "./FHEM-Name-Get";
+        private const string PATHSETFEHMNAME = "./FHEM-Name-Set";
 
         private string _xmlPath;
 
@@ -104,6 +107,12 @@ namespace Assets.Scripts
             XmlNodeList closet = xmlRootNode.SelectNodes(PATHCLOSET);
             roomobjects = readRoomobjects(roomobjects, closet, RoomObject.RoomElement.CLOSET);
 
+            XmlNodeList tablet = xmlRootNode.SelectNodes(PATHTABLET);
+            roomobjects = readRoomobjects(roomobjects, tablet, RoomObject.RoomElement.TABLET);
+
+            XmlNodeList thermometer = xmlRootNode.SelectNodes(PATHTHERMOMETER);
+            roomobjects = readRoomobjects(roomobjects, thermometer, RoomObject.RoomElement.THERMOMETER);
+
             #endregion
 
             return roomobjects.Count == 0 ? new RoomObject[0] : roomobjects.ToArray();
@@ -132,8 +141,11 @@ namespace Assets.Scripts
                     pos = element.SelectSingleNode(PATHTYPE);
                     newobject.Type = pos.InnerText;
 
-                    pos = element.SelectSingleNode(PATHFEHMNAME);
-                    newobject.FhemName = pos.InnerText;
+                    pos = element.SelectSingleNode(PATHGETFEHMNAME);
+                    newobject.FhemGetName = pos.InnerText;
+
+                    pos = element.SelectSingleNode(PATHSETFEHMNAME);
+                    newobject.FhemSetName = pos.InnerText;
 
                     pos = element.SelectSingleNode(PATHSIZEHEIGHT);
                     newobject.Sizeheight = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);

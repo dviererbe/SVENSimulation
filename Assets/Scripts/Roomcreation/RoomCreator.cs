@@ -254,12 +254,6 @@ public class RoomCreator : MonoBehaviour, IRoom
         //Build and start Thermal Manager
         _roomThermalManager = thermalManagerBuilder.Build();
         _roomThermalManager.Start();
-
-        #region Thermometer
-
-        
-
-        #endregion
     }
 
     private void InstatiateRoomGameObject(RoomObject roomObject, IServerConnection serverConnection,
@@ -296,7 +290,10 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private void InstatiateTabletGameObject(RoomObject roomObject, IServerConnection serverConnection)
     {
-        RemoteTablet remoteTablet = new RemoteTablet(serverConnection, roomObject.FhemName);
+        RemoteTargetTemperature remoteTargetTemperature = new RemoteTargetTemperature(serverConnection, roomObject.FhemGetName, roomObject.FhemSetName);
+        RemoteWindow remoteWindow = new RemoteWindow(serverConnection, "Sven_FensterManager_Sim", "Fensterkontakt_Sim");
+
+        RemoteTablet remoteTablet = new RemoteTablet(remoteTargetTemperature, remoteWindow);
         
         _roomGraph.AddTablet(
             position: new Vector2(roomObject.PositionX, roomObject.PositionY),
@@ -305,14 +302,14 @@ public class RoomCreator : MonoBehaviour, IRoom
 
     private void InstatiateThermometerGameObject(RoomObject roomObject, IServerConnection serverConnection)
     {
+        RemoteThermometer remoteThermometer = new RemoteThermometer(serverConnection, roomObject.FhemGetName, roomObject.FhemSetName);
+
         GameObject thermometerObject = Instantiate(_thermometerPrefab);
         thermometerObject.transform.parent = gameObject.transform;
         ThermometerController thermometerController = thermometerObject.GetComponent<ThermometerController>();
         thermometerController.RoomThermalManager = _roomThermalManager;
-        thermometerController.RemoteThermometer = new RemoteThermometer(serverConnection, "thermometer");
+        thermometerController.RemoteThermometer = remoteThermometer;
         thermometerController.Position = new Vector3(1, 1);
-
-        RemoteThermometer remoteThermometer = new RemoteThermometer(serverConnection, roomObject.FhemName);
     }
 
     private void InstantiateWindowGameObject(RoomObject roomObject, RoomThermalManagerBuilder thermalManagerBuilder,
@@ -330,7 +327,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         Vector2 windowVertexPosition = window.GetComponentInChildren<GameObject>().transform.position;
         
         _roomGraph.AddVertex(windowVertexPosition);
-        RemoteWindow remoteWindow = new RemoteWindow(serverConnection, roomObject.FhemName);
+        RemoteWindow remoteWindow = new RemoteWindow(serverConnection, roomObject.FhemGetName, roomObject.FhemSetName);
 
         Transform(window, roomObject);
     }
@@ -370,7 +367,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                 y: (WallThickness + roomObject.PositionY) + 0.5f),
             rotation: _tablePrefab.transform.rotation);
 
-        RemoteHeater remoteHeater = new RemoteHeater(serverConnection, roomObject.FhemName);
+        RemoteHeater remoteHeater = new RemoteHeater(serverConnection, roomObject.FhemGetName, roomObject.FhemSetName);
 
         _roomGraph.AddVertex(heater.transform.position);
 

@@ -14,9 +14,14 @@ namespace Assets.Scripts.Remote
         {
         }
 
+        public RemoteWindow(IServerConnection remoteConnection, string getDeviceName, string setDeviceName)
+           : base(remoteConnection, getDeviceName, setDeviceName)
+        {
+        }
+
         public bool GetState()
         {
-            string serverResult = GetAttribute("state");
+            string serverResult = GetAttribute("status");
 
             if (bool.TryParse(serverResult, out bool value))
             {
@@ -28,7 +33,7 @@ namespace Assets.Scripts.Remote
 
         public void SetState(bool value)
         {
-            SetAttribute("state", value.ToString());
+            SetAttribute("Open/Close", value.ToString());
         }
     }
 }

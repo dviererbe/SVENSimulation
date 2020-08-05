@@ -15,9 +15,14 @@ namespace Assets.Scripts.Remote
         {
         }
 
+        public RemoteThermometer(IServerConnection remoteConnection, string getDeviceName, string setDeviceName)
+           : base(remoteConnection, getDeviceName, setDeviceName)
+        {
+        }
+
         public float GetState()
         {
-            string serverResult = GetAttribute("state");
+            string serverResult = GetAttribute("temp");
 
             if (float.TryParse(serverResult, out float value))
             {
@@ -27,14 +32,12 @@ namespace Assets.Scripts.Remote
                 }
             }
 
-            return 20.0f;
-
-            //throw new Exception("Retrieved invalid value from remote connection.");
+            throw new Exception("Retrieved invalid value from remote connection.");
         }
 
         public void SetState(float value)
         {
-            SetAttribute("state", value.ToString());
+            SetAttribute("temperature", value.ToString());
         }
     }
 }

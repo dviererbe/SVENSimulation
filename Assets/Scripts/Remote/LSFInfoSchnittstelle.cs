@@ -29,7 +29,7 @@ namespace Assets.Scripts.Remote
         
         public void GetStates(out bool lecture, out bool isBreak, out DateTime? nextBreak)
         {
-            string data = RemoteConnection.ExecuteCommand(DeviceName, null, null, CommandList.List);
+            string data = RemoteConnection.ExecuteCommand(GetDeviceName, null, null, CommandList.List);
 
             lecture = false;
             isBreak = false;

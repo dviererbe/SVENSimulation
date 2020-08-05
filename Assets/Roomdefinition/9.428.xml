@@ -20,7 +20,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -33,7 +34,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -46,7 +48,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -59,7 +62,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -72,7 +76,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -85,7 +90,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -98,7 +104,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -111,7 +118,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -124,7 +132,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -137,7 +146,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -150,7 +160,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -163,7 +174,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -176,7 +188,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -189,7 +202,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -202,7 +216,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -215,7 +230,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -228,7 +244,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -241,7 +258,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -254,7 +272,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -267,7 +286,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -280,7 +300,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -293,7 +314,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -306,7 +328,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -319,7 +342,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -332,7 +356,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -345,7 +370,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -358,7 +384,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -371,7 +398,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -384,7 +412,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -397,7 +426,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -410,7 +440,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -423,7 +454,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Normal</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Chair>
             <Position>
@@ -436,7 +468,8 @@
             </Size>
             <Rotation>180</Rotation>
             <Type>Dozent</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Chair>
         <Table>
             <Position>
@@ -449,7 +482,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -462,7 +496,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -475,7 +510,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -488,7 +524,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -501,7 +538,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -514,7 +552,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -527,7 +566,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -540,7 +580,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -553,7 +594,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -566,7 +608,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -579,7 +622,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -592,7 +636,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -605,7 +650,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Blank</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -618,7 +664,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Blank</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -631,7 +678,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -644,7 +692,8 @@
             </Size>
             <Rotation>-90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -657,7 +706,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -670,7 +720,8 @@
             </Size>
             <Rotation>90</Rotation>
             <Type>Student</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Table>
             <Position>
@@ -683,7 +734,8 @@
             </Size>
             <Rotation>180</Rotation>
             <Type>Dozent</Type>
-            <FHEM-Name>null</FHEM-Name>
+          <FHEM-Name-Get>null</FHEM-Name-Get>
+          <FHEM-Name-Set>null</FHEM-Name-Set>
         </Table>
         <Heater>
             <Position>
@@ -696,7 +748,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Default</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>Sven_TemperaturManager_Sim</FHEM-Name-Get>
+            <FHEM-Name-Set>null</FHEM-Name-Set>
         </Heater>
         <Tablet>
             <Position>
@@ -709,7 +762,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Default</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>Sven_TemperaturManager_Sim</FHEM-Name-Get>
+            <FHEM-Name-Set>Sven_TemperaturManager_Sim</FHEM-Name-Set>
         </Tablet>
         <Thermometer>
             <Position>
@@ -722,7 +776,8 @@
             </Size>
             <Rotation>0</Rotation>
             <Type>Default</Type>
-            <FHEM-Name>null</FHEM-Name>
+            <FHEM-Name-Get>Sven_TemperaturManager_Sim</FHEM-Name-Get>
+            <FHEM-Name-Set>Thermometer_Sim</FHEM-Name-Set>
         </Thermometer>
     </Furniture>
 </Roomplan>
