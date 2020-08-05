@@ -23,7 +23,8 @@ namespace Assets.Scripts.Roomcreation
         private RoomElement _roomElement;
         private float _sizeheight;
         private float _sizewidth;
-        private string _nameFHEM;
+        private string _getNameFHEM;
+        private string _setNameFHEM;
 
         public string Type
         {
@@ -74,10 +75,16 @@ namespace Assets.Scripts.Roomcreation
             }
         }
 
-        public string NameFHEM
+        public string GetNameFHEM
         {
-            get { return _nameFHEM; }
-            set { _nameFHEM = value; }
+            get { return _getNameFHEM; }
+            set { _getNameFHEM = value; }
+        }
+
+        public string SetNameFHEM
+        {
+            get { return _setNameFHEM; }
+            set { _setNameFHEM = value; }
         }
     }
 }

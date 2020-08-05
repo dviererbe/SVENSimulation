@@ -1,24 +1,24 @@
-﻿ using Assets.Scripts.Remote.Abstractions;
+﻿using Assets.Scripts.Remote.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Assets.Scripts.Remote
 {
-    public class RemoteHeater : RemoteObject
+    class RemoteTargetTemperature : RemoteObject
     {
-        public RemoteHeater(IServerConnection remoteConnection, string deviceName)
+        public RemoteTargetTemperature(IServerConnection remoteConnection, string deviceName)
             : base(remoteConnection, deviceName)
         {
         }
 
-        public RemoteHeater(IServerConnection remoteConnection, string getDeviceName, string setDeviceName)
-           : base(remoteConnection, getDeviceName, setDeviceName)
+        public RemoteTargetTemperature(IServerConnection remoteConnection, string getDeviceName, string setDeviceName)
+            :base(remoteConnection, getDeviceName, setDeviceName)
         {
         }
+
         /// <summary>
         /// Loads the state of the heater
         /// </summary>
@@ -27,7 +27,7 @@ namespace Assets.Scripts.Remote
         /// </returns>
         public float GetState()
         {
-            string serverResult = GetAttribute("ventil");
+            string serverResult = GetAttribute("sollTemp");
 
             if (float.TryParse(serverResult, out float value))
             {
@@ -42,7 +42,7 @@ namespace Assets.Scripts.Remote
 
         public void SetState(float value)
         {
-            SetAttribute("ventil", value.ToString());
+            SetAttribute("sollTemp", value.ToString());
         }
     }
 }

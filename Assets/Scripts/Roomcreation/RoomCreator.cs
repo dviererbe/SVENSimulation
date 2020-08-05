@@ -297,6 +297,7 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         #region RoomObjects Creator
 
+        
         foreach (RoomObjects roomObjektNewRoomObjekt in roomObjects)
         {
             GameObject gameObjektNewRoomObject = null;
@@ -341,7 +342,7 @@ public class RoomCreator : MonoBehaviour, IRoom
                                     y: (WallThickness + roomObjektNewRoomObjekt.PositionY) + 0.5f),
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
-                RemoteHeater remoteHeater = new RemoteHeater(serverConnection, roomObjektNewRoomObjekt.NameFHEM);
+                RemoteHeater remoteHeater = new RemoteHeater(serverConnection, roomObjektNewRoomObjekt.GetNameFHEM, roomObjektNewRoomObjekt.SetNameFHEM);
                 _heaterList.Add(new Tuple<GameObject, Vertex, RemoteHeater>(gameObjektNewRoomObject, _roomGraph.AddVertex(gameObjektNewRoomObject.transform.position), remoteHeater));
                 //thermalManagerBuilder.AddThermalObject(roomObject.GetComponent<HeaterController>());
                 _roomGraph.AddVertex((Vector2)gameObjektNewRoomObject.transform.position);
@@ -378,18 +379,20 @@ public class RoomCreator : MonoBehaviour, IRoom
                                 rotation: _tablePrefab.transform.rotation);
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 thermalManagerBuilder.AddThermalObject(gameObjektNewRoomObject.GetComponent<WindowController>());
-                RemoteWindow remoteWindow = new RemoteWindow(serverConnection, roomObjektNewRoomObjekt.NameFHEM);
+                RemoteWindow remoteWindow = new RemoteWindow(serverConnection, roomObjektNewRoomObjekt.GetNameFHEM, roomObjektNewRoomObjekt.SetNameFHEM);
                 _windowList.Add(new Tuple<GameObject, Vertex, RemoteWindow>(gameObjektNewRoomObject, 
                     _roomGraph.AddVertex(gameObjektNewRoomObject.GetComponentInChildren<GameObject>().transform.position), remoteWindow));
             }
             else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.TABLET)
             {
                 _tabletList.Add(new Tuple<Vertex, RemoteTablet>(_roomGraph.AddVertex(new Vector2(roomObjektNewRoomObjekt.PositionX, roomObjektNewRoomObjekt.PositionY)), 
-                    new RemoteTablet(serverConnection, roomObjektNewRoomObjekt.NameFHEM)));
+                    new RemoteTablet(new RemoteTargetTemperature(serverConnection, roomObjektNewRoomObjekt.GetNameFHEM, roomObjektNewRoomObjekt.SetNameFHEM),
+                    new RemoteWindow(serverConnection, "Sven_FensterManager_Sim", "Fensterkontakt_Sim"))));
             }
             else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.THERMOMETER)
             {
-                _remoteThermometers.Add(new Tuple<Vector2, RemoteThermometer>(new Vector2(roomObjektNewRoomObjekt.PositionX, roomObjektNewRoomObjekt.PositionY), new RemoteThermometer(serverConnection, roomObjektNewRoomObjekt.NameFHEM)));
+                _remoteThermometers.Add(new Tuple<Vector2, RemoteThermometer>(new Vector2(roomObjektNewRoomObjekt.PositionX, roomObjektNewRoomObjekt.PositionY), 
+                    new RemoteThermometer(serverConnection, roomObjektNewRoomObjekt.GetNameFHEM, roomObjektNewRoomObjekt.SetNameFHEM)));
             }
 
             if (gameObjektNewRoomObject != null)
@@ -402,7 +405,6 @@ public class RoomCreator : MonoBehaviour, IRoom
                 gameObjektNewRoomObject.transform.localScale = objectsize;
 
             }
-
         }
 
         _roomGraph.MeshGraph();
@@ -419,7 +421,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         thermometerObject.transform.parent = gameObject.transform;
         ThermometerController thermometerController = thermometerObject.GetComponent<ThermometerController>();
         thermometerController.RoomThermalManager = _roomThermalManager;
-        thermometerController.RemoteThermometer = new RemoteThermometer(serverConnection, "thermometer");
+        thermometerController.RemoteThermometer = _remoteThermometers[0].Item2;
         thermometerController.Position = new Vector3(1, 1);
 
         #endregion
