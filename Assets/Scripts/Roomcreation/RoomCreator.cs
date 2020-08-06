@@ -139,11 +139,8 @@ public class RoomCreator : MonoBehaviour, IRoom
         #endregion
 
         IServerConnection serverConnection = ServerConnectionFactory.CreateServerConnection(OptionsManager.Username, OptionsManager.Password, OptionsManager.ServerAddress, OptionsManager.RequiresAuthentication);
-<<<<<<< HEAD
-        _lsfInfoSchnittstelle = new LSFInfoSchnittstelle(serverConnection, "LSF_Info_Sim");
-=======
-        _lsfInfoSchnittstelle = new LsfInfoSchnittstelle(serverConnection, "Der Name fehlt noch!!");
->>>>>>> 1f4c02e63a8a6a4601335bd4a80b9d0a54c3d183
+
+        _lsfInfoSchnittstelle = new LsfInfoSchnittstelle(serverConnection, "LSF_Info_Sim");
 
         #region ThermalManager
 
@@ -253,8 +250,6 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         _roomGraph.MeshGraph();
         #endregion
-
-        #region Thermometer
 
         //Build and start Thermal Manager
         _roomThermalManager = thermalManagerBuilder.Build();
@@ -423,12 +418,10 @@ public class RoomCreator : MonoBehaviour, IRoom
 
         thermalManagerBuilder.AddThermalObject(windowController);
 
-        Vector2 windowVertexPosition = window.GetComponentInChildren<GameObject>().transform.position;
+        Vector2 windowVertexPosition = window.transform.position;
         
         _roomGraph.AddVertex(windowVertexPosition);
         
-
-
         Transform(window, roomObject);
     }
 
