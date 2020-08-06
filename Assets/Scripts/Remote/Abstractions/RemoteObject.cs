@@ -1,17 +1,18 @@
 ﻿
+using System;
+
 namespace Assets.Scripts.Remote.Abstractions
 {
     public abstract class RemoteObject
     {
         protected RemoteObject(IServerConnection remoteConnection, string deviceName)
+            : this (remoteConnection, deviceName, deviceName)
         {
-            GetDeviceName = SetDeviceName = deviceName;
-            RemoteConnection = remoteConnection;
         }
 
-        protected RemoteObject(IServerConnection remoteConnection, string getdeviceName, string setDeviceName)
+        protected RemoteObject(IServerConnection remoteConnection, string getDeviceName, string setDeviceName)
         {
-            GetDeviceName = getdeviceName;
+            GetDeviceName = getDeviceName;
             SetDeviceName = setDeviceName;
             RemoteConnection = remoteConnection;
         }

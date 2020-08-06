@@ -1,16 +1,9 @@
-﻿using Assets.Scripts.Remote.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Assets.Scripts.Remote
+﻿namespace Assets.Scripts.Remote
 {
-    class RemoteTablet 
+    public class RemoteTablet 
     {
-        private RemoteTargetTemperature _remoteTargetTemperature;
-        private RemoteWindow _remoteWindow;
+        private readonly RemoteTargetTemperature _remoteTargetTemperature;
+        private readonly RemoteWindow _remoteWindow;
 
         public RemoteTablet(RemoteTargetTemperature remoteTargetTemperature, RemoteWindow remoteWindow)
         {
@@ -18,22 +11,22 @@ namespace Assets.Scripts.Remote
             _remoteWindow = remoteWindow;
         }
 
-        public float getTargetTemperature()
+        public float GetTargetTemperature()
         {
             return _remoteTargetTemperature.GetState();
         }
 
-        public void setTargetTemperatur(float value)
+        public void SetTargetTemperatur(float value)
         {
             _remoteTargetTemperature.SetState(value);
         }
 
-        public bool getWindowPosition()
+        public bool GetWindowPosition()
         {
             return _remoteWindow.GetState();
         }
 
-        public void setWindowPosition(bool value)
+        public void SetWindowPosition(bool value)
         {
             _remoteWindow.SetState(value);
         }

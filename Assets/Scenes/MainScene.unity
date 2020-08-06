@@ -5552,7 +5552,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _textContainer: {fileID: 538180407}
-  _toggleVorlesung: {fileID: 0}
   _regulators: {fileID: 1611934696}
   _minmizeRegulators_Button: {fileID: 913017420}
   _maximizeRegulators_Button: {fileID: 207414075}
@@ -6544,7 +6543,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1404804899}
   m_Direction: 2
   m_Value: 0.96462905
-  m_Size: 0.438884
+  m_Size: 0.43888402
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10791,7 +10790,7 @@ MonoBehaviour:
   _upperMinOkUserTemperatur: 0
   _lowerMaxOkUserTemperatur: 0
   _lowerMinOkUserTemperatur: 0
-  _probailityOfUserStandingUpInPause: 0
+  _probailityOfUserStandingUpInPause: 0.5
   _roomFile: .\Assets\Roomdefinition\9.428.xml
   _vertexObjectOffSet: 0
   _wallVertexDistance: 0

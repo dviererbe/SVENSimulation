@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Xml;
 using Assets.Scripts;
 using Assets.Scripts.Pathfinding;
+using Assets.Scripts.Remote;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
 public class UserController : MonoBehaviour, IThermalObject
@@ -18,7 +22,7 @@ public class UserController : MonoBehaviour, IThermalObject
     {
         Unknown,
         LeavingRoom,
-        SearchingSeat,
+        GoToSeat,
         Listening,
         Lecturing,
         Idle,
@@ -29,7 +33,16 @@ public class UserController : MonoBehaviour, IThermalObject
         TurningDownHeater,
     }
 
+    public event Action<UserController> Destroyed;
+
     private bool _initialized = false;
+
+    private Vertex _lastVertex;
+    private Vertex _nextVertex;
+    private Path _currentPath = null;
+
+    private Vertex _seat;
+    private (Vertex Vertex, RemoteTablet RemoteTablet) _tablet;
 
     [SerializeField]
     private TextMesh _userStateTextMesh;
@@ -121,7 +134,7 @@ public class UserController : MonoBehaviour, IThermalObject
     /// </summary>
     public Temperature Temperature => Temperature.FromCelsius(32f);
 
-    public void Initialize(UserGroupController userGroupController, UserRole role)
+    public void Initialize(UserGroupController userGroupController, UserRole role, Vertex userSeat)
     {
         if (_initialized)
             throw new InvalidOperationException("User was already initialized!");
@@ -130,6 +143,8 @@ public class UserController : MonoBehaviour, IThermalObject
 
         UserGroupController = userGroupController;
         Role = role;
+
+        _seat = userSeat;
     }
 
     /// <summary>
@@ -165,6 +180,176 @@ public class UserController : MonoBehaviour, IThermalObject
         _normalizedMaxOkTemperature = Random.value;
 
         _rigidbody = GetComponent<Rigidbody2D>();
+
+        Vertex doorVertex = GetRandomDoorVertex();
+        _lastVertex = _nextVertex = doorVertex;
+
+        _tablet = RoomThermalManager.Room.RoomGraph.Tablets[0];
+    }
+
+    void Update()
+    {
+        Temperature? temperature = RoomThermalManager?.GetTemperature(_rigidbody.position).ToCelsius();
+
+        UpdateTemperatureFeeling(temperature);
+
+        LectureState lectureState = RoomThermalManager.Room.LectureState;
+
+        switch (lectureState)
+        {
+            case LectureState.Lecture:
+                ExecuteLectureStateBehaviour();
+                break;
+            case LectureState.Pause:
+                ExecutePauseStateBehaviour();
+                break;
+            case LectureState.None:
+                ExecuteNothingStateBehaviour();
+                break;
+            default:
+                throw new NotImplementedException();
+        }
+
+        UpdateUserStateCaption(temperature);
+    }
+
+    private void ExecuteLectureStateBehaviour()
+    {
+        if (State == UserState.Unknown ||
+            State == UserState.Idle || 
+            State == UserState.Moving)
+        {
+            GoToSeat();
+        }
+        else if (State == UserState.GoToSeat)
+        {
+            if (!FollowPath())
+            {
+                if (Role == UserRole.Lecturer)
+                    State = UserState.Lecturing;
+                else if (Role == UserRole.Student)
+                    State = UserState.Listening;
+            }
+        }
+        else if (State == UserState.Lecturing)
+        {
+            if (_currentPath == null)
+                SetTarget(GetRandomVertex());
+
+            FollowPath();
+        }
+    }
+
+    private void ExecutePauseStateBehaviour()
+    {
+        if (State == UserState.Unknown ||
+            State == UserState.Lecturing)
+        {
+            GoToSeat();
+        }
+        else if (State == UserState.GoToSeat)
+        {
+            if (!FollowPath())
+            {
+                if (Role == UserRole.Lecturer)
+                    State = UserState.Idle;
+                else if (Role == UserRole.Student)
+                    State = UserState.Moving;
+            }
+        }
+        else if (State == UserState.Listening)
+        {
+            State = UserState.Moving;
+        }
+        else if (State == UserState.Moving)
+        {
+            if (_currentPath == null)
+                SetTarget(GetRandomVertex());
+
+            FollowPath();
+        }
+    }
+
+    private void ExecuteNothingStateBehaviour()
+    {
+        LeaveRoom();
+
+        if (!FollowPath())
+        {
+            GameObject.Destroy(this);
+
+            if (Role == UserRole.Student)
+            {
+                UserGroupController.UnoccupySeat(_seat);
+            }
+
+            Destroyed?.Invoke(this);
+        }
+    }
+
+    public void LeaveRoom()
+    {
+        if (State != UserState.LeavingRoom)
+        {
+            UserGroupController.CancelGoToTabletRequest();
+            SetTarget(GetRandomDoorVertex());
+            State = UserState.LeavingRoom;
+        }
+    }
+
+    public void GoToSeat()
+    {
+        if (State != UserState.GoToSeat)
+        {
+            SetTarget(_seat);
+            State = UserState.GoToSeat;
+        }
+    }
+
+    private void SetTarget(Vertex vertex)
+    {
+        if (Graph.GetPathTo(_lastVertex, vertex, out Path path))
+        {
+            _currentPath = path;
+        }
+        else
+        {
+            _currentPath = null;
+        }
+    }
+
+    private bool FollowPath()
+    {
+        if (_currentPath == null)
+            return false;
+
+        float routeLength = UserSpeed * Time.deltaTime;
+
+        Vector2 currentPosition = transform.position;
+
+        while (routeLength > 0)
+        {
+            if (!_currentPath.TryGetNextVertex(out _nextVertex))
+            {
+                break;
+            }
+
+            float distanceToNextVertex = currentPosition.GetDistanceTo(_nextVertex.Position);
+
+            routeLength -= distanceToNextVertex;
+            currentPosition = _nextVertex.Position;
+            _lastVertex = _nextVertex;
+        }
+
+        _rigidbody.MovePosition(currentPosition);
+
+        if (_currentPath.HasNextVertex)
+        {
+            _currentPath = null;
+            return false;
+        }
+
+        return true;
     }
 
     private void UpdateTemperatureFeeling(Temperature? temperature)
@@ -186,7 +371,6 @@ public class UserController : MonoBehaviour, IThermalObject
                 IsSweating = false;
                 IsFreezing = false;
             }
-
         }
         else
         {
@@ -195,78 +379,25 @@ public class UserController : MonoBehaviour, IThermalObject
         }
     }
 
-    void FollowPath()
+    private void UpdateUserStateCaption(Temperature? temperature)
     {
-
-    }
-
-    void Update()
-    {
-        Temperature? temperature = RoomThermalManager?.GetTemperature(_rigidbody.position).ToCelsius();
-
-        UpdateTemperatureFeeling(temperature);
-
-        if (UserGroupController)
-
-
-
-        switch (UserGroupController.GroupState)
-        {
-            case UserGroupController.UserGroupState.Lecture:
-                break;
-            case UserGroupController.UserGroupState.Pause:
-                break;
-            case UserGroupController.UserGroupState.EndOfLecture:
-                break;
-        }
-
-
-
-        if (UserGroupController.GroupState == UserGroupController.UserGroupState.Lecture)
-        {
-            State = UserState.Idle;
-        }
-        else if (UserGroupController.GroupState == UserGroupController.UserGroupState.Pause)
-        {
-            State = UserState.Moving;
-
-            float random = Random.value;
-
-            if (random <= _probabilityOfChangingDirectionOnUpdate)
-            {
-                _direction = GetRandomDirection();
-            }
-
-            bool valueUnchanged = true;
-
-            do
-            {
-                Vector2 newPosition = CalculateNextPoint();
-
-                if (IsPointInRoom(newPosition))
-                {
-                    _rigidbody.position = newPosition;
-                    valueUnchanged = false;
-                }
-                else
-                {
-                    _direction = GetRandomDirection();
-                }
-            }
-            while (valueUnchanged);
-        }
-        else
-        {
-            State = UserState.Unknown;
-        }
-
-        
-
         string sweatingText = IsSweating ? "[Sweating]" : string.Empty;
         string freezingText = IsFreezing ? "[Freezing]" : string.Empty;
 
         _userStateTextMesh.text = $"{State} {sweatingText}{freezingText} ({temperature?.ToString() ?? "No Data"})";
     }
 
-    
+    private Vertex GetRandomDoorVertex()
+    {
+        IReadOnlyList<Vertex> doors = RoomThermalManager.Room.RoomGraph.Doors;
+
+        return doors[Random.Range(0, doors.Count)];
+    }
+
+    private Vertex GetRandomVertex()
+    {
+        IReadOnlyList<Vertex> vertices = RoomThermalManager.Room.RoomGraph.Vertices;
+
+        return vertices[Random.Range(0, vertices.Count)];
+    }
 }

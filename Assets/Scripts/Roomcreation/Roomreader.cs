@@ -1,6 +1,6 @@
 ﻿//#define DEBUG_FILEREADER
 
-using Assets.Scripts.Roomcreation;
+using Assets.Scripts.RoomCreation;
 using System.Collections.Generic;
 using System.Xml;
 using System.Globalization;
@@ -57,6 +57,7 @@ namespace Assets.Scripts
             #if DEBUG_FILEREADER
                 Debug.Log("Load File");
             #endif
+
             #region Room Options
             {
                 //read Roomsize
@@ -67,6 +68,7 @@ namespace Assets.Scripts
                 OptionsManager.RoomWidth = int.Parse(widthNode.InnerText);
 
                 XmlNode wallThickness = xmlRootNode.SelectSingleNode(PATHROOMWALLTHICKNESS);
+                
                 //CultureInfo.InvariantCulture wird benötigt, damit Zahlen, wie 0.5, nicht als 5 gelesen werden!
                 OptionsManager.WallThickness = float.Parse(wallThickness.InnerText, CultureInfo.InvariantCulture);
 
@@ -81,83 +83,83 @@ namespace Assets.Scripts
             }
             #endregion
 
-            List<RoomObject> roomobjects = new List<RoomObject>();
+            List<RoomObject> roomObjects = new List<RoomObject>();
 
             #region Windows and Doors
 
             XmlNodeList windows = xmlRootNode.SelectNodes(PATHWINDOW);
-            roomobjects = readRoomobjects(roomobjects, windows, RoomObject.RoomElement.WINDOW);
+            roomObjects = readRoomobjects(roomObjects, windows, RoomObject.RoomElement.Window);
 
             XmlNodeList doors = xmlRootNode.SelectNodes(PATHDOOR);
-            roomobjects = readRoomobjects(roomobjects, doors, RoomObject.RoomElement.DOOR);
+            roomObjects = readRoomobjects(roomObjects, doors, RoomObject.RoomElement.Door);
 
             #endregion
 
             #region furniture
 
             XmlNodeList chairs = xmlRootNode.SelectNodes(PATHCHAIR);
-            roomobjects = readRoomobjects(roomobjects, chairs, RoomObject.RoomElement.CHAIR);
+            roomObjects = readRoomobjects(roomObjects, chairs, RoomObject.RoomElement.Chair);
 
             XmlNodeList tables = xmlRootNode.SelectNodes(PATHTABLE);
-            roomobjects = readRoomobjects(roomobjects, tables, RoomObject.RoomElement.TABLE);
+            roomObjects = readRoomobjects(roomObjects, tables, RoomObject.RoomElement.Table);
 
             XmlNodeList heater = xmlRootNode.SelectNodes(PATHHEATER);
-            roomobjects = readRoomobjects(roomobjects, heater, RoomObject.RoomElement.HEATER);
+            roomObjects = readRoomobjects(roomObjects, heater, RoomObject.RoomElement.Heater);
 
             XmlNodeList closet = xmlRootNode.SelectNodes(PATHCLOSET);
-            roomobjects = readRoomobjects(roomobjects, closet, RoomObject.RoomElement.CLOSET);
+            roomObjects = readRoomobjects(roomObjects, closet, RoomObject.RoomElement.Closet);
 
             XmlNodeList tablet = xmlRootNode.SelectNodes(PATHTABLET);
-            roomobjects = readRoomobjects(roomobjects, tablet, RoomObject.RoomElement.TABLET);
+            roomObjects = readRoomobjects(roomObjects, tablet, RoomObject.RoomElement.Tablet);
 
             XmlNodeList thermometer = xmlRootNode.SelectNodes(PATHTHERMOMETER);
-            roomobjects = readRoomobjects(roomobjects, thermometer, RoomObject.RoomElement.THERMOMETER);
+            roomObjects = readRoomobjects(roomObjects, thermometer, RoomObject.RoomElement.Thermometer);
 
             #endregion
 
-            return roomobjects.Count == 0 ? new RoomObject[0] : roomobjects.ToArray();
+            return roomObjects.Count == 0 ? new RoomObject[0] : roomObjects.ToArray();
 
         }
 
         
-        private List<RoomObject> readRoomobjects(List<RoomObject> roomobjects, XmlNodeList elementList, RoomObject.RoomElement type)
+        private List<RoomObject> readRoomobjects(List<RoomObject> roomObjects, XmlNodeList elementList, RoomObject.RoomElement type)
         {
             if(elementList != null)
             {
                 foreach(XmlNode element in elementList)
                 {
-                    RoomObject newobject = new RoomObject();
-                    newobject.Element = type;
+                    RoomObject newRoomObject = new RoomObject();
+                    newRoomObject.Element = type;
 
                     XmlNode pos = element.SelectSingleNode(PATHHEIGHT);
-                    newobject.PositionY = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newRoomObject.PositionY = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHWIDTH);
-                    newobject.PositionX = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newRoomObject.PositionX = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHROTATION);
-                    newobject.Rotation = float.Parse(pos.InnerText);
+                    newRoomObject.Rotation = float.Parse(pos.InnerText);
 
                     pos = element.SelectSingleNode(PATHTYPE);
-                    newobject.Type = pos.InnerText;
+                    newRoomObject.Type = pos.InnerText;
 
                     pos = element.SelectSingleNode(PATHGETFEHMNAME);
-                    newobject.FhemGetName = pos.InnerText;
+                    newRoomObject.FhemGetName = pos.InnerText;
 
                     pos = element.SelectSingleNode(PATHSETFEHMNAME);
-                    newobject.FhemSetName = pos.InnerText;
+                    newRoomObject.FhemSetName = pos.InnerText;
 
                     pos = element.SelectSingleNode(PATHSIZEHEIGHT);
-                    newobject.Sizeheight = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newRoomObject.SizeHeight = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
 
                     pos = element.SelectSingleNode(PATHSIZEWIDTH);
-                    newobject.Sizewidth = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
+                    newRoomObject.SizeWidth = float.Parse(pos.InnerText, CultureInfo.InvariantCulture);
                     
-                    roomobjects.Add(newobject);
+                    roomObjects.Add(newRoomObject);
                 }
             }
 
-            return roomobjects;
+            return roomObjects;
         }
     }
 }

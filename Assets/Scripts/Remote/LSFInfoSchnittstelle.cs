@@ -3,25 +3,21 @@ using System;
 
 namespace Assets.Scripts.Remote
 {
-    public class LSFInfoSchnittstelle : RemoteObject
+    public class LsfInfoSchnittstelle : RemoteObject
     {
+        private const string IS_PAUSE_VALUE_NAME = "isPause";
+        private const string IS_LECTURE_VALUE_NAME = "isVorlesung";
+        private const string NEXT_LECTURE_VALUE_NAME = "nachstePause";
+        private const string LAST_ATTRIBUTE_VALUE_NAME = "Attributes:";
 
-        private string[] _valueNames = new string[]
-        {
-            "isPause",
-            "isVorlesung",
-            "nachstePause",
-            "Attributes:" //Absicherung für nextBreak. (FHEM null!!)
-        };
-
-        private static char[] _seperators = new char[]
+        private static readonly char[] Separators = new char[]
         {
                 ' ',
                 '\n',
                 '\r'
         };
 
-        public LSFInfoSchnittstelle(IServerConnection remoteConnection, string deviceName)
+        public LsfInfoSchnittstelle(IServerConnection remoteConnection, string deviceName)
             : base(remoteConnection, deviceName)
         {
         }
@@ -36,47 +32,33 @@ namespace Assets.Scripts.Remote
             nextBreak = null;
 
             //Daten zerlegen und leer String entfernen.
-            string[] dataSplit = data.Split(_seperators, StringSplitOptions.RemoveEmptyEntries);
+            string[] dataSplit = data.Split(Separators, StringSplitOptions.RemoveEmptyEntries);
 
             for(int i = 0; i < dataSplit.Length; i++)
             {
-                if (_valueNames[0].Equals(dataSplit[i]))
+                if (IS_PAUSE_VALUE_NAME.Equals(dataSplit[i]))
                 {
-                    if(dataSplit[i+1].Equals("0"))
-                    {
-                        isBreak = false;
-                    }
-                    else
-                    {
-                        isBreak = true;
-                    }
+                    isBreak = !dataSplit[i + 1].Equals("0");
                 }
-                else if (_valueNames[1].Equals(dataSplit[i]))
+                else if (IS_LECTURE_VALUE_NAME.Equals(dataSplit[i]))
                 {
-
-                    if (dataSplit[i + 1].Equals("0"))
-                    {
-                        lecture = false;
-                    }
-                    else
-                    {
-                        lecture = true;
-                    }
+                    lecture = !dataSplit[i + 1].Equals("0");
                 }
-                else if (_valueNames[2].Equals(dataSplit[i]))
+                else if (NEXT_LECTURE_VALUE_NAME.Equals(dataSplit[i]))
                 {
-
                     //letztes Attribut ausgelesen Suche beenden
-                    if(dataSplit[i+1].Equals(_valueNames[3]))
+                    if(dataSplit[i+1].Equals(LAST_ATTRIBUTE_VALUE_NAME))
                     {
                         nextBreak = null;
-                        break;
                     }
-                    nextBreak = DateTime.Parse(dataSplit[i + 1]);
+                    else
+                    {
+                        nextBreak = DateTime.Parse(dataSplit[i + 1]);
+                    }
+
                     break;
                 }
             }
         }
-
     }
 }

@@ -3,7 +3,7 @@ using Assets.Scripts.Pathfinding;
 using Assets.Scripts.Remote;
 using UnityEngine;
 
-namespace Assets.Scripts.Roomcreation
+namespace Assets.Scripts.RoomCreation
 {
     public class RoomGraph : Graph
     {

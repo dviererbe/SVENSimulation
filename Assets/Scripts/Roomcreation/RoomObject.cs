@@ -1,19 +1,19 @@
 ﻿using UnityEngine;
 
-namespace Assets.Scripts.Roomcreation
+namespace Assets.Scripts.RoomCreation
 {
     public class RoomObject
     {
         public enum RoomElement
         {
-            CHAIR,
-            TABLE,
-            WINDOW,
-            DOOR,
-            HEATER,
-            CLOSET,
-            TABLET,
-            THERMOMETER
+            Chair,
+            Table,
+            Window,
+            Door,
+            Heater,
+            Closet,
+            Tablet,
+            Thermometer
         };
 
         public string Type { get; set; }
@@ -26,9 +26,9 @@ namespace Assets.Scripts.Roomcreation
 
         public float Rotation { get; set; }
 
-        public float Sizeheight { get; set; }
+        public float SizeHeight { get; set; }
 
-        public float Sizewidth { get; set; }
+        public float SizeWidth { get; set; }
 
         public double RotationRadians => Rotation * Mathf.PI / 180;
 

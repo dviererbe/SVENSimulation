@@ -11,7 +11,7 @@ namespace Assets.Scripts.Remote
     public class RemoteThermometer : RemoteObject
     {
         public RemoteThermometer(IServerConnection remoteConnection, string deviceName)
-            : base(remoteConnection, deviceName)
+            : this(remoteConnection, getDeviceName: deviceName, setDeviceName: deviceName)
         {
         }
 

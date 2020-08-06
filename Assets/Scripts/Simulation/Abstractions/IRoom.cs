@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Roomcreation;
+﻿using Assets.Scripts.RoomCreation;
 using UnityEngine;
 
 namespace Assets.Scripts.Simulation.Abstractions

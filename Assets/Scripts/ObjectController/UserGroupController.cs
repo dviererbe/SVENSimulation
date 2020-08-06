@@ -7,6 +7,8 @@ using Assets.Scripts.Pathfinding;
 using Assets.Scripts.Remote;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
+using Object = System.Object;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts.Simulation
 {
@@ -17,94 +19,189 @@ namespace Assets.Scripts.Simulation
         None
     }
 
-    public interface ILectureStateProvider
-    {
-        LectureState LectureState { get; }
-    }
-
-    public class LsfLectureStateProvider
-    {
-        private static readonly TimeSpan RefreshInterval = TimeSpan.FromMinutes(1);
-
-        private readonly LSFInfoSchnittstelle _lsfInterface;
-        private DateTime _lastRefresh = DateTime.MinValue;
-        private LectureState _lectureState = LectureState.Lecture;
-        
-        public LsfLectureStateProvider(LSFInfoSchnittstelle lsfInterface)
-        {
-            _lsfInterface = lsfInterface;
-        }
-
-        public LectureState LectureState
-        {
-            get
-            {
-                if (DateTime.Now - _lastRefresh > RefreshInterval)
-                {
-                    try
-                    {
-                        
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.LogError("", exception);
-                    }
-                }
-            }
-        }
-    }
-
     public class UserGroupController : MonoBehaviour
     {
-        public enum UserGroupState
-        {
-            Pause,
-            Lecture,
-            EndOfLecture
-        }
+        private bool _initialized = false;
 
+        private object _goToTabletLock;
+        private bool _doesSomeoneGoToTablet = false;
+        
         [SerializeField] 
         private GameObject _userPrefab;
 
-        private List<UserController> _users;
+        private List<UserController> _students;
 
-        private ILectureStateProvider lectureState;
+        private List<Vertex> _unoccupiedSeats;
+        private IRoomThermalManager _roomThermalManager;
 
-        public IReadOnlyList<UserController> Users => _users;
-
-        public LectureState LectureState { get; private set; } = LectureState.None;
-
-        public void CreateUsers(RoomThermalManagerBuilder builder)
+        public IRoomThermalManager RoomThermalManager
         {
-            _users = new List<UserController>();
-
-            if (OptionsManager.UserCount > 1)
+            get => _roomThermalManager;
+            set
             {
-                CreateUser(UserController.UserRole.Lecturer);
+                _goToTabletLock = new object();
 
-                for (int i = 1; i < OptionsManager.UserCount; ++i)
+                var studentChairs = value.Room.RoomGraph.StudentsChairs;
+
+                _unoccupiedSeats = new List<Vertex>(studentChairs);
+                _students = new List<UserController>();
+
+                _roomThermalManager = value;
+
+                _initialized = true;
+            }
+        }
+
+        public UserController Lecturer { get; set; } = null;
+
+        public IReadOnlyList<UserController> Students => _students;
+
+        private int UserCount => _students.Count + (Lecturer == null ? 0 : 1);
+
+        void Update()
+        {
+            if (!_initialized)
+                return;
+
+            if (RoomThermalManager.Room.LectureState == LectureState.None)
+                return;
+
+            int userCount = UserCount;
+
+            if (userCount < OptionsManager.UserCount)
+            {
+                if (Lecturer == null)
+                {
+                    CreateUser(UserController.UserRole.Lecturer);
+                    ++userCount;
+                }
+
+                for (int i = userCount; i < OptionsManager.UserCount; ++i)
                 {
                     CreateUser(UserController.UserRole.Student);
                 }
             }
-
-            void CreateUser(UserController.UserRole role)
+            else if (userCount > OptionsManager.UserCount)
             {
-                GameObject userObject = Instantiate(_userPrefab);
-                userObject.transform.parent = transform;
-                UserController userController = userObject.GetComponent<UserController>();
-                userController.Initialize(userGroupController: this, role);
-                builder?.AddThermalObject(userController);
+                if (OptionsManager.UserCount == 0 && Lecturer != null)
+                {
+                    Lecturer.LeaveRoom();
+                    --userCount;
+                }
 
-                _users.Add(userController);
+                for (int i = 0; userCount > 0 && i < _students.Count; ++i)
+                {
+                    UserController student = _students[i];
+
+                    if (student.State != UserController.UserState.LeavingRoom)
+                    {
+                        student.LeaveRoom();
+                        --userCount;
+                    }
+                }
             }
         }
 
-        void Update()
+        private void CreateUser(UserController.UserRole role)
         {
+            Vertex seat = GetFreeSeat(role);
 
+            if (seat == null)
+                return;
 
-            GroupState = !OptionsManager.Lecture ? UserGroupState.Lecture : UserGroupState.Pause;
+            GameObject userObject = Instantiate(_userPrefab);
+            userObject.transform.parent = transform;
+            UserController userController = userObject.GetComponent<UserController>();
+            userController.Initialize(userGroupController: this, role, seat);
+            userController.Destroyed += OnUserControllerDestroyed;
+            RoomThermalManager.AddThermalObject(userController);
+
+            if (role == UserController.UserRole.Student)
+                _students.Add(userController);
+            else if (role == UserController.UserRole.Lecturer)
+                Lecturer = userController;
+            else
+                throw new NotImplementedException();
+        }
+
+        private Vertex GetFreeSeat(UserController.UserRole role)
+        {
+            if (role == UserController.UserRole.Student)
+            {
+                return OccupySeat();
+            }
+            else if (role == UserController.UserRole.Lecturer)
+            {
+                IReadOnlyList<Vertex> lecturerChairs = RoomThermalManager.Room.RoomGraph.LecturerChairs;
+
+                if (lecturerChairs.Count == 0)
+                    return null;
+
+                return RoomThermalManager.Room.RoomGraph.LecturerChairs[0];
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private void OnUserControllerDestroyed(UserController destroyedUserController)
+        {
+            RoomThermalManager.RemoveThermalObject(destroyedUserController);
+
+            if (destroyedUserController == Lecturer)
+            {
+                Lecturer = null;
+            }
+            else
+            {
+                _students.Remove(destroyedUserController);
+            }
+
+            destroyedUserController.Destroyed -= OnUserControllerDestroyed;
+        }
+
+        private Vertex OccupySeat()
+        {
+            lock (_unoccupiedSeats)
+            {
+                if (_unoccupiedSeats.Count == 0)
+                    return null;
+
+                int index = Random.Range(0, _unoccupiedSeats.Count);
+
+                Vertex seat = _unoccupiedSeats[index];
+                _unoccupiedSeats.RemoveAt(index);
+
+                return seat;
+            }
+        }
+
+        public void UnoccupySeat(Vertex seat)
+        {
+            lock (_unoccupiedSeats)
+            {
+                _unoccupiedSeats.Add(seat);
+            }
+        }
+
+        public bool RequestToGoToTablet()
+        {
+            lock (_goToTabletLock)
+            {
+                if (_doesSomeoneGoToTablet)
+                    return false;
+
+                return _doesSomeoneGoToTablet = true;
+            }
+        }
+
+        public void CancelGoToTabletRequest()
+        {
+            lock (_goToTabletLock)
+            {
+                _doesSomeoneGoToTablet = false;
+            }
         }
     }
 }

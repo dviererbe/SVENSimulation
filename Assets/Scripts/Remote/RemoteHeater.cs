@@ -42,7 +42,7 @@ namespace Assets.Scripts.Remote
 
         public void SetState(float value)
         {
-            SetAttribute("ventil", value.ToString());
+            SetAttribute("ventil", value.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

@@ -309,6 +309,8 @@ namespace Assets.Scripts.Simulation
                             thermalObject,
                             CalculateSurfaceAreaPerThermalPixelOfThermalObject(thermalObject));
                     }
+
+                    thermalObject.ThermalStart(this);
                 }
             }
 
@@ -413,7 +415,7 @@ namespace Assets.Scripts.Simulation
 
                     lock (_thermalUpdateLock)
                     {
-                        Debug.Log("Thermal Tick");
+                        //Debug.Log("Thermal Tick");
 
                         _outsideTemperature = _outsideTemperatureSource.GetTemperature();
 
