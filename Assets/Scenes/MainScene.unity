@@ -6542,8 +6542,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1404804900}
   m_HandleRect: {fileID: 1404804899}
   m_Direction: 2
-  m_Value: 0.96462905
-  m_Size: 0.43888402
+  m_Value: 0.9646292
+  m_Size: 0.43888405
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10774,7 +10774,7 @@ MonoBehaviour:
   _password: 
   _serverAddress: sven.hs-harz.de:8083
   _requiresAuthentication: 0
-  _userCount: 1
+  _userCount: 10
   _movementSpeed: 20
   _cameraZoomSpeed: 20
   _lecture: 0
@@ -10784,12 +10784,12 @@ MonoBehaviour:
   _windowMode: 0
   _windowHeight: 0
   _windowWidth: 0
-  _maxUserSpeed: 0
-  _minUserSpeed: 0
-  _upperMaxOkUserTemperatur: 0
-  _upperMinOkUserTemperatur: 0
-  _lowerMaxOkUserTemperatur: 0
-  _lowerMinOkUserTemperatur: 0
+  _maxUserSpeed: 4
+  _minUserSpeed: 2
+  _upperMaxOkUserTemperatur: 28
+  _upperMinOkUserTemperatur: 20
+  _lowerMaxOkUserTemperatur: 25
+  _lowerMinOkUserTemperatur: 18
   _probailityOfUserStandingUpInPause: 0.5
   _roomFile: .\Assets\Roomdefinition\9.428.xml
   _vertexObjectOffSet: 0
