@@ -156,8 +156,9 @@ namespace Assets.Scripts.Remote
 
                 if (uri != null)
                 {
+#if DebugURI
                     Debug.Log(uri.OriginalString);
-
+#endif
                     WebRequest request = WebRequest.CreateHttp(uri);
 
                     if (_requiersAuthentifiction)

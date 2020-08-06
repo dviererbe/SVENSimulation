@@ -194,7 +194,7 @@ public class RoomCreator : MonoBehaviour, IRoom
         #endregion
 
         IServerConnection serverConnection = ServerConnectionFactory.CreateServerConnection(OptionsManager.Username, OptionsManager.Password, OptionsManager.ServerAddress, OptionsManager.RequiresAuthentication);
-        _lsfInfoSchnittstelle = new LSFInfoSchnittstelle(serverConnection, "Der Name fehlt noch!!");
+        _lsfInfoSchnittstelle = new LSFInfoSchnittstelle(serverConnection, "LSF_Info_Sim");
 
         #region ThermalManager
 
@@ -380,8 +380,9 @@ public class RoomCreator : MonoBehaviour, IRoom
                 //roomObject.GetComponent<TableController>().setSprite(obj.Type);
                 thermalManagerBuilder.AddThermalObject(gameObjektNewRoomObject.GetComponent<WindowController>());
                 RemoteWindow remoteWindow = new RemoteWindow(serverConnection, roomObjektNewRoomObjekt.GetNameFHEM, roomObjektNewRoomObjekt.SetNameFHEM);
+                gameObjektNewRoomObject.GetComponent<WindowController>().RemoteWindow = remoteWindow;
                 _windowList.Add(new Tuple<GameObject, Vertex, RemoteWindow>(gameObjektNewRoomObject, 
-                    _roomGraph.AddVertex(gameObjektNewRoomObject.GetComponentInChildren<GameObject>().transform.position), remoteWindow));
+                    _roomGraph.AddVertex(gameObjektNewRoomObject.transform.position), remoteWindow));
             }
             else if (roomObjektNewRoomObjekt.Element == RoomObjects.RoomElement.TABLET)
             {
@@ -411,11 +412,10 @@ public class RoomCreator : MonoBehaviour, IRoom
         _roomGraph.PrintGraph();
         #endregion
 
+        #region Thermometer
+
         //Build and start Thermal Manager
         _roomThermalManager = thermalManagerBuilder.Build();
-        _roomThermalManager.Start();
-
-        #region Thermometer
 
         GameObject thermometerObject = Instantiate(_thermometerPrefab);
         thermometerObject.transform.parent = gameObject.transform;
@@ -425,6 +425,8 @@ public class RoomCreator : MonoBehaviour, IRoom
         thermometerController.Position = new Vector3(1, 1);
 
         #endregion
+
+        _roomThermalManager.Start();
     }
 
     private Vector2 getCenterOfChair(Vector2 position, RoomObjects roomObject)

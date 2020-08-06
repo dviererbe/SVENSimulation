@@ -9,6 +9,34 @@
         <VertexObjectOffSet>0.05</VertexObjectOffSet>
     </Room>
     <Furniture>
+        <Window>
+            <Position>
+                <Height>60</Height>
+                <Width>98</Width>
+            </Position>
+            <Size>
+                <Height>1</Height>
+                <Width>1</Width>
+            </Size>
+            <Rotation>0</Rotation>
+            <Type>Open</Type>
+            <FHEM-Name-Get>Sven_FensterManager_Sim</FHEM-Name-Get>
+            <FHEM-Name-Set>Fensterkontakt_Sim </FHEM-Name-Set>
+        </Window>
+        <Door>
+            <Position>
+                <Height>80</Height>
+                <Width>98</Width>
+            </Position>
+            <Size>
+                <Height>1</Height>
+                <Width>1</Width>
+            </Size>
+            <Rotation>0</Rotation>
+            <Type>Closed</Type>
+            <FHEM-Name-Get>null</FHEM-Name-Get>
+            <FHEM-Name-Set>null</FHEM-Name-Set>
+        </Door>
         <Chair>
             <Position>
                 <Height>15</Height>

@@ -9,8 +9,8 @@ namespace Assets.Scripts
 {
     class RoomReader
     {
-        private const string PATHWINDOW = "/Roomplan/Walls/Window";
-        private const string PATHDOOR = "/Roomplan/Walls/Door";
+        private const string PATHWINDOW = "/Roomplan/Furniture/Window";
+        private const string PATHDOOR = "/Roomplan/Furniture/Door";
         private const string PATHCHAIR = "/Roomplan/Furniture/Chair";
         private const string PATHTABLE = "/Roomplan/Furniture/Table";
         private const string PATHHEATER = "/Roomplan/Furniture/Heater";

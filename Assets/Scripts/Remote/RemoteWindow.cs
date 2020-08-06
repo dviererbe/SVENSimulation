@@ -23,9 +23,13 @@ namespace Assets.Scripts.Remote
         {
             string serverResult = GetAttribute("status");
 
-            if (bool.TryParse(serverResult, out bool value))
+            if (serverResult.Equals("geschlossen\n"))
             {
-                return value;
+                return false;
+            }
+            else if(serverResult.Equals("offen\n"))
+            {
+                return true;
             }
 
             throw new Exception("Retrieved invalid value from remote connection.");

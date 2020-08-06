@@ -38,5 +38,10 @@ namespace Assets.Scripts.Remote
             _remoteWindow.SetState(value);
         }
 
+        public RemoteWindow getRemoteWindow()
+        {
+            return _remoteWindow;
+        }
+
     }
 }

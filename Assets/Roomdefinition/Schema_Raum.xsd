@@ -39,7 +39,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="Walls" minOccurs="0">
+				<xs:element name="Furniture" minOccurs="0">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="Window" minOccurs="0" maxOccurs="unbounded">
@@ -55,9 +55,19 @@
 										<xs:element name="Type">
 											<xs:simpleType>
 												<xs:restriction base="xs:string">
+													<xs:enumeration value="Closed"/>
 													<xs:enumeration value="Open"/>
-													<xs:enumeration value="closed"/>
 												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="FHEM-Name-Get">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="FHEM-Name-Set">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
 											</xs:simpleType>
 										</xs:element>
 									</xs:sequence>
@@ -76,19 +86,24 @@
 										<xs:element name="Type">
 											<xs:simpleType>
 												<xs:restriction base="xs:string">
-													<xs:enumeration value="Normal"/>
+													<xs:enumeration value="Open"/>
+													<xs:enumeration value="Closed"/>
 												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="FHEM-Name-Get">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="FHEM-Name-Set">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
 											</xs:simpleType>
 										</xs:element>
 									</xs:sequence>
 								</xs:complexType>
 							</xs:element>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="Furniture" minOccurs="0">
-					<xs:complexType>
-						<xs:sequence>
 							<xs:element name="Chair" minOccurs="0" maxOccurs="unbounded"> 
 								<xs:complexType>
 									<xs:sequence>
