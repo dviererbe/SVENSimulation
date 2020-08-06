@@ -82,7 +82,7 @@ namespace Assets.Scripts.Simulation.Abstractions
 
             public override float SpecificHeatCapacity => 1012f; //isobaric mass heat capacity at 20°C and 101,3kPa
 
-            public override float ThermalConductivity => 0.025f; //at 20°C and 101,3kPa
+            public override float ThermalConductivity => 10f;//0.025f; //at 20°C and 101,3kPa
 
             public override float GetHeatTransferCoefficientToOtherThermalMaterial(ThermalMaterial otherThermalMaterial, float temperatureDifference)
             {

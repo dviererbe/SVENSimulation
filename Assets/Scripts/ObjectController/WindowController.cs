@@ -14,47 +14,37 @@ namespace Assets.Scripts.ObjectController
 {
     public class WindowController : MonoBehaviour, IThermalObject
     {
+        private static readonly TimeSpan RefreshInterval = TimeSpan.FromMinutes(1);
+
+        private DateTime _lastRead = DateTime.MinValue;
         private bool _isOpen = false;
 
         [SerializeField]
         private SpriteRenderer _windowSpriteRenderer;
 
         [SerializeField]
-        private Sprite _openWindowSpirte;
+        private Sprite _openWindowSprite;
 
         [SerializeField]
         private Sprite _closedWindowSprite;
 
-        private bool _started = false;
-
-        private IRoomThermalManager RoomThermalManager { get; set; }
         public RemoteWindow RemoteWindow { get; set; }
 
         public bool IsOpen
         {
             get => _isOpen;
-            set
+            private set
             {
                 if (value != _isOpen)
                 {
-                    try
+                    if (_isOpen = value) //single '=' is no accident
                     {
-                        RemoteWindow?.SetState(value);
-                    }
-                    catch (Exception exception)
-                    {
-                        Debug.Log("Failed to set window state of remote window.");
-                        Debug.LogException(exception);
-                    }
-
-                    if (_isOpen = value)
-                    {
-                        _windowSpriteRenderer.sprite = _openWindowSpirte;
+                        _windowSpriteRenderer.sprite = _openWindowSprite;
                         ThermalMaterial = ThermalMaterial.WindowOpen;
                     }
                     else
                     {
-                        _windowSpriteRenderer.sprite = _openWindowSpirte;
+                        _windowSpriteRenderer.sprite = _openWindowSprite;
                         ThermalMaterial = ThermalMaterial.WindowClosed;
                     }
                 }
@@ -75,7 +65,7 @@ namespace Assets.Scripts.ObjectController
         /// <summary>
         /// Gets how large the <see cref="IThermalObject"/> is in m (meter).
         /// </summary>
-        public Vector3 Size => transform.lossyScale; //Todo !!!
+        public Vector3 Size { get; set; }
 
         /// <summary>
         /// Gets the area of the surface of the <see cref="IThermalObject"/> in m² (square meter).
@@ -103,8 +93,7 @@ namespace Assets.Scripts.ObjectController
         /// </param>
         public void ThermalStart(IRoomThermalManager roomThermalManager)
         {
-            RoomThermalManager = roomThermalManager;
-            Start();
+            ThermalMaterial = ThermalMaterial.WindowClosed;
         }
 
         /// <summary>
@@ -118,29 +107,25 @@ namespace Assets.Scripts.ObjectController
         /// </param>
         public void ThermalUpdate(float transferredHeat, IRoomThermalManager roomThermalManager)
         {
-            //TODO
-        }
+            DateTime now = DateTime.Now;
+            TimeSpan durationSinceLastRead = DateTime.Now - _lastRead;
 
-        void Start()
-        {
-            if (_started)
+            if (durationSinceLastRead > RefreshInterval)
             {
-                return;
+                _lastRead = now;
+
+                try
+                {
+                    IsOpen = RemoteWindow.GetState();
+                }
+                catch (Exception exception)
+                {
+                    Debug.Log("Failed to get state from remote window.");
+                    Debug.LogException(exception);
+                }
             }
 
-            _started = true;
-
-            ThermalMaterial = ThermalMaterial.WindowClosed;
-
-            try
-            {
-                IsOpen = RemoteWindow.GetState();
-            }
-            catch (Exception exception)
-            {
-                Debug.Log("Failed to get state from remote window.");
-                Debug.LogException(exception);
-            }
+            //TODO: process _isOpen state
         }
     }
 }

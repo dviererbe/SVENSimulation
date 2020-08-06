@@ -1,17 +1,15 @@
 ﻿//#define fixtabelegdes
 
-using Assets.Scripts.Roomcreation;
+using Assets.Scripts.RoomCreation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.Pathfinding
 {
-    public sealed class Graph
+    public class Graph
     {
         private sealed class MutableVertex : Vertex
         {
@@ -54,15 +52,17 @@ namespace Assets.Scripts.Pathfinding
             }
         }
 
-        private const float CellLength = 1f;
-        private const int HashTableLength = 512;
+        private const float CellLength = 0.5f;
+        private const int HashTableLength = 1024;
         private List<Vertex>[] _vertexHashTable;
+
+        private readonly List<Vertex> _vertices;
 
         private List<Edge> _tabelEdges;
 
         public Graph()
         {
-
+            _vertices = new List<Vertex>();
             _vertexHashTable = new List<Vertex>[HashTableLength];
 
 			for (int i = 0; i < _vertexHashTable.Length; ++i)
@@ -73,10 +73,13 @@ namespace Assets.Scripts.Pathfinding
             _tabelEdges = new List<Edge>();
         }
 
+        public IReadOnlyList<Vertex> Vertices => _vertices;
+
         public Vertex AddVertex(Vector2 position)
         {
             MutableVertex vertex = new MutableVertex(position);
 
+            _vertices.Add(vertex);
             _vertexHashTable[CalculateHashIndex(position)].Add(vertex);
             
             return vertex;
@@ -86,11 +89,12 @@ namespace Assets.Scripts.Pathfinding
         {
             const long Prime1 = 73856093L;
             const long Prime2 = 19349663L;
-            
+
+            // "+ 2147483648L" grantees that the factors are not negative
             long factor1 = (long)Mathf.Floor(position.x / CellLength) + 2147483648L;
             long factor2 = (long)Mathf.Floor(position.y / CellLength) + 2147483648L;
 
-            long hashIndex = (factor1 ^ factor2) % HashTableLength;
+            long hashIndex = (factor1 * Prime1 ^ factor2 * Prime2) % HashTableLength;
 
             return (uint)hashIndex;
         }
@@ -117,7 +121,7 @@ namespace Assets.Scripts.Pathfinding
             }
         }
 
-        public void AddSqaureObject( RoomObjects obj)
+        public void AddSqaureObject( RoomObject obj)
         {
             #region Offset zu den Node ermitteln
 
@@ -138,43 +142,43 @@ namespace Assets.Scripts.Pathfinding
 
             //Nächste Ecke B
             squareVertexPositions[1] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x + cosinus * obj.Sizewidth,
-                y: squareVertexPositions[0].Position.y + sinus * obj.Sizewidth));
+                x: squareVertexPositions[0].Position.x + cosinus * obj.SizeWidth,
+                y: squareVertexPositions[0].Position.y + sinus * obj.SizeWidth));
 
 
             //Nächste Ecke D
             squareVertexPositions[3] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x - sinus * obj.Sizeheight,
-                y: squareVertexPositions[0].Position.y + cosinus * obj.Sizeheight));
+                x: squareVertexPositions[0].Position.x - sinus * obj.SizeHeight,
+                y: squareVertexPositions[0].Position.y + cosinus * obj.SizeHeight));
 
 
             //Ecke C
             squareVertexPositions[2] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[3].Position.x + cosinus * obj.Sizewidth,
-                y: squareVertexPositions[3].Position.y + sinus * obj.Sizewidth));
+                x: squareVertexPositions[3].Position.x + cosinus * obj.SizeWidth,
+                y: squareVertexPositions[3].Position.y + sinus * obj.SizeWidth));
 
 
             //Mitte AB
             squareVertexPositions[4] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x + cosinus * obj.Sizewidth / 2,
-                y: squareVertexPositions[0].Position.y + sinus * obj.Sizewidth / 2));
+                x: squareVertexPositions[0].Position.x + cosinus * obj.SizeWidth / 2,
+                y: squareVertexPositions[0].Position.y + sinus * obj.SizeWidth / 2));
 
 
             //Mitte DA
             squareVertexPositions[7] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[0].Position.x - sinus * obj.Sizeheight / 2,
-                y: squareVertexPositions[0].Position.y + cosinus * obj.Sizeheight / 2));
+                x: squareVertexPositions[0].Position.x - sinus * obj.SizeHeight / 2,
+                y: squareVertexPositions[0].Position.y + cosinus * obj.SizeHeight / 2));
 
             //Mitte CD
             squareVertexPositions[6] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[3].Position.x + cosinus * obj.Sizewidth / 2,
-                y: squareVertexPositions[3].Position.y + sinus * obj.Sizewidth / 2));
+                x: squareVertexPositions[3].Position.x + cosinus * obj.SizeWidth / 2,
+                y: squareVertexPositions[3].Position.y + sinus * obj.SizeWidth / 2));
 
 
             //Mitte BC
             squareVertexPositions[5] = new MutableVertex(new Vector2(
-                x: squareVertexPositions[1].Position.x - sinus * obj.Sizeheight / 2,
-                y: squareVertexPositions[1].Position.y + cosinus * obj.Sizeheight / 2));
+                x: squareVertexPositions[1].Position.x - sinus * obj.SizeHeight / 2,
+                y: squareVertexPositions[1].Position.y + cosinus * obj.SizeHeight / 2));
 
             //Kanten die nicht passiert werden dürfen anlegen
             _tabelEdges.Add(new Edge(squareVertexPositions[0], squareVertexPositions[2], 0));
@@ -192,8 +196,8 @@ namespace Assets.Scripts.Pathfinding
 
             #endregion
 
-            float newWidth = obj.Sizewidth + (2 * OptionsManager.VertexObjectOffSet);
-            float newHeigth = obj.Sizeheight + (2 * OptionsManager.VertexObjectOffSet);
+            float newWidth = obj.SizeWidth + (2 * OptionsManager.VertexObjectOffSet);
+            float newHeigth = obj.SizeHeight + (2 * OptionsManager.VertexObjectOffSet);
 
             //Ecke A
             squareVertexPositions[0] = new MutableVertex(squareVertexPositions[0].Position + offset * (Mathf.Sqrt(2) * OptionsManager.VertexObjectOffSet));
@@ -297,17 +301,26 @@ namespace Assets.Scripts.Pathfinding
 		public Vertex GetNearestVertex(Vector2 position, int maxDistance = 20)
         {
             Vertex nearestVertex = null;
+            float distanceToNearestVertex = float.MaxValue;
 
             for (int distance = 0; nearestVertex == null && distance <= maxDistance; ++distance)
             {
                 foreach (Vector2 offset in GetOffsets(distance))
                 {
-                    foreach (var vertex in _vertexHashTable[CalculateHashIndex(position + offset)])
+                    foreach (Vertex vertex in _vertexHashTable[CalculateHashIndex(position + offset)])
                     {
-                        if (nearestVertex == null ||
-                            position.GetDistanceTo(vertex.Position) < position.GetDistanceTo(nearestVertex.Position))
+                        if (nearestVertex == null)
                         {
                             nearestVertex = vertex;
+                            distanceToNearestVertex = position.GetDistanceTo(nearestVertex.Position);
+                        }
+
+                        float distanceToVertex = position.GetDistanceTo(vertex.Position);
+                        
+                        if (distanceToVertex < distanceToNearestVertex)
+                        {
+                            nearestVertex = vertex;
+                            distanceToNearestVertex = distanceToVertex;
                         }
                     }
                 }
@@ -325,30 +338,32 @@ namespace Assets.Scripts.Pathfinding
                 {
                     Vector2 offset = new Vector2(distance * CellLength, distance * CellLength);
 
-                    for (int i = 0; i < distance; ++i)
+                    int limit = 2 * distance;
+
+                    for (int i = 0; i < limit; ++i)
                     {
-                        offset += new Vector2(1, 0);
+                        offset += new Vector2(-CellLength, 0);
 
                         yield return offset;
                     }
 
-                    for (int i = 0; i < distance; ++i)
+                    for (int i = 0; i < limit; ++i)
                     {
-                        offset += new Vector2(0, -1);
+                        offset += new Vector2(0, CellLength);
 
                         yield return offset;
                     }
 
-                    for (int i = 0; i < distance; ++i)
+                    for (int i = 0; i < limit; ++i)
                     {
-                        offset += new Vector2(-1, 0);
+                        offset += new Vector2(CellLength, 0);
 
                         yield return offset;
                     }
 
-                    for (int i = 0; i < distance; ++i)
+                    for (int i = 0; i < limit; ++i)
                     {
-                        offset += new Vector2(0, 1);
+                        offset += new Vector2(0, -CellLength);
 
                         yield return offset;
                     }
@@ -494,6 +509,5 @@ namespace Assets.Scripts.Pathfinding
             Debug.Log(graphmatrix.ToString());
             Debug.Log(vertexPositions.ToString());
         }
-
     }
 }

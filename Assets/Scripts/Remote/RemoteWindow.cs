@@ -1,16 +1,12 @@
 ﻿using Assets.Scripts.Remote.Abstractions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts.Remote
 {
     public class RemoteWindow : RemoteObject
     {
         public RemoteWindow(IServerConnection remoteConnection, string deviceName)
-            : base(remoteConnection, deviceName)
+            : this(remoteConnection, getDeviceName: deviceName, setDeviceName: deviceName)
         {
         }
 

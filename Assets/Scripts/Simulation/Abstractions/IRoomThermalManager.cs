@@ -66,6 +66,14 @@ namespace Assets.Scripts.Simulation.Abstractions
         void AddThermalObject(IThermalObject thermalObject);
 
         /// <summary>
+        /// Removes a <see cref="IThermalObject"/> from the thermal simulation of the <see cref="Room"/>.
+        /// </summary>
+        /// <param name="thermalObject">
+        /// The <see cref="IThermalObject"/> that should be removed.
+        /// </param>
+        void RemoveThermalObject(IThermalObject thermalObject);
+
+        /// <summary>
         /// Called on the frame when a script is enabled just before any of the Update methods are called the first time.
         /// <see href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.Start.html">MonoBehaviour.Start</see>
         /// </summary>

@@ -34,7 +34,7 @@ public class TestScript : MonoBehaviour
         IServerConnection connection = ServerConnectionFactory.CreateServerConnection(Username, Password, ServerAddress,
                 RequiresAuthentication);
 
-        LSFInfoSchnittstelle lsfSchnittstelle = new LSFInfoSchnittstelle(connection, Device);
+        LsfInfoSchnittstelle lsfSchnittstelle = new LsfInfoSchnittstelle(connection, Device);
 
         bool lecture;
         bool isbreak;

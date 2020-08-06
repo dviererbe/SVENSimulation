@@ -68,7 +68,7 @@ namespace Assets.Scripts.Remote
                 //BUG: Possible Injection-Attack
                 Uri uri = new Uri($"http://{_serverAddress}/fhem");
 
-                Debug.Log(uri.OriginalString);
+                //Debug.Log(uri.OriginalString);
 
                 WebRequest request = WebRequest.CreateHttp(uri);
 
@@ -125,7 +125,7 @@ namespace Assets.Scripts.Remote
                     throw new Exception("Failed to retrieve the CSRF-Token.", webException);
                 }
 
-                Debug.Log(csrfToken);
+                //Debug.Log(csrfToken);
 
                 return csrfToken ?? throw new Exception("CSRF-Token not found in server response.");
             }
