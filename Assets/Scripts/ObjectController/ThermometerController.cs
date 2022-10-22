@@ -11,6 +11,8 @@ namespace Assets.Scripts.ObjectController
 {
     public class ThermometerController : MonoBehaviour
     {
+        private bool _initialized = false;
+
         [SerializeField] 
         private TextMesh _userStateTextMesh;
 
@@ -24,12 +26,15 @@ namespace Assets.Scripts.ObjectController
             set => transform.position = value;
         }
 
-        public IRoomThermalManager RoomThermalManager { get; set; }
+        public IRoomThermalManager RoomThermalManager { get; private set; }
 
-        public RemoteThermometer RemoteThermometer { get; set; }
+        public RemoteThermometer RemoteThermometer { get; private set; }
 
-        void Start()
+        public void Initialize(IRoomThermalManager roomThermalManager, RemoteThermometer remoteThermometer)
         {
+            RoomThermalManager = roomThermalManager;
+            RemoteThermometer = remoteThermometer;
+
             try
             {
                 _lastTransmittedValue = RemoteThermometer.GetState();
@@ -39,10 +44,15 @@ namespace Assets.Scripts.ObjectController
                 Debug.Log("Failed to get temperature from remote thermometer.");
                 Debug.LogException(exception);
             }
+
+            _initialized = true;
         }
 
         void Update()
         {
+            if (!_initialized)
+                return;
+
             float temperature = RoomThermalManager.GetTemperature(Position).ToCelsius();
 
             if (Mathf.Abs(_lastTransmittedValue - temperature) > TransmissionThreshold)

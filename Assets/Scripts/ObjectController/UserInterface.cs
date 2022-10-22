@@ -11,9 +11,6 @@ public class UserInterface : MonoBehaviour
     private GameObject _textContainer;
 
     [SerializeField]
-    private TextMeshProUGUI _toggleVorlesung;
-
-    [SerializeField]
     private GameObject _regulators;
 
     [SerializeField]
@@ -30,15 +27,6 @@ public class UserInterface : MonoBehaviour
     {
         _minTempStart = 25.0f;
         _maxTempStart = 40.0f;
-
-        if (OptionsManager.Lecture)
-        {
-            _toggleVorlesung.text = "Lecture active";
-        }
-        else
-        {
-            _toggleVorlesung.text = "Lecture paused";
-        }
     }
 
     // Update is called once per frame
@@ -58,19 +46,6 @@ public class UserInterface : MonoBehaviour
         }
     }
 
-    public void VorlesungOnToggle ()
-    {
-        if(OptionsManager.Lecture)
-        {
-            _toggleVorlesung.text = "Lecture paused";
-            OptionsManager.Lecture = false;
-        }
-        else
-        {
-            _toggleVorlesung.text = "Lecture active";
-            OptionsManager.Lecture = true;
-        }
-    }
 
     public void MinimzeRegulatorsOnClick()
     {

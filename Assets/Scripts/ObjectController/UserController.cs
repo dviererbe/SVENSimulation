@@ -1,178 +1,104 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
+using Assets.Scripts;
+using Assets.Scripts.Pathfinding;
+using Assets.Scripts.Remote;
 using Assets.Scripts.Simulation;
 using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Rendering;
 using Random = UnityEngine.Random;
 
 public class UserController : MonoBehaviour, IThermalObject
 {
+    public enum UserRole
+    {
+        Student,
+        Lecturer
+    }
+
     public enum UserState
     {
         Unknown,
+        LeavingRoom,
+        GoToSeat,
+        Listening,
+        Lecturing,
         Idle,
-        Moving
+        Moving,
+        OpeningWindow,
+        ClosingWindow,
+        TurningUpHeater,
+        TurningDownHeater,
     }
 
-    [SerializeField]
-    private float _userRadius = 2f;
+    public event Action<UserController> Destroyed;
+
+    private bool _initialized = false;
+
+    private Vertex _lastVertex;
+    private Vertex _nextVertex;
+    private Path _currentPath = null;
+
+    private Vertex _seat;
+    private (Vertex Vertex, RemoteTablet RemoteTablet) _tablet;
 
     [SerializeField]
     private TextMesh _userStateTextMesh;
 
-    private Rigidbody2D _rigidbody;
-
-    private Vector2 _bottomLeftCorner;
-    private Vector2 _upperRightCorner;
-
     [SerializeField]
     private float _probabilityOfChangingDirectionOnUpdate = 0.005f;
 
-    [SerializeField]
-    private float _playerSpeed = 0.5f;
-    private Vector2 _direction;
+    private float _normalizedUserSpeed = 0f;
+    
+    private float _normalizedMaxOkTemperature = 0f;
 
-    private UserGroupController _userGroupController = null;
+    private float _normalizedMinOkTemperature = 0f;
 
-    public Temperature MinOkTemperature { get; set; }
+    private Rigidbody2D _rigidbody;
 
-    public Temperature MaxOkTemperature { get; set; }
+    /// <summary>
+    /// Gets the movement speed of the user.
+    /// </summary>
+    public float UserSpeed =>
+        Mathf.Lerp(OptionsManager.MinUserSpeed, OptionsManager.MaxUserSpeed, _normalizedUserSpeed);
 
+    /// <summary>
+    /// Gets the lowest temperature that is okay for the user. The user will freeze for temperatures below this temperature.
+    /// </summary>
+    public Temperature MinOkTemperature => Temperature.FromCelsius(Mathf.Lerp(OptionsManager.LowerMinOkUserTemperature,
+        OptionsManager.UpperMinOkUserTemperature, _normalizedMinOkTemperature));
+
+    /// <summary>
+    /// Gets the highest temperature that is okay for the user. The user will sweat for temperatures above this temperature.
+    /// </summary>
+    public Temperature MaxOkTemperature => Temperature.FromCelsius(Mathf.Lerp(OptionsManager.LowerMaxOkUserTemperature,
+        OptionsManager.UpperMaxOkUserTemperature, _normalizedMaxOkTemperature));
+
+    /// <summary>
+    /// Gets if the user is freezing. This indicates that the temperature is too low for the user to be comfortable.
+    /// </summary>
     public bool IsFreezing { get; private set; } = false;
 
+    /// <summary>
+    /// Gets if the user is sweating. This indicates that the temperature is too high for the user to be comfortable.
+    /// </summary>
     public bool IsSweating { get; private set; } = false;
 
     private IRoomThermalManager RoomThermalManager { get; set; }
 
-    public UserGroupController UserGroupController
-    {
-        get => _userGroupController;
-        set
-        {
-            if (_userGroupController == null)
-                _userGroupController = value;
-            else
-                throw new NotSupportedException("Can't reassign user group controller.");
-        }
-    }
+    public UserGroupController UserGroupController { get; private set; }
 
+    /// <summary>
+    /// Gets the role of the user.
+    /// </summary>
+    public UserRole Role { get; private set; } = UserRole.Student;
+
+    /// <summary>
+    /// Gets the current state of the user.
+    /// </summary>
     public UserState State { get; private set; } = UserState.Unknown;
-
-    private static Vector2 GetRandomDirection()
-    {
-        return new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
-    }
-
-    private bool IsPointInRoom(Vector2 point)
-    {
-        return point.x >= _bottomLeftCorner.x &&
-               point.y >= _bottomLeftCorner.y &&
-               point.x <= _upperRightCorner.x &&
-               point.y <= _upperRightCorner.y;
-    }
-
-    private void MovePlayerToMiddleOfRoom()
-    {
-        _rigidbody.position = new Vector2(
-            x: RoomThermalManager.Room.RoomPosition.x + RoomThermalManager.Room.RoomSize.x / 2f,
-            y: RoomThermalManager.Room.RoomPosition.y + RoomThermalManager.Room.RoomSize.y / 2f);
-    }
-
-    private Vector2 CalculateNextPoint()
-    {
-        return _rigidbody.position + _playerSpeed * Time.deltaTime * _direction;
-    }
-
-    void Start()
-    {
-        _rigidbody = GetComponent<Rigidbody2D>();
-        _bottomLeftCorner = RoomThermalManager.Room.RoomPosition + new Vector3(_userRadius, _userRadius);
-        _upperRightCorner = RoomThermalManager.Room.RoomPosition + RoomThermalManager.Room.RoomSize - new Vector3(_userRadius, _userRadius); ;
-        _direction = GetRandomDirection();
-
-        MovePlayerToMiddleOfRoom();
-        InitializeMinAndMaxOkTemperatureWithRandomValues();
-    }
-
-    void Update()
-    {
-        Temperature? temperature = RoomThermalManager?.GetTemperature(_rigidbody.position).ToCelsius();
-
-        if (UserGroupController.GroupState == UserGroupController.UserGroupState.Lecture)
-        {
-            State = UserState.Idle;
-        }
-        else if (UserGroupController.GroupState == UserGroupController.UserGroupState.Pause)
-        {
-            State = UserState.Moving;
-
-            float random = Random.value;
-
-            if (random <= _probabilityOfChangingDirectionOnUpdate)
-            {
-                _direction = GetRandomDirection();
-            }
-
-            bool valueUnchanged = true;
-
-            do
-            {
-                Vector2 newPosition = CalculateNextPoint();
-
-                if (IsPointInRoom(newPosition))
-                {
-                    _rigidbody.position = newPosition;
-                    valueUnchanged = false;
-                }
-                else
-                {
-                    _direction = GetRandomDirection();
-                }
-            }
-            while (valueUnchanged);
-        }
-        else
-        {
-            State = UserState.Unknown;
-        }
-
-        if (temperature.HasValue)
-        {
-            if (temperature > MaxOkTemperature)
-            {
-                IsSweating = true;
-                IsFreezing = false;
-            }
-            else if (temperature < MinOkTemperature)
-            {
-                IsSweating = false;
-                IsFreezing = true;
-            }
-            else
-            {
-                IsSweating = false;
-                IsFreezing = false;
-            }
-
-        }
-        else
-        {
-            IsFreezing = false;
-            IsSweating = false;
-        }
-
-        string sweatingText = IsSweating ? "[Sweating]" : string.Empty;
-        string freezingText = IsFreezing ? "[Freezing]" : string.Empty;
-
-        _userStateTextMesh.text = $"{State} {sweatingText}{freezingText} ({temperature?.ToString() ?? "No Data"})";
-    }
-
-    public void InitializeMinAndMaxOkTemperatureWithRandomValues()
-    {
-
-    }
 
     /// <summary>
     /// Gets if the <see cref="IThermalObject"/> can not change its position.
@@ -208,6 +134,19 @@ public class UserController : MonoBehaviour, IThermalObject
     /// </summary>
     public Temperature Temperature => Temperature.FromCelsius(32f);
 
+    public void Initialize(UserGroupController userGroupController, UserRole role, Vertex userSeat)
+    {
+        if (_initialized)
+            throw new InvalidOperationException("User was already initialized!");
+
+        _initialized = true;
+
+        UserGroupController = userGroupController;
+        Role = role;
+
+        _seat = userSeat;
+    }
+
     /// <summary>
     /// A <see cref="IRoomThermalManager"/> signals the <see cref="IThermalObject"/> that the thermal simulation was started.
     /// </summary>
@@ -233,5 +172,232 @@ public class UserController : MonoBehaviour, IThermalObject
         //((Skin Surface Area) / (Body Height)) * (Height of Thermal Pixel)
         //((       1m³       ) /     1.8m     ) * (Height of Thermal Pixel) 
         ThermalSurfaceArea = (2f / 1.8f) * roomThermalManager.ThermalPixelSize;
+    }
+
+    void Start()
+    {
+        _normalizedMinOkTemperature = Random.value;
+        _normalizedMaxOkTemperature = Random.value;
+
+        _rigidbody = GetComponent<Rigidbody2D>();
+
+        Vertex doorVertex = GetRandomDoorVertex();
+        _lastVertex = _nextVertex = doorVertex;
+
+        _tablet = RoomThermalManager.Room.RoomGraph.Tablets[0];
+    }
+
+    void Update()
+    {
+        Temperature? temperature = RoomThermalManager?.GetTemperature(_rigidbody.position).ToCelsius();
+
+        UpdateTemperatureFeeling(temperature);
+
+        LectureState lectureState = RoomThermalManager.Room.LectureState;
+
+        switch (lectureState)
+        {
+            case LectureState.Lecture:
+                ExecuteLectureStateBehaviour();
+                break;
+            case LectureState.Pause:
+                ExecutePauseStateBehaviour();
+                break;
+            case LectureState.None:
+                ExecuteNothingStateBehaviour();
+                break;
+            default:
+                throw new NotImplementedException();
+        }
+
+        UpdateUserStateCaption(temperature);
+    }
+
+    private void ExecuteLectureStateBehaviour()
+    {
+        if (State == UserState.Unknown ||
+            State == UserState.Idle || 
+            State == UserState.Moving)
+        {
+            GoToSeat();
+        }
+        else if (State == UserState.GoToSeat)
+        {
+            if (!FollowPath())
+            {
+                if (Role == UserRole.Lecturer)
+                    State = UserState.Lecturing;
+                else if (Role == UserRole.Student)
+                    State = UserState.Listening;
+            }
+        }
+        else if (State == UserState.Lecturing)
+        {
+            if (_currentPath == null)
+                SetTarget(GetRandomVertex());
+
+            FollowPath();
+        }
+    }
+
+    private void ExecutePauseStateBehaviour()
+    {
+        if (State == UserState.Unknown ||
+            State == UserState.Lecturing)
+        {
+            GoToSeat();
+        }
+        else if (State == UserState.GoToSeat)
+        {
+            if (!FollowPath())
+            {
+                if (Role == UserRole.Lecturer)
+                    State = UserState.Idle;
+                else if (Role == UserRole.Student)
+                    State = UserState.Moving;
+            }
+        }
+        else if (State == UserState.Listening)
+        {
+            State = UserState.Moving;
+        }
+        else if (State == UserState.Moving)
+        {
+            if (_currentPath == null)
+                SetTarget(GetRandomVertex());
+
+            FollowPath();
+        }
+    }
+
+    private void ExecuteNothingStateBehaviour()
+    {
+        LeaveRoom();
+
+        if (!FollowPath())
+        {
+            GameObject.Destroy(this);
+
+            if (Role == UserRole.Student)
+            {
+                UserGroupController.UnoccupySeat(_seat);
+            }
+
+            Destroyed?.Invoke(this);
+        }
+    }
+
+    public void LeaveRoom()
+    {
+        if (State != UserState.LeavingRoom)
+        {
+            UserGroupController.CancelGoToTabletRequest();
+            SetTarget(GetRandomDoorVertex());
+            State = UserState.LeavingRoom;
+        }
+    }
+
+    public void GoToSeat()
+    {
+        if (State != UserState.GoToSeat)
+        {
+            SetTarget(_seat);
+            State = UserState.GoToSeat;
+        }
+    }
+
+    private void SetTarget(Vertex vertex)
+    {
+        if (Graph.GetPathTo(_lastVertex, vertex, out Path path))
+        {
+            _currentPath = path;
+        }
+        else
+        {
+            _currentPath = null;
+        }
+    }
+
+    private bool FollowPath()
+    {
+        if (_currentPath == null)
+            return false;
+
+        float routeLength = UserSpeed * Time.deltaTime;
+
+        Vector2 currentPosition = transform.position;
+
+        while (routeLength > 0)
+        {
+            if (!_currentPath.TryGetNextVertex(out _nextVertex))
+            {
+                break;
+            }
+
+            float distanceToNextVertex = currentPosition.GetDistanceTo(_nextVertex.Position);
+
+            routeLength -= distanceToNextVertex;
+            currentPosition = _nextVertex.Position;
+            _lastVertex = _nextVertex;
+        }
+
+        _rigidbody.MovePosition(currentPosition);
+
+        if (_currentPath.HasNextVertex)
+        {
+            _currentPath = null;
+            return false;
+        }
+
+        return true;
+    }
+
+    private void UpdateTemperatureFeeling(Temperature? temperature)
+    {
+        if (temperature.HasValue)
+        {
+            if (temperature > MaxOkTemperature)
+            {
+                IsSweating = true;
+                IsFreezing = false;
+            }
+            else if (temperature < MinOkTemperature)
+            {
+                IsSweating = false;
+                IsFreezing = true;
+            }
+            else
+            {
+                IsSweating = false;
+                IsFreezing = false;
+            }
+        }
+        else
+        {
+            IsFreezing = false;
+            IsSweating = false;
+        }
+    }
+
+    private void UpdateUserStateCaption(Temperature? temperature)
+    {
+        string sweatingText = IsSweating ? "[Sweating]" : string.Empty;
+        string freezingText = IsFreezing ? "[Freezing]" : string.Empty;
+
+        _userStateTextMesh.text = $"{State} {sweatingText}{freezingText} ({temperature?.ToString() ?? "No Data"})";
+    }
+
+    private Vertex GetRandomDoorVertex()
+    {
+        IReadOnlyList<Vertex> doors = RoomThermalManager.Room.RoomGraph.Doors;
+
+        return doors[Random.Range(0, doors.Count)];
+    }
+
+    private Vertex GetRandomVertex()
+    {
+        IReadOnlyList<Vertex> vertices = RoomThermalManager.Room.RoomGraph.Vertices;
+
+        return vertices[Random.Range(0, vertices.Count)];
     }
 }

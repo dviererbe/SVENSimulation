@@ -60,10 +60,10 @@ namespace Assets.Scripts
         private bool _lecture = false;
 
         [SerializeField]
-        private float _minTemperature = 0.0f;
+        private float _minTemperature = 10.0f;
 
         [SerializeField]
-        private float _maxTemperature = 0.0f;
+        private float _maxTemperature = 30.0f;
 
         [SerializeField]
         private bool _dynamicSkalar = false;
@@ -100,6 +100,12 @@ namespace Assets.Scripts
 
         [SerializeField]
         private String _roomFile;
+
+        [SerializeField]
+        private float _vertexObjectOffSet;
+
+        [SerializeField]
+        private float _wallVertexDistance;
 
         private static OptionsManager _instance;
         private static OptionsManager Instance { get; set; }
@@ -543,11 +549,6 @@ namespace Assets.Scripts
             get => Instance._minTemperature;
             set
             {
-                if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(MinTemperatur), value, "An attempt was made to set the value to zero or an negative value.");
-                }
-
                 Instance._minTemperature = value;
             }
         }
@@ -563,11 +564,6 @@ namespace Assets.Scripts
             get => Instance._maxTemperature;
             set
             {
-                if (float.IsNaN(value) || float.IsInfinity(value) || value <= 0f)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(MaxTemperatur), value, "An attempt was made to set the value to zero or an negative value.");
-                }
-
                 Instance._maxTemperature = value;
             }
         }
@@ -706,9 +702,9 @@ namespace Assets.Scripts
             get => Instance._upperMaxOkUserTemperatur;
             set
             {
-                if (!IsValidSize(value))
+                if (!IsValidTemperature(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(UpperMaxOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(OutsideTemperature), value, "An attempt was made to set the value below absolute zero.");
                 }
 
                 if (value != Instance._upperMaxOkUserTemperatur)
@@ -737,9 +733,9 @@ namespace Assets.Scripts
             get => Instance._lowerMaxOkUserTemperatur;
             set
             {
-                if (!IsValidSize(value))
+                if (!IsValidTemperature(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(LowerMaxOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(OutsideTemperature), value, "An attempt was made to set the value below absolute zero.");
                 }
 
                 if (value != Instance._lowerMaxOkUserTemperatur)
@@ -768,9 +764,9 @@ namespace Assets.Scripts
             get => Instance._upperMinOkUserTemperatur;
             set
             {
-                if (!IsValidSize(value))
+                if (!IsValidTemperature(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(UpperMinOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(OutsideTemperature), value, "An attempt was made to set the value below absolute zero.");
                 }
 
                 if (value != Instance._upperMinOkUserTemperatur)
@@ -799,9 +795,9 @@ namespace Assets.Scripts
             get => Instance._lowerMinOkUserTemperatur;
             set
             {
-                if (!IsValidSize(value))
+                if (!IsValidTemperature(value))
                 {
-                    throw new ArgumentOutOfRangeException(nameof(LowerMinOkUserTemperature), value, "An attempt was made to set the value to zero or an negative value.");
+                    throw new ArgumentOutOfRangeException(nameof(OutsideTemperature), value, "An attempt was made to set the value below absolute zero.");
                 }
 
                 if (value != Instance._lowerMinOkUserTemperatur)
@@ -875,6 +871,52 @@ namespace Assets.Scripts
 
                     Instance._lecture = value;
                     Instance.OnSettingChanged?.Invoke(Instance, eventArgs);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Offset vor the vertex of Roomobjects
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float VertexObjectOffSet
+        {
+            get => Instance._vertexObjectOffSet;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(ProbabilityOfUserStandingUpInPause), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._probailityOfUserStandingUpInPause)
+                {
+                    Instance._vertexObjectOffSet = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the distance between tow vertex on the wall
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// When tried to set the value to zero or an negative value.
+        /// </exception>
+        public static float WallVertexDistance
+        {
+            get => Instance._wallVertexDistance;
+            set
+            {
+                if (!IsValidSize(value))
+                {
+                    throw new ArgumentOutOfRangeException(nameof(ProbabilityOfUserStandingUpInPause), value, "An attempt was made to set the value to zero or an negative value.");
+                }
+
+                if (value != Instance._probailityOfUserStandingUpInPause)
+                {
+                    Instance._wallVertexDistance = value;
                 }
             }
         }

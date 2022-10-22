@@ -11,13 +11,18 @@ namespace Assets.Scripts.Remote
     public class RemoteThermometer : RemoteObject
     {
         public RemoteThermometer(IServerConnection remoteConnection, string deviceName)
-            : base(remoteConnection, deviceName)
+            : this(remoteConnection, getDeviceName: deviceName, setDeviceName: deviceName)
+        {
+        }
+
+        public RemoteThermometer(IServerConnection remoteConnection, string getDeviceName, string setDeviceName)
+           : base(remoteConnection, getDeviceName, setDeviceName)
         {
         }
 
         public float GetState()
         {
-            string serverResult = GetAttribute("state");
+            string serverResult = GetAttribute("temp");
 
             if (float.TryParse(serverResult, out float value))
             {
@@ -32,7 +37,7 @@ namespace Assets.Scripts.Remote
 
         public void SetState(float value)
         {
-            SetAttribute("state", value.ToString());
+            SetAttribute("temperature", value.ToString());
         }
     }
 }

@@ -1,26 +1,31 @@
 ﻿using Assets.Scripts.Remote.Abstractions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts.Remote
 {
     public class RemoteWindow : RemoteObject
     {
         public RemoteWindow(IServerConnection remoteConnection, string deviceName)
-            : base(remoteConnection, deviceName)
+            : this(remoteConnection, getDeviceName: deviceName, setDeviceName: deviceName)
+        {
+        }
+
+        public RemoteWindow(IServerConnection remoteConnection, string getDeviceName, string setDeviceName)
+           : base(remoteConnection, getDeviceName, setDeviceName)
         {
         }
 
         public bool GetState()
         {
-            string serverResult = GetAttribute("state");
+            string serverResult = GetAttribute("status");
 
-            if (bool.TryParse(serverResult, out bool value))
+            if (serverResult.Equals("geschlossen\n"))
             {
-                return value;
+                return false;
+            }
+            else if(serverResult.Equals("offen\n"))
+            {
+                return true;
             }
 
             throw new Exception("Retrieved invalid value from remote connection.");
@@ -28,7 +33,7 @@ namespace Assets.Scripts.Remote
 
         public void SetState(bool value)
         {
-            SetAttribute("state", value.ToString());
+            SetAttribute("Open/Close", value.ToString());
         }
     }
 }

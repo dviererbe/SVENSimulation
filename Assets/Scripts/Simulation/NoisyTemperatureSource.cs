@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Scripts.Simulation.Abstractions;
+﻿using Assets.Scripts.Simulation.Abstractions;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -19,10 +14,10 @@ namespace Assets.Scripts.Simulation
         private readonly float _minTemperatureValue;
         private readonly float _maxTemperatureValue;
 
-
         public NoisyTemperatureSource(Temperature baseTemperatureValue, Temperature noiseOffset)
         {
-            const float absoluteZeroInKelvin = 0f;
+            const float AbsoluteZeroInKelvin = 0f;
+
             float noiseOffsetInKelvin = noiseOffset.ToKelvin();
             float baseTemperatureInKelvin = baseTemperatureValue.ToKelvin();
 
@@ -31,18 +26,18 @@ namespace Assets.Scripts.Simulation
 
 
 
-            if (_maxTemperatureValue < absoluteZeroInKelvin)
+            if (_maxTemperatureValue < AbsoluteZeroInKelvin)
             {
                 Debug.LogWarning("Max Temperature of NoisyTemperatureSource is below absolute zero.");
 
-                _maxTemperatureValue = absoluteZeroInKelvin;
-                _minTemperatureValue = absoluteZeroInKelvin;
+                _maxTemperatureValue = AbsoluteZeroInKelvin;
+                _minTemperatureValue = AbsoluteZeroInKelvin;
             }
-            else if (_minTemperatureValue < absoluteZeroInKelvin)
+            else if (_minTemperatureValue < AbsoluteZeroInKelvin)
             {
                 Debug.LogWarning("Min Temperature of NoisyTemperatureSource is below absolute zero.");
 
-                _minTemperatureValue = absoluteZeroInKelvin;
+                _minTemperatureValue = AbsoluteZeroInKelvin;
             }
         }
 
